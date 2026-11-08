@@ -1,0 +1,2097 @@
+{
+  "about" : "swift-url-kit URLStripper String.withoutTracking, run on macOS by a scratch harness (Package.swift depending on the library by path). Each output is the Swift's; src/clean.js must match every line.",
+  "lines" : [
+    {
+      "input" : "https://example.com?utm_source=newsletter&id=123&fbclid=abc",
+      "output" : "https://example.com?id=123"
+    },
+    {
+      "input" : "https://example.com?id=123",
+      "output" : "https://example.com?id=123"
+    },
+    {
+      "input" : "https://example.com",
+      "output" : "https://example.com"
+    },
+    {
+      "input" : "https://example.com/path",
+      "output" : "https://example.com/path"
+    },
+    {
+      "input" : "https://example.com?",
+      "output" : "https://example.com"
+    },
+    {
+      "input" : "https://example.com?utm_source=test&utm_medium=email&gclid=123&fbclid=456",
+      "output" : "https://example.com"
+    },
+    {
+      "input" : "https://example.com?utm_source=test&id=123&page=2&sort=date",
+      "output" : "https://example.com?id=123&page=2&sort=date"
+    },
+    {
+      "input" : "https://example.com?id=123&page=2&sort=date",
+      "output" : "https://example.com?id=123&page=2&sort=date"
+    },
+    {
+      "input" : "https://example.com?UTM_SOURCE=test&Fbclid=123&ID=page",
+      "output" : "https://example.com?ID=page"
+    },
+    {
+      "input" : "https://example.com?ID=page",
+      "output" : "https://example.com?ID=page"
+    },
+    {
+      "input" : "https://example.com?utm_source&fbclid&id=123",
+      "output" : "https://example.com?id=123"
+    },
+    {
+      "input" : "https://example.com?utm_source=&id=123",
+      "output" : "https://example.com?id=123"
+    },
+    {
+      "input" : "https://example.com?utm_source=test&id=&page=2",
+      "output" : "https://example.com?id=&page=2"
+    },
+    {
+      "input" : "https://example.com?id=&page=2",
+      "output" : "https://example.com?id=&page=2"
+    },
+    {
+      "input" : "https://analytics.example.com:8443/dashboard?utm_source=email&report_id=1#section1",
+      "output" : "https://analytics.example.com:8443/dashboard?report_id=1#section1"
+    },
+    {
+      "input" : "https://analytics.example.com:8443/dashboard?report_id=1#section1",
+      "output" : "https://analytics.example.com:8443/dashboard?report_id=1#section1"
+    },
+    {
+      "input" : "https://example.com?utm_source=t&name=John%20Doe&q=usb+c+hub",
+      "output" : "https://example.com?name=John%20Doe&q=usb+c+hub"
+    },
+    {
+      "input" : "https://example.com?name=John%20Doe&q=usb+c+hub",
+      "output" : "https://example.com?name=John%20Doe&q=usb+c+hub"
+    },
+    {
+      "input" : "https://example.com?utm_campaign=summer%202023&search=cats%20%26%20dogs",
+      "output" : "https://example.com?search=cats%20%26%20dogs"
+    },
+    {
+      "input" : "https://example.com?search=cats%20%26%20dogs",
+      "output" : "https://example.com?search=cats%20%26%20dogs"
+    },
+    {
+      "input" : "https://müller.de/product?utm_source=test&productId=123",
+      "output" : "https://xn--mller-kva.de/product?productId=123"
+    },
+    {
+      "input" : "https://xn--mller-kva.de/product?productId=123",
+      "output" : "https://xn--mller-kva.de/product?productId=123"
+    },
+    {
+      "input" : "not-a-valid-url?utm_source=test&id=123",
+      "output" : "not-a-valid-url?id=123"
+    },
+    {
+      "input" : "not-a-valid-url?id=123",
+      "output" : "not-a-valid-url?id=123"
+    },
+    {
+      "input" : "has a space?utm_source=x&id=1",
+      "output" : "has a space?id=1"
+    },
+    {
+      "input" : "has a space?id=1",
+      "output" : "has a space?id=1"
+    },
+    {
+      "input" : "https://www.amazon.com/Great-Thing/dp/B08N5WRWNW/ref=sr_1_3?tag=x-20&utm_source=a",
+      "output" : "https://www.amazon.com/dp/B08N5WRWNW"
+    },
+    {
+      "input" : "https://www.amazon.com/s?k=usb+c+hub&i=electronics",
+      "output" : "https://www.amazon.com/s?k=usb+c+hub&i=electronics"
+    },
+    {
+      "input" : "https://wordpress.org/?s=gutenberg",
+      "output" : "https://wordpress.org/?s=gutenberg"
+    },
+    {
+      "input" : "https://example.blog/posts?tag=swift&page=2",
+      "output" : "https://example.blog/posts?tag=swift&page=2"
+    },
+    {
+      "input" : "https://gitlab.com/o/r/-/blob/README.md?ref_type=heads&ref=v1.0",
+      "output" : "https://gitlab.com/o/r/-/blob/README.md?ref_type=heads&ref=v1.0"
+    },
+    {
+      "input" : "https://github.com/apple/swift/compare?ref=release",
+      "output" : "https://github.com/apple/swift/compare?ref=release"
+    },
+    {
+      "input" : "https://shop.example.com/list?price=10-20&sort=asc",
+      "output" : "https://shop.example.com/list?price=10-20&sort=asc"
+    },
+    {
+      "input" : "https://docs.example.com/page?hash=section-2",
+      "output" : "https://docs.example.com/page?hash=section-2"
+    },
+    {
+      "input" : "https://time.example.com/convert?from=UTC&to=PST&ts=1700000000",
+      "output" : "https://time.example.com/convert?from=UTC&to=PST&ts=1700000000"
+    },
+    {
+      "input" : "https://app.example.com/profile?user_id=42",
+      "output" : "https://app.example.com/profile?user_id=42"
+    },
+    {
+      "input" : "https://jobs.example.com/search?keywords=swift+developer",
+      "output" : "https://jobs.example.com/search?keywords=swift+developer"
+    },
+    {
+      "input" : "https://api.example.com/data?_=1700000000&id=7",
+      "output" : "https://api.example.com/data?_=1700000000&id=7"
+    },
+    {
+      "input" : "https://www.bilibili.com/video/BV1xx411c7mD?bvid=BV1xx411c7mD&p=2",
+      "output" : "https://www.bilibili.com/video/BV1xx411c7mD?bvid=BV1xx411c7mD&p=2"
+    },
+    {
+      "input" : "https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=42s&list=PL1",
+      "output" : "https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=42s&list=PL1"
+    },
+    {
+      "input" : "https://medium.com/@a/post-1a2b3c?sk=friendlinkkey",
+      "output" : "https://medium.com/@a/post-1a2b3c?sk=friendlinkkey"
+    },
+    {
+      "input" : "https://zoom.us/j/1234567890?pwd=abc123",
+      "output" : "https://zoom.us/j/1234567890?pwd=abc123"
+    },
+    {
+      "input" : "https://t.me/somebot?start=ref123",
+      "output" : "https://t.me/somebot?start=ref123"
+    },
+    {
+      "input" : "https://www.nytimes.com/2026/01/01/x.html?unlocked_article_code=1.abc",
+      "output" : "https://www.nytimes.com/2026/01/01/x.html?unlocked_article_code=1.abc"
+    },
+    {
+      "input" : "https://x.com/user/status/1?s=20&t=abc",
+      "output" : "https://x.com/user/status/1"
+    },
+    {
+      "input" : "https://x.com/user/status/1",
+      "output" : "https://x.com/user/status/1"
+    },
+    {
+      "input" : "https://twitter.com/user/status/1?s=46&t=xyz&ref_src=twsrc",
+      "output" : "https://twitter.com/user/status/1"
+    },
+    {
+      "input" : "https://twitter.com/user/status/1",
+      "output" : "https://twitter.com/user/status/1"
+    },
+    {
+      "input" : "https://example.com/search?s=swift&t=week",
+      "output" : "https://example.com/search?s=swift&t=week"
+    },
+    {
+      "input" : "https://youtu.be/dQw4w9WgXcQ?si=abcDEF",
+      "output" : "https://youtu.be/dQw4w9WgXcQ"
+    },
+    {
+      "input" : "https://youtu.be/dQw4w9WgXcQ",
+      "output" : "https://youtu.be/dQw4w9WgXcQ"
+    },
+    {
+      "input" : "https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT?si=x&nd=1",
+      "output" : "https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT"
+    },
+    {
+      "input" : "https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT",
+      "output" : "https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT"
+    },
+    {
+      "input" : "https://example.com/item?si=7",
+      "output" : "https://example.com/item?si=7"
+    },
+    {
+      "input" : "https://www.youtube.com/watch?v=dQw4w9WgXcQ&utm_source=facebook&feature=share&t=42s",
+      "output" : "https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=42s"
+    },
+    {
+      "input" : "https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=42s",
+      "output" : "https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=42s"
+    },
+    {
+      "input" : "https://www.youtube.com/watch?v=abc&list=PL123&index=3&pp=ygUF&ab_channel=Name",
+      "output" : "https://www.youtube.com/watch?v=abc&list=PL123&index=3"
+    },
+    {
+      "input" : "https://www.youtube.com/watch?v=abc&list=PL123&index=3",
+      "output" : "https://www.youtube.com/watch?v=abc&list=PL123&index=3"
+    },
+    {
+      "input" : "www.amazon.com",
+      "output" : "www.amazon.com"
+    },
+    {
+      "input" : "amazon.co.uk",
+      "output" : "amazon.co.uk"
+    },
+    {
+      "input" : "smile.amazon.de",
+      "output" : "smile.amazon.de"
+    },
+    {
+      "input" : "www.amazon.com.au",
+      "output" : "www.amazon.com.au"
+    },
+    {
+      "input" : "amazon.co.jp",
+      "output" : "amazon.co.jp"
+    },
+    {
+      "input" : "amazon.example.com",
+      "output" : "amazon.example.com"
+    },
+    {
+      "input" : "amazonaws.com",
+      "output" : "amazonaws.com"
+    },
+    {
+      "input" : "notamazon.com",
+      "output" : "notamazon.com"
+    },
+    {
+      "input" : "amazon-adsystem.com",
+      "output" : "amazon-adsystem.com"
+    },
+    {
+      "input" : "https://www.facebook.com/page/posts/123?ref=share&__cft__[0]=abc&__tn__=-UK&mibextid=xyz",
+      "output" : "https://www.facebook.com/page/posts/123"
+    },
+    {
+      "input" : "https://www.facebook.com/page/posts/123",
+      "output" : "https://www.facebook.com/page/posts/123"
+    },
+    {
+      "input" : "https://example.com/docs?ref=nav",
+      "output" : "https://example.com/docs?ref=nav"
+    },
+    {
+      "input" : "https://www.tiktok.com/@u/video/1?ttclid=abc&is_from_webapp=1&sender_device=pc&id=video",
+      "output" : "https://www.tiktok.com/@u/video/1?id=video"
+    },
+    {
+      "input" : "https://www.tiktok.com/@u/video/1?id=video",
+      "output" : "https://www.tiktok.com/@u/video/1?id=video"
+    },
+    {
+      "input" : "https://example.com?ttclid=abc&is_from_webapp=1&id=video",
+      "output" : "https://example.com?is_from_webapp=1&id=video"
+    },
+    {
+      "input" : "https://example.com?is_from_webapp=1&id=video",
+      "output" : "https://example.com?is_from_webapp=1&id=video"
+    },
+    {
+      "input" : "https://mail.google.com/mail/u/0/?source=x#inbox",
+      "output" : "https://mail.google.com/mail/u/0/?source=x#inbox"
+    },
+    {
+      "input" : "https://www.google.com/search?q=swift&source=hp&ei=abc&ved=2ah&oq=swi",
+      "output" : "https://www.google.com/search?q=swift"
+    },
+    {
+      "input" : "https://www.google.com/search?q=swift",
+      "output" : "https://www.google.com/search?q=swift"
+    },
+    {
+      "input" : "https://cnn.com/article?utm_source=twCNN&utm_medium=social&ftag=cnn123",
+      "output" : "https://cnn.com/article"
+    },
+    {
+      "input" : "https://cnn.com/article",
+      "output" : "https://cnn.com/article"
+    },
+    {
+      "input" : "https://bbc.com/news/tech-123?at_medium=custom7&at_campaign=64&article_id=tech-123",
+      "output" : "https://bbc.com/news/tech-123?article_id=tech-123"
+    },
+    {
+      "input" : "https://bbc.com/news/tech-123?article_id=tech-123",
+      "output" : "https://bbc.com/news/tech-123?article_id=tech-123"
+    },
+    {
+      "input" : "https://nytimes.com/article?smid=tw-nytimes&smtyp=cur&story_id=456",
+      "output" : "https://nytimes.com/article?story_id=456"
+    },
+    {
+      "input" : "https://nytimes.com/article?story_id=456",
+      "output" : "https://nytimes.com/article?story_id=456"
+    },
+    {
+      "input" : "https://www.theguardian.com/uk?CMP=share_btn_tw",
+      "output" : "https://www.theguardian.com/uk"
+    },
+    {
+      "input" : "https://www.theguardian.com/uk",
+      "output" : "https://www.theguardian.com/uk"
+    },
+    {
+      "input" : "https://example.com/compare?cmp=a,b",
+      "output" : "https://example.com/compare?cmp=a,b"
+    },
+    {
+      "input" : "https://example.com?utm_reader=x&utm_viz_id=y&utm_swu=z&mtm_group=g&pk_kwd=k&hsa_ver=3&sfmc_activityid=9&at_custom9=q&id=1",
+      "output" : "https://example.com?id=1"
+    },
+    {
+      "input" : "https://example.com?id=1",
+      "output" : "https://example.com?id=1"
+    },
+    {
+      "input" : "https://example.com?_hsenc=p2ANqtz-abc&_hsmi=12345&utm_campaign=email",
+      "output" : "https://example.com"
+    },
+    {
+      "input" : "https://example.com?mkt_tok=eyJ0eXAi&article_id=10",
+      "output" : "https://example.com?article_id=10"
+    },
+    {
+      "input" : "https://example.com?article_id=10",
+      "output" : "https://example.com?article_id=10"
+    },
+    {
+      "input" : "https://example.com?mc_cid=abc&mc_eid=def&ck_subscriber_id=1&_bhlid=2&id=3",
+      "output" : "https://example.com?id=3"
+    },
+    {
+      "input" : "https://example.com?id=3",
+      "output" : "https://example.com?id=3"
+    },
+    {
+      "input" : "https://example.com?jobid=123&subid=456&sfmc_sub=789&content_id=article",
+      "output" : "https://example.com?jobid=123&subid=456&content_id=article"
+    },
+    {
+      "input" : "https://example.com?jobid=123&subid=456&content_id=article",
+      "output" : "https://example.com?jobid=123&subid=456&content_id=article"
+    },
+    {
+      "input" : "https://shop.example.com/p/1?awc=123_456&cjevent=abc&irclickid=xyz&ranMID=1&colour=red",
+      "output" : "https://shop.example.com/p/1?colour=red"
+    },
+    {
+      "input" : "https://shop.example.com/p/1?colour=red",
+      "output" : "https://shop.example.com/p/1?colour=red"
+    },
+    {
+      "input" : "https://shop.example.com/products/tee?variant=1&_pos=2&_sid=abc&_ss=r&pr_rec_pid=9",
+      "output" : "https://shop.example.com/products/tee?variant=1"
+    },
+    {
+      "input" : "https://shop.example.com/products/tee?variant=1",
+      "output" : "https://shop.example.com/products/tee?variant=1"
+    },
+    {
+      "input" : "https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwjX&url=https%3A%2F%2Fexample.com%2Farticle",
+      "output" : "https://example.com/article"
+    },
+    {
+      "input" : "https://example.com/article",
+      "output" : "https://example.com/article"
+    },
+    {
+      "input" : "https://www.google.com/url?q=https://example.com/a?id%3D1&sa=D",
+      "output" : "https://example.com/a?id=1"
+    },
+    {
+      "input" : "https://example.com/a?id=1",
+      "output" : "https://example.com/a?id=1"
+    },
+    {
+      "input" : "https://www.google.co.uk/amp/s/www.example.com/amp/article",
+      "output" : "https://www.example.com/amp/article"
+    },
+    {
+      "input" : "https://www.example.com/amp/article",
+      "output" : "https://www.example.com/amp/article"
+    },
+    {
+      "input" : "https://example.com/page?id=1",
+      "output" : "https://example.com/page?id=1"
+    },
+    {
+      "input" : "https://duckduckgo.com/l/?uddg=https%3A%2F%2Fexample.com%2Fx&rut=abc",
+      "output" : "https://example.com/x"
+    },
+    {
+      "input" : "https://example.com/x",
+      "output" : "https://example.com/x"
+    },
+    {
+      "input" : "https://nam12.safelinks.protection.outlook.com/?url=https%3A%2F%2Fexample.com%2Fdoc%3Fid%3D5&data=05%7C01%7C&sdata=abc&reserved=0",
+      "output" : "https://example.com/doc?id=5"
+    },
+    {
+      "input" : "https://example.com/doc?id=5",
+      "output" : "https://example.com/doc?id=5"
+    },
+    {
+      "input" : "https://urldefense.proofpoint.com/v2/url?u=https-3A__www.example.com_path-3Fq-3D1&d=DwMF&c=abc&e=",
+      "output" : "https://www.example.com/path?q=1"
+    },
+    {
+      "input" : "https://www.example.com/path?q=1",
+      "output" : "https://www.example.com/path?q=1"
+    },
+    {
+      "input" : "https://urldefense.com/v3/__https://example.com/a/b__;!!AbC-dEf$",
+      "output" : "https://example.com/a/b"
+    },
+    {
+      "input" : "https://example.com/a/b",
+      "output" : "https://example.com/a/b"
+    },
+    {
+      "input" : "https://slack-redir.net/link?url=https%3A%2F%2Fexample.com%2Fs",
+      "output" : "https://example.com/s"
+    },
+    {
+      "input" : "https://example.com/s",
+      "output" : "https://example.com/s"
+    },
+    {
+      "input" : "https://l.facebook.com/l.php?u=https%3A%2F%2Fexample.com%2Ff%3Ffbclid%3DIwAR&h=AT0",
+      "output" : "https://example.com/f"
+    },
+    {
+      "input" : "https://example.com/f",
+      "output" : "https://example.com/f"
+    },
+    {
+      "input" : "https://l.instagram.com/?u=https%3A%2F%2Fexample.com%2Fi&e=AT1",
+      "output" : "https://example.com/i"
+    },
+    {
+      "input" : "https://example.com/i",
+      "output" : "https://example.com/i"
+    },
+    {
+      "input" : "https://www.youtube.com/redirect?event=video_description&q=https%3A%2F%2Fexample.com%2Fy",
+      "output" : "https://example.com/y"
+    },
+    {
+      "input" : "https://example.com/y",
+      "output" : "https://example.com/y"
+    },
+    {
+      "input" : "https://out.reddit.com/t3_abc?url=https%3A%2F%2Fexample.com%2Fr&token=1",
+      "output" : "https://example.com/r"
+    },
+    {
+      "input" : "https://example.com/r",
+      "output" : "https://example.com/r"
+    },
+    {
+      "input" : "https://www.linkedin.com/redir/redirect?url=https%3A%2F%2Fexample.com%2Fl&urlhash=x",
+      "output" : "https://example.com/l"
+    },
+    {
+      "input" : "https://example.com/l",
+      "output" : "https://example.com/l"
+    },
+    {
+      "input" : "https://steamcommunity.com/linkfilter/?url=https://example.com/s",
+      "output" : "https://example.com/s"
+    },
+    {
+      "input" : "https://vk.com/away.php?to=https%3A%2F%2Fexample.com%2Fv&cc_key=",
+      "output" : "https://example.com/v"
+    },
+    {
+      "input" : "https://example.com/v",
+      "output" : "https://example.com/v"
+    },
+    {
+      "input" : "https://t.umblr.com/redirect?z=https%3A%2F%2Fexample.com%2Ft&t=abc",
+      "output" : "https://example.com/t"
+    },
+    {
+      "input" : "https://example.com/t",
+      "output" : "https://example.com/t"
+    },
+    {
+      "input" : "https://www-example-com.cdn.ampproject.org/c/s/www.example.com/page",
+      "output" : "https://www.example.com/page"
+    },
+    {
+      "input" : "https://www.example.com/page",
+      "output" : "https://www.example.com/page"
+    },
+    {
+      "input" : "https://example.com/final?id=9",
+      "output" : "https://example.com/final?id=9"
+    },
+    {
+      "input" : "https://eur01.safelinks.protection.outlook.com/?url=",
+      "output" : "https://eur01.safelinks.protection.outlook.com/?url="
+    },
+    {
+      "input" : "https://www.google.com/url?q=",
+      "output" : "https://www.google.com/url?q="
+    },
+    {
+      "input" : "https://www.google.com/url?q=javascript:alert(1)",
+      "output" : "https://www.google.com/url?q=javascript:alert(1)"
+    },
+    {
+      "input" : "https://www.google.com/url?q=https://example.com/a?utm_source=x",
+      "output" : "https://example.com/a"
+    },
+    {
+      "input" : "https://example.com/a?utm_source=x",
+      "output" : "https://example.com/a"
+    },
+    {
+      "input" : "https://example.com/a",
+      "output" : "https://example.com/a"
+    },
+    {
+      "input" : "https://www.amazon.com/Sony-WH-1000XM5-Headphones/dp/B09XS7JWHH/ref=sr_1_3?keywords=x&qid=1&sr=8-3&tag=a-20",
+      "output" : "https://www.amazon.com/dp/B09XS7JWHH?keywords=x"
+    },
+    {
+      "input" : "https://www.amazon.com/dp/B09XS7JWHH?keywords=x",
+      "output" : "https://www.amazon.com/dp/B09XS7JWHH?keywords=x"
+    },
+    {
+      "input" : "https://www.amazon.co.uk/gp/product/B08N5WRWNW/ref=ppx_yo_dt_b?ie=UTF8&psc=1",
+      "output" : "https://www.amazon.co.uk/dp/B08N5WRWNW?psc=1"
+    },
+    {
+      "input" : "https://www.amazon.co.uk/dp/B08N5WRWNW?psc=1",
+      "output" : "https://www.amazon.co.uk/dp/B08N5WRWNW?psc=1"
+    },
+    {
+      "input" : "https://www.amazon.de/-/en/Some-Thing/dp/B08N5WRWNW/",
+      "output" : "https://www.amazon.de/-/en/dp/B08N5WRWNW"
+    },
+    {
+      "input" : "https://www.amazon.de/-/en/dp/B08N5WRWNW",
+      "output" : "https://www.amazon.de/-/en/dp/B08N5WRWNW"
+    },
+    {
+      "input" : "https://amazon.ca/gp/product/B789?ref=ppx_yo_dt&tag=ca-20",
+      "output" : "https://amazon.ca/gp/product/B789"
+    },
+    {
+      "input" : "https://amazon.ca/gp/product/B789",
+      "output" : "https://amazon.ca/gp/product/B789"
+    },
+    {
+      "input" : "https://www.ebay.co.uk/itm/Vintage-Camera-Lens/123456789012?hash=item1:g:abc&_trkparms=x",
+      "output" : "https://www.ebay.co.uk/itm/123456789012"
+    },
+    {
+      "input" : "https://www.ebay.co.uk/itm/123456789012",
+      "output" : "https://www.ebay.co.uk/itm/123456789012"
+    },
+    {
+      "input" : "https://www.amazon.com/Thing/dp/B08N5WRWNW/ref=sr_1_1?tag=x",
+      "output" : "https://www.amazon.com/dp/B08N5WRWNW"
+    },
+    {
+      "input" : "https://www.amazon.com/Thing/dp/B08N5WRWNW/ref=sr_1_1",
+      "output" : "https://www.amazon.com/dp/B08N5WRWNW"
+    },
+    {
+      "input" : "https://example.com/a#xtor=RSS-1",
+      "output" : "https://example.com/a"
+    },
+    {
+      "input" : "https://example.com/a#utm_source=x",
+      "output" : "https://example.com/a"
+    },
+    {
+      "input" : "https://example.com/a#.Vh3xYz.twitter",
+      "output" : "https://example.com/a"
+    },
+    {
+      "input" : "https://example.com/a#_=_",
+      "output" : "https://example.com/a"
+    },
+    {
+      "input" : "https://example.com/a#sthash.AbC1.dpbs",
+      "output" : "https://example.com/a"
+    },
+    {
+      "input" : "https://example.com/a#section-2",
+      "output" : "https://example.com/a#section-2"
+    },
+    {
+      "input" : "https://example.com/a#:~:text=hello",
+      "output" : "https://example.com/a#:~:text=hello"
+    },
+    {
+      "input" : "https://example.com?utm_source=google&fbclid=123&mc_cid=456&awc=789&id=page",
+      "output" : "https://example.com?id=page"
+    },
+    {
+      "input" : "https://example.com?fbclid=123&mc_cid=456&awc=789&id=page",
+      "output" : "https://example.com?id=page"
+    },
+    {
+      "input" : "https://example.com?utm_source=google&mc_cid=456&awc=789&id=page",
+      "output" : "https://example.com?id=page"
+    },
+    {
+      "input" : "https://example.com?utm_source=google&fbclid=123&awc=789&id=page",
+      "output" : "https://example.com?id=page"
+    },
+    {
+      "input" : "https://example.com?utm_source=google&fbclid=123&mc_cid=456&id=page",
+      "output" : "https://example.com?id=page"
+    },
+    {
+      "input" : "https://www.google.com/url?q=https://example.com/a&utm_source=x",
+      "output" : "https://example.com/a"
+    },
+    {
+      "input" : "https://www.google.com/url?q=https://example.com/a",
+      "output" : "https://example.com/a"
+    },
+    {
+      "input" : "https://www.amazon.com/T/dp/B08N5WRWNW/ref=sr_1_1?utm_source=x",
+      "output" : "https://www.amazon.com/dp/B08N5WRWNW"
+    },
+    {
+      "input" : "https://www.amazon.com/T/dp/B08N5WRWNW/ref=sr_1_1",
+      "output" : "https://www.amazon.com/dp/B08N5WRWNW"
+    },
+    {
+      "input" : "https://example.com?utm_source=test&debug=true&id=123",
+      "output" : "https://example.com?debug=true&id=123"
+    },
+    {
+      "input" : "https://example.com?utm_source=test&debug=true&temp=1",
+      "output" : "https://example.com?debug=true&temp=1"
+    },
+    {
+      "input" : "https://example.com?utm_source=test",
+      "output" : "https://example.com"
+    },
+    {
+      "input" : "https://example.com?utm_source=test&Debug=true",
+      "output" : "https://example.com?Debug=true"
+    },
+    {
+      "input" : "https://www.amazon.com/dp/B08N5WRWNW?tag=keep-20&utm_source=keep&utm_medium=drop",
+      "output" : "https://www.amazon.com/dp/B08N5WRWNW"
+    },
+    {
+      "input" : "https://www.amazon.com/dp/B08N5WRWNW?tag=keep-20&utm_source=keep",
+      "output" : "https://www.amazon.com/dp/B08N5WRWNW"
+    },
+    {
+      "input" : "https://www.amazon.com/Thing/dp/B08N5WRWNW/ref=sr_1_1?tag=a-20&utm_source=x&fbclid=y&psc=1#xtor=1",
+      "output" : "https://www.amazon.com/dp/B08N5WRWNW?psc=1"
+    },
+    {
+      "input" : "https://www.amazon.com/dp/B08N5WRWNW?psc=1",
+      "output" : "https://www.amazon.com/dp/B08N5WRWNW?psc=1"
+    },
+    {
+      "input" : "removed /ref=sr_1_1",
+      "output" : "removed /ref=sr_1_1"
+    },
+    {
+      "input" : "canonicalised to /dp/B08N5WRWNW",
+      "output" : "canonicalised to /dp/B08N5WRWNW"
+    },
+    {
+      "input" : "https://example.com?utm_source=test&id=1",
+      "output" : "https://example.com?id=1"
+    },
+    {
+      "input" : "https://www.amazon.com/T/dp/B08N5WRWNW/ref=sr_1_1?tag=x&psc=1",
+      "output" : "https://www.amazon.com/dp/B08N5WRWNW?psc=1"
+    },
+    {
+      "input" : "https://example.com?utm_source=x&debug=1",
+      "output" : "https://example.com?debug=1"
+    },
+    {
+      "input" : "https://example.com?utm_source=x",
+      "output" : "https://example.com"
+    },
+    {
+      "input" : "github.com",
+      "output" : "github.com"
+    },
+    {
+      "input" : "wordpress.org",
+      "output" : "wordpress.org"
+    },
+    {
+      "input" : "https://www.amazon.com/Sony-WH-1000XM5/dp/B09XS7JWHH/ref=sr_1_3?keywords=x&qid=1&sr=8-3&tag=a-20&utm_source=g",
+      "output" : "https://www.amazon.com/dp/B09XS7JWHH?keywords=x"
+    },
+    {
+      "input" : "https://www.google.com/url?sa=t&url=https%3A%2F%2Fexample.com%2Farticle&ved=2ah&usg=AOv",
+      "output" : "https://example.com/article"
+    },
+    {
+      "input" : "https://example.com/very/long/path?utm_source=a&utm_medium=b&utm_campaign=c&gclid=d&fbclid=e&id=1&page=2",
+      "output" : "https://example.com/very/long/path?id=1&page=2"
+    },
+    {
+      "input" : "https://www.youtube.com/watch?v=dQw4w9WgXcQ&feature=share&si=x&t=42s",
+      "output" : "https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=42s"
+    },
+    {
+      "input" : "https://www.amazon.com/dp/B08N5WRWNW?tag=aff-21&psc=1",
+      "output" : "https://www.amazon.com/dp/B08N5WRWNW?psc=1"
+    },
+    {
+      "input" : "https://amazon.co.uk/dp/B08N5WRWNW?tag=aff-21&psc=1",
+      "output" : "https://amazon.co.uk/dp/B08N5WRWNW?psc=1"
+    },
+    {
+      "input" : "https://smile.amazon.de/dp/B08N5WRWNW?tag=aff-21&psc=1",
+      "output" : "https://smile.amazon.de/dp/B08N5WRWNW?psc=1"
+    },
+    {
+      "input" : "https://www.amazon.com.au/dp/B08N5WRWNW?tag=aff-21&psc=1",
+      "output" : "https://www.amazon.com.au/dp/B08N5WRWNW?psc=1"
+    },
+    {
+      "input" : "https://amazon.co.jp/dp/B08N5WRWNW?tag=aff-21&psc=1",
+      "output" : "https://amazon.co.jp/dp/B08N5WRWNW?psc=1"
+    },
+    {
+      "input" : "https://amazon.example.com/x?tag=keep",
+      "output" : "https://amazon.example.com/x?tag=keep"
+    },
+    {
+      "input" : "https://amazonaws.com/x?tag=keep",
+      "output" : "https://amazonaws.com/x?tag=keep"
+    },
+    {
+      "input" : "https://notamazon.com/x?tag=keep",
+      "output" : "https://notamazon.com/x?tag=keep"
+    },
+    {
+      "input" : "https://amazon-adsystem.com/x?tag=keep",
+      "output" : "https://amazon-adsystem.com/x?tag=keep"
+    },
+    {
+      "input" : "https://www.bing.com/ck/a?!&&p=abc&u=a1aHR0cHM6Ly9leGFtcGxlLmNvbS9wYWdlP2lkPTE&ntb=1",
+      "output" : "https://example.com/page?id=1"
+    },
+    {
+      "input" : "https://www.google.com/url?q=https%3A%2F%2Feur01%2Esafelinks%2Eprotection%2Eoutlook%2Ecom%2F%3Furl%3Dhttps%253A%252F%252Fexample%252Ecom%252Ffinal%253Fid%253D9",
+      "output" : "https://example.com/final?id=9"
+    },
+    {
+      "input" : "",
+      "output" : ""
+    },
+    {
+      "input" : "   ",
+      "output" : "   "
+    },
+    {
+      "input" : "https://www.theverge.com/2026/1/5/24000000/apple-vision?utm_source=twitter&utm_medium=social&utm_campaign=verge",
+      "output" : "https://www.theverge.com/2026/1/5/24000000/apple-vision"
+    },
+    {
+      "input" : "https://blog.example.com/post/how-to?utm_source=newsletter&utm_medium=email&utm_campaign=weekly&utm_content=cta&utm_term=swift",
+      "output" : "https://blog.example.com/post/how-to"
+    },
+    {
+      "input" : "https://www.example.org/?utm_id=123&utm_source_platform=x",
+      "output" : "https://www.example.org/"
+    },
+    {
+      "input" : "https://news.ycombinator.com/item?id=40000000",
+      "output" : "https://news.ycombinator.com/item?id=40000000"
+    },
+    {
+      "input" : "https://www.notion.so/Page-Title-1a2b3c4d5e6f?pvs=4",
+      "output" : "https://www.notion.so/Page-Title-1a2b3c4d5e6f"
+    },
+    {
+      "input" : "https://www.figma.com/file/abc123/Design?node-id=0%3A1&t=AbCdEf-0",
+      "output" : "https://www.figma.com/file/abc123/Design?node-id=0%3A1&t=AbCdEf-0"
+    },
+    {
+      "input" : "https://docs.google.com/document/d/1AbC/edit?usp=sharing&utm_source=x",
+      "output" : "https://docs.google.com/document/d/1AbC/edit?usp=sharing"
+    },
+    {
+      "input" : "https://drive.google.com/file/d/1AbC/view?usp=drive_link&source=x",
+      "output" : "https://drive.google.com/file/d/1AbC/view?usp=drive_link&source=x"
+    },
+    {
+      "input" : "https://mail.google.com/mail/u/0/#inbox/FMfcgz",
+      "output" : "https://mail.google.com/mail/u/0/#inbox/FMfcgz"
+    },
+    {
+      "input" : "https://shop.example.com/sale?gclid=Cj0KCQjw&gad_source=1&gbraid=0AAA&wbraid=CkQ",
+      "output" : "https://shop.example.com/sale"
+    },
+    {
+      "input" : "https://www.example.com/landing?msclkid=abc123&utm_source=bing",
+      "output" : "https://www.example.com/landing"
+    },
+    {
+      "input" : "https://example.com/p?fbclid=IwAR2abcDEF&mibextid=Zxz2cZ",
+      "output" : "https://example.com/p?mibextid=Zxz2cZ"
+    },
+    {
+      "input" : "https://example.com/article?mc_cid=abc123&mc_eid=def456",
+      "output" : "https://example.com/article"
+    },
+    {
+      "input" : "https://example.com/a?_hsenc=p2&_hsmi=1&__hstc=1.2&__hssc=3&__hsfp=4",
+      "output" : "https://example.com/a"
+    },
+    {
+      "input" : "https://example.com/a?yclid=1&ysclid=2&_openstat=3",
+      "output" : "https://example.com/a"
+    },
+    {
+      "input" : "https://example.com/a?srsltid=AfmBOo&_gl=1*abc*_ga*MTE",
+      "output" : "https://example.com/a"
+    },
+    {
+      "input" : "https://example.com/a?twclid=2-abc&ttclid=E.C.P&li_fat_id=uuid&epik=dj0y",
+      "output" : "https://example.com/a"
+    },
+    {
+      "input" : "https://example.com/a?igshid=MzRlODBiNWFlZA==&igsh=abc",
+      "output" : "https://example.com/a"
+    },
+    {
+      "input" : "https://example.com/?ref_src=twsrc%5Etfw",
+      "output" : "https://example.com/"
+    },
+    {
+      "input" : "https://example.com/?oly_enc_id=1&oly_anon_id=2&vero_id=3&mkt_tok=4",
+      "output" : "https://example.com/"
+    },
+    {
+      "input" : "https://example.com/?irclickid=abc&irgwc=1&cjevent=x&awc=1_2",
+      "output" : "https://example.com/"
+    },
+    {
+      "input" : "https://www.youtube.com/watch?v=dQw4w9WgXcQ&si=AbCdEfGhIjKlMnOp",
+      "output" : "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    },
+    {
+      "input" : "https://youtu.be/dQw4w9WgXcQ?si=AbCdEf&t=30",
+      "output" : "https://youtu.be/dQw4w9WgXcQ?t=30"
+    },
+    {
+      "input" : "https://www.youtube.com/shorts/abc123def45?feature=share",
+      "output" : "https://www.youtube.com/shorts/abc123def45"
+    },
+    {
+      "input" : "https://m.youtube.com/watch?v=abc&feature=youtu.be&pp=ygUE",
+      "output" : "https://m.youtube.com/watch?v=abc"
+    },
+    {
+      "input" : "https://www.youtube.com/watch?v=abc&ab_channel=Rick&t=1m2s",
+      "output" : "https://www.youtube.com/watch?v=abc&t=1m2s"
+    },
+    {
+      "input" : "https://music.youtube.com/watch?v=abc&si=xyz&list=RDAMVM",
+      "output" : "https://music.youtube.com/watch?v=abc&list=RDAMVM"
+    },
+    {
+      "input" : "https://www.youtube.com/playlist?list=PL123&si=abc",
+      "output" : "https://www.youtube.com/playlist?list=PL123"
+    },
+    {
+      "input" : "https://www.youtube-nocookie.com/embed/abc?si=x&start=5",
+      "output" : "https://www.youtube-nocookie.com/embed/abc?start=5"
+    },
+    {
+      "input" : "https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT?si=a1b2c3d4e5f6",
+      "output" : "https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT"
+    },
+    {
+      "input" : "https://open.spotify.com/album/1A2B3C?si=x&nd=1&dlsi=y",
+      "output" : "https://open.spotify.com/album/1A2B3C"
+    },
+    {
+      "input" : "https://open.spotify.com/episode/5abc?si=abc&context=spotify%3Aplaylist%3A37i9",
+      "output" : "https://open.spotify.com/episode/5abc?context=spotify%3Aplaylist%3A37i9"
+    },
+    {
+      "input" : "https://spotify.link/AbCdEf?si=1",
+      "output" : "https://spotify.link/AbCdEf"
+    },
+    {
+      "input" : "https://music.apple.com/gb/album/x/123?i=456&uo=4&app=music&at=1000lHKX&ct=share",
+      "output" : "https://music.apple.com/gb/album/x/123?i=456"
+    },
+    {
+      "input" : "https://apps.apple.com/us/app/x/id123?mt=8&pt=1234&ls=1",
+      "output" : "https://apps.apple.com/us/app/x/id123"
+    },
+    {
+      "input" : "https://podcasts.apple.com/us/podcast/x/id1?i=100&itscg=30200&itsct=pod",
+      "output" : "https://podcasts.apple.com/us/podcast/x/id1?i=100"
+    },
+    {
+      "input" : "https://twitter.com/jack/status/20?s=20",
+      "output" : "https://twitter.com/jack/status/20"
+    },
+    {
+      "input" : "https://x.com/elonmusk/status/1700000000000000000?s=46&t=AbCdEfGhIjKl",
+      "output" : "https://x.com/elonmusk/status/1700000000000000000"
+    },
+    {
+      "input" : "https://x.com/user/status/1?ref_src=twsrc%5Egoogle&src=share&cxt=HHwW",
+      "output" : "https://x.com/user/status/1"
+    },
+    {
+      "input" : "https://mobile.twitter.com/user?s=21&lang=en",
+      "output" : "https://mobile.twitter.com/user?lang=en"
+    },
+    {
+      "input" : "https://t.co/AbCdEf123?amp=1&s=1",
+      "output" : "https://t.co/AbCdEf123?amp=1"
+    },
+    {
+      "input" : "https://www.facebook.com/story.php?story_fbid=1&id=2&mibextid=WC7FNe&rdid=abc",
+      "output" : "https://www.facebook.com/story.php?story_fbid=1&id=2"
+    },
+    {
+      "input" : "https://m.facebook.com/groups/123/permalink/456/?ref=share&__tn__=%2CO*F",
+      "output" : "https://m.facebook.com/groups/123/permalink/456/"
+    },
+    {
+      "input" : "https://www.facebook.com/events/123/?acontext=%7B%22ref%22%3A52%7D&aref=0&ref=newsfeed",
+      "output" : "https://www.facebook.com/events/123/?acontext=%7B%22ref%22%3A52%7D&aref=0"
+    },
+    {
+      "input" : "https://www.facebook.com/photo/?fbid=1&set=a.2&__cft__[0]=AZW&__tn__=EH-R",
+      "output" : "https://www.facebook.com/photo/?fbid=1&set=a.2"
+    },
+    {
+      "input" : "https://l.facebook.com/l.php?u=https%3A%2F%2Fwww.nytimes.com%2F2026%2F01%2F01%2Fx.html%3Fsmid%3Dfb-share%26fbclid%3DIwAR&h=AT1",
+      "output" : "https://www.nytimes.com/2026/01/01/x.html"
+    },
+    {
+      "input" : "https://lm.facebook.com/l.php?u=https%3A%2F%2Fexample.com%2Fm&h=AT2&s=1",
+      "output" : "https://example.com/m"
+    },
+    {
+      "input" : "https://l.messenger.com/l.php?u=https%3A%2F%2Fexample.com%2Fmsg&h=AT3",
+      "output" : "https://example.com/msg"
+    },
+    {
+      "input" : "https://www.facebook.com/l.php?u=https%3A%2F%2Fexample.com%2F",
+      "output" : "https://www.facebook.com/l.php?u=https%3A%2F%2Fexample.com%2F"
+    },
+    {
+      "input" : "https://example.com/fb-login#_=_",
+      "output" : "https://example.com/fb-login"
+    },
+    {
+      "input" : "https://www.instagram.com/p/C1AbCdEf/?igsh=MWQ1ZGUxMzBkMA==",
+      "output" : "https://www.instagram.com/p/C1AbCdEf/"
+    },
+    {
+      "input" : "https://www.instagram.com/reel/C1AbCdEf/?igshid=NTc4MTIwNjQ2YQ%3D%3D&utm_source=ig_web_copy_link",
+      "output" : "https://www.instagram.com/reel/C1AbCdEf/"
+    },
+    {
+      "input" : "https://l.instagram.com/?u=https%3A%2F%2Fexample.com%2Fbio%3Futm_source%3Dig%26id%3D1&e=AT0",
+      "output" : "https://example.com/bio?id=1"
+    },
+    {
+      "input" : "https://www.threads.net/@user/post/C1Ab?xmt=AQGz",
+      "output" : "https://www.threads.net/@user/post/C1Ab"
+    },
+    {
+      "input" : "https://www.threads.com/@user/post/C1Ab?xmt=AQGz&slof=1",
+      "output" : "https://www.threads.com/@user/post/C1Ab?slof=1"
+    },
+    {
+      "input" : "https://l.threads.net/?u=https%3A%2F%2Fexample.com%2Fth&e=AT",
+      "output" : "https://example.com/th"
+    },
+    {
+      "input" : "https://www.linkedin.com/posts/satya_ai-activity-7160000000000000000-AbCd?utm_source=share&utm_medium=member_desktop",
+      "output" : "https://www.linkedin.com/posts/satya_ai-activity-7160000000000000000-AbCd"
+    },
+    {
+      "input" : "https://www.linkedin.com/in/someone/?originalSubdomain=uk&trk=public_profile",
+      "output" : "https://www.linkedin.com/in/someone/?originalSubdomain=uk"
+    },
+    {
+      "input" : "https://www.linkedin.com/jobs/view/123/?refId=abc&trackingId=def%3D%3D&trk=flagship3",
+      "output" : "https://www.linkedin.com/jobs/view/123/"
+    },
+    {
+      "input" : "https://www.linkedin.com/feed/update/urn:li:activity:7160/?lipi=urn%3Ali&licu=urn",
+      "output" : "https://www.linkedin.com/feed/update/urn:li:activity:7160/"
+    },
+    {
+      "input" : "https://www.linkedin.com/redir/redirect?url=https%3A%2F%2Fexample.com%2Fli%3Futm_source%3Dlinkedin&urlhash=AbCd&trk=public_post",
+      "output" : "https://example.com/li"
+    },
+    {
+      "input" : "https://lnkd.in/dAbCdEf?trk=x",
+      "output" : "https://lnkd.in/dAbCdEf"
+    },
+    {
+      "input" : "https://www.tiktok.com/@user/video/7300000000000000000?is_from_webapp=1&sender_device=pc&web_id=7300",
+      "output" : "https://www.tiktok.com/@user/video/7300000000000000000"
+    },
+    {
+      "input" : "https://www.tiktok.com/@user/video/7300000000000000000?_r=1&_t=8hAbC&u_code=d&share_app_id=1233&checksum=abc",
+      "output" : "https://www.tiktok.com/@user/video/7300000000000000000"
+    },
+    {
+      "input" : "https://www.tiktok.com/t/ZT8AbCdEf/?k=1",
+      "output" : "https://www.tiktok.com/t/ZT8AbCdEf/"
+    },
+    {
+      "input" : "https://vm.tiktok.com/ZMAbCdEf/",
+      "output" : "https://vm.tiktok.com/ZMAbCdEf/"
+    },
+    {
+      "input" : "https://www.reddit.com/r/swift/comments/abc123/title/?share_id=AbCd&utm_content=1&utm_medium=ios_app&utm_name=ioscss&utm_source=share&utm_term=1",
+      "output" : "https://www.reddit.com/r/swift/comments/abc123/title/"
+    },
+    {
+      "input" : "https://www.reddit.com/r/swift/comments/abc123/title/?rdt=12345&ref=share&ref_source=link",
+      "output" : "https://www.reddit.com/r/swift/comments/abc123/title/"
+    },
+    {
+      "input" : "https://out.reddit.com/t3_abc?url=https%3A%2F%2Fexample.com%2Freddit&token=AQ&app_name=reddit.com",
+      "output" : "https://example.com/reddit"
+    },
+    {
+      "input" : "https://click.redditmail.com/CL0/https:%2F%2Fwww.reddit.com%2Fr%2Fx/1/abc?url=https%3A%2F%2Fwww.reddit.com%2Fr%2Fswift%3F%24deep_link%3Dtrue%26correlation_id%3Dabc",
+      "output" : "https://www.reddit.com/r/swift"
+    },
+    {
+      "input" : "https://www.amazon.com/Apple-MacBook-13-inch-Storage/dp/B0CX23V2ZK/ref=sr_1_1?crid=2X&keywords=macbook&qid=1700&sprefix=mac%2Caps%2C200&sr=8-1",
+      "output" : "https://www.amazon.com/dp/B0CX23V2ZK?keywords=macbook"
+    },
+    {
+      "input" : "https://www.amazon.co.uk/dp/B09XS7JWHH?ref_=cm_sw_r_cp_ud_dp_ABC&th=1&psc=1",
+      "output" : "https://www.amazon.co.uk/dp/B09XS7JWHH?psc=1"
+    },
+    {
+      "input" : "https://www.amazon.com/gp/product/B08N5WRWNW?pf_rd_r=X&pf_rd_p=Y&pd_rd_w=Z&linkCode=sl1&tag=aff-20&linkId=abc",
+      "output" : "https://www.amazon.com/dp/B08N5WRWNW"
+    },
+    {
+      "input" : "https://www.amazon.de/gp/aw/d/B08N5WRWNW/ref=ox_sc_act_image_1?smid=A3JWKAKR8XB7XF",
+      "output" : "https://www.amazon.de/dp/B08N5WRWNW"
+    },
+    {
+      "input" : "https://www.amazon.com/exec/obidos/ASIN/0596009208/ref=nosim/aff-20",
+      "output" : "https://www.amazon.com/dp/0596009208"
+    },
+    {
+      "input" : "https://www.amazon.com/s?k=usb+c+hub&crid=1&sprefix=usb%2Caps&ref=nb_sb_noss",
+      "output" : "https://www.amazon.com/s?k=usb+c+hub"
+    },
+    {
+      "input" : "https://www.amazon.com/ref=nav_logo",
+      "output" : "https://www.amazon.com/"
+    },
+    {
+      "input" : "https://www.amazon.com/stores/Apple/page/77D9E1F7?ref_=ast_bln",
+      "output" : "https://www.amazon.com/stores/Apple/page/77D9E1F7"
+    },
+    {
+      "input" : "https://www.amazon.fr/-/en/Some-Book/dp/2070612759/ref=sr_1_1?dib=eyJ2&dib_tag=se",
+      "output" : "https://www.amazon.fr/-/en/dp/2070612759"
+    },
+    {
+      "input" : "https://www.amazon.in/Samsung-Galaxy/dp/B0CS6F8Y6L/?_encoding=UTF8&pd_rd_w=X&content-id=amzn1&pf_rd_p=1",
+      "output" : "https://www.amazon.in/dp/B0CS6F8Y6L"
+    },
+    {
+      "input" : "https://a.co/d/AbCdEfG",
+      "output" : "https://a.co/d/AbCdEfG"
+    },
+    {
+      "input" : "https://amzn.to/3AbCdEf?tag=x",
+      "output" : "https://amzn.to/3AbCdEf"
+    },
+    {
+      "input" : "https://www.amazon.com/hz/wishlist/ls/ABC123?ref_=wl_share",
+      "output" : "https://www.amazon.com/hz/wishlist/ls/ABC123"
+    },
+    {
+      "input" : "https://www.ebay.com/itm/Vintage-Leica-Lens/256000000000?hash=item3b9:g:abc&_trkparms=amclksrc%3DITM&_trksid=p2047675",
+      "output" : "https://www.ebay.com/itm/256000000000"
+    },
+    {
+      "input" : "https://www.ebay.com/itm/256000000000?mkcid=16&mkevt=1&mkrid=711-127632-2357-0&ssspo=abc&sssrc=2047675&ssuid=x&var=1",
+      "output" : "https://www.ebay.com/itm/256000000000?ssspo=abc&sssrc=2047675&ssuid=x&var=1"
+    },
+    {
+      "input" : "https://www.ebay.co.uk/sch/i.html?_nkw=leica&_sacat=0&_from=R40&_trksid=m570",
+      "output" : "https://www.ebay.co.uk/sch/i.html?_nkw=leica&_sacat=0"
+    },
+    {
+      "input" : "https://rover.ebay.com/rover/1/711-53200-19255-0/1?mpre=https%3A%2F%2Fwww.ebay.com%2Fitm%2F123456789012&campid=533",
+      "output" : "https://www.ebay.com/itm/123456789012"
+    },
+    {
+      "input" : "https://www.etsy.com/listing/123456789/handmade-mug?click_key=abc&click_sum=def&ref=hp_rv-1&frs=1&sts=1",
+      "output" : "https://www.etsy.com/listing/123456789/handmade-mug"
+    },
+    {
+      "input" : "https://www.aliexpress.com/item/1005001234567890.html?spm=a2g0o.productlist.0.0.abc&algo_pvid=x&aff_fcid=y&gatewayAdapt=glo2usa",
+      "output" : "https://www.aliexpress.com/item/1005001234567890.html"
+    },
+    {
+      "input" : "https://item.taobao.com/item.htm?id=123&spm=a1z10&ut_sk=1.abc&sp_tk=xyz",
+      "output" : "https://item.taobao.com/item.htm?id=123"
+    },
+    {
+      "input" : "https://www.walmart.com/ip/Thing/123456?athbdg=L1600&u1=abc",
+      "output" : "https://www.walmart.com/ip/Thing/123456"
+    },
+    {
+      "input" : "https://www.bestbuy.com/site/x/123.p?skuId=123&intl=nosplash&ref=212&loc=1",
+      "output" : "https://www.bestbuy.com/site/x/123.p?skuId=123"
+    },
+    {
+      "input" : "https://www.target.com/p/x/-/A-123?afid=google&cpng=PTID1&lnm=81938",
+      "output" : "https://www.target.com/p/x/-/A-123"
+    },
+    {
+      "input" : "https://store.steampowered.com/app/570/Dota_2/?snr=1_4_4__13",
+      "output" : "https://store.steampowered.com/app/570/Dota_2/"
+    },
+    {
+      "input" : "https://www.booking.com/hotel/gb/x.html?aid=304142&label=gen173&sid=abc&checkin=2026-12-01&checkout=2026-12-03",
+      "output" : "https://www.booking.com/hotel/gb/x.html?checkin=2026-12-01&checkout=2026-12-03"
+    },
+    {
+      "input" : "https://www.airbnb.co.uk/rooms/12345?source_impression_id=p3_abc&federated_search_id=x&check_in=2026-12-01&adults=2",
+      "output" : "https://www.airbnb.co.uk/rooms/12345?check_in=2026-12-01&adults=2"
+    },
+    {
+      "input" : "https://www.tripadvisor.co.uk/Hotel_Review-g1-d2-Reviews-X.html?m=19905",
+      "output" : "https://www.tripadvisor.co.uk/Hotel_Review-g1-d2-Reviews-X.html"
+    },
+    {
+      "input" : "https://www.nytimes.com/2026/01/01/technology/x.html?smid=nytcore-ios-share&referringSource=articleShare&sgrp=c-cb",
+      "output" : "https://www.nytimes.com/2026/01/01/technology/x.html?sgrp=c-cb"
+    },
+    {
+      "input" : "https://www.nytimes.com/2026/01/01/x.html?unlocked_article_code=1.abc&smid=url-share",
+      "output" : "https://www.nytimes.com/2026/01/01/x.html?unlocked_article_code=1.abc"
+    },
+    {
+      "input" : "https://www.theguardian.com/technology/2026/jan/01/x?CMP=Share_iOSApp_Other",
+      "output" : "https://www.theguardian.com/technology/2026/jan/01/x"
+    },
+    {
+      "input" : "https://www.bbc.co.uk/news/technology-123?at_medium=RSS&at_campaign=rss&ns_source=twitter",
+      "output" : "https://www.bbc.co.uk/news/technology-123"
+    },
+    {
+      "input" : "https://www.washingtonpost.com/tech/2026/01/01/x/?itid=hp-top&wpisrc=nl_tech",
+      "output" : "https://www.washingtonpost.com/tech/2026/01/01/x/"
+    },
+    {
+      "input" : "https://www.bloomberg.com/news/articles/2026-01-01/x?srnd=homepage-europe&leadSource=uverify%20wall",
+      "output" : "https://www.bloomberg.com/news/articles/2026-01-01/x"
+    },
+    {
+      "input" : "https://www.forbes.com/sites/x/2026/01/01/y/?sh=12ab34cd",
+      "output" : "https://www.forbes.com/sites/x/2026/01/01/y/"
+    },
+    {
+      "input" : "https://www.spiegel.de/netzwelt/x-a-123?sara_ref=re-so-app-sh",
+      "output" : "https://www.spiegel.de/netzwelt/x-a-123"
+    },
+    {
+      "input" : "https://medium.com/@user/title-1a2b3c4d?source=rss----1&sk=abc",
+      "output" : "https://medium.com/@user/title-1a2b3c4d?sk=abc"
+    },
+    {
+      "input" : "https://user.substack.com/p/title?r=abc12&s=w&utm_campaign=post&utm_medium=web",
+      "output" : "https://user.substack.com/p/title"
+    },
+    {
+      "input" : "https://en.wikipedia.org/wiki/Swift_(programming_language)?wprov=sfti1",
+      "output" : "https://en.wikipedia.org/wiki/Swift_(programming_language)"
+    },
+    {
+      "input" : "https://en.wikipedia.org/wiki/URL#Syntax",
+      "output" : "https://en.wikipedia.org/wiki/URL#Syntax"
+    },
+    {
+      "input" : "https://example.com/article#xtor=CS1-1",
+      "output" : "https://example.com/article"
+    },
+    {
+      "input" : "https://example.com/article#.Uyab3Cd.facebook",
+      "output" : "https://example.com/article"
+    },
+    {
+      "input" : "https://example.com/article#sthash.AbCd1234.dpuf",
+      "output" : "https://example.com/article"
+    },
+    {
+      "input" : "https://example.com/article#echobox=1700000000",
+      "output" : "https://example.com/article"
+    },
+    {
+      "input" : "https://example.com/article#:~:text=quick%20brown",
+      "output" : "https://example.com/article#:~:text=quick%20brown"
+    },
+    {
+      "input" : "https://github.com/apple/swift/pull/1?notification_referrer_id=NT_abc&email_token=x&email_source=notifications",
+      "output" : "https://github.com/apple/swift/pull/1"
+    },
+    {
+      "input" : "https://github.com/apple/swift/tree/main?ref_cta=Sign+up&ref_loc=header&ref_page=%2F",
+      "output" : "https://github.com/apple/swift/tree/main"
+    },
+    {
+      "input" : "https://github.com/apple/swift/blob/main/README.md?plain=1#L10",
+      "output" : "https://github.com/apple/swift/blob/main/README.md?plain=1#L10"
+    },
+    {
+      "input" : "https://stackoverflow.com/questions/123/title?so_medium=email&so_source=x&r=abc",
+      "output" : "https://stackoverflow.com/questions/123/title"
+    },
+    {
+      "input" : "https://stackoverflow.com/a/123/456",
+      "output" : "https://stackoverflow.com/a/123/456"
+    },
+    {
+      "input" : "https://www.quora.com/What-is-x?ch=10&oid=1&share=abc&srid=x&target_type=question",
+      "output" : "https://www.quora.com/What-is-x"
+    },
+    {
+      "input" : "https://uk.indeed.com/viewjob?jk=abc123&from=serp&vjs=3&tk=1h&advn=1",
+      "output" : "https://uk.indeed.com/viewjob?jk=abc123&vjs=3"
+    },
+    {
+      "input" : "https://www.glassdoor.co.uk/job-listing/x.htm?jl=1&ao=1&guid=x&src=GD_JOB_AD&cs=1",
+      "output" : "https://www.glassdoor.co.uk/job-listing/x.htm?jl=1&ao=1&guid=x&src=GD_JOB_AD&cs=1"
+    },
+    {
+      "input" : "https://addons.mozilla.org/en-GB/firefox/addon/x/?src=search&utm_source=addons",
+      "output" : "https://addons.mozilla.org/en-GB/firefox/addon/x/"
+    },
+    {
+      "input" : "https://zoom.us/j/1234567890?pwd=abc123&utm_source=calendar",
+      "output" : "https://zoom.us/j/1234567890?pwd=abc123"
+    },
+    {
+      "input" : "https://meet.google.com/abc-defg-hij?authuser=0&hs=122",
+      "output" : "https://meet.google.com/abc-defg-hij?authuser=0&hs=122"
+    },
+    {
+      "input" : "https://calendar.google.com/calendar/event?eid=abc&ctz=Europe/London",
+      "output" : "https://calendar.google.com/calendar/event?eid=abc&ctz=Europe/London"
+    },
+    {
+      "input" : "https://www.google.com/search?q=swift+url&rlz=1C5CHFA&oq=swift+url&gs_lcrp=EgZj&sourceid=chrome&ie=UTF-8",
+      "output" : "https://www.google.com/search?q=swift+url"
+    },
+    {
+      "input" : "https://www.google.co.uk/search?q=weather&sca_esv=abc&sxsrf=AHTn&ei=xyz&ved=0ahUK&uact=5",
+      "output" : "https://www.google.co.uk/search?q=weather"
+    },
+    {
+      "input" : "https://www.google.com/maps/place/London/@51.5,-0.1,10z?entry=ttu&g_ep=EgoyMDI0",
+      "output" : "https://www.google.com/maps/place/London/@51.5,-0.1,10z?entry=ttu&g_ep=EgoyMDI0"
+    },
+    {
+      "input" : "https://play.google.com/store/apps/details?id=com.example&pcampaignid=web_share&referrer=utm_source%3Dx",
+      "output" : "https://play.google.com/store/apps/details?id=com.example"
+    },
+    {
+      "input" : "https://www.bing.com/search?q=swift&form=QBLH&sp=-1&pq=swif&sc=8-4&qs=n&sk=&cvid=ABC",
+      "output" : "https://www.bing.com/search?q=swift"
+    },
+    {
+      "input" : "https://duckduckgo.com/?q=swift&t=h_&ia=web",
+      "output" : "https://duckduckgo.com/?q=swift&ia=web"
+    },
+    {
+      "input" : "https://search.yahoo.com/search?p=swift&fr=yfp-t&fr2=sb-top",
+      "output" : "https://search.yahoo.com/search?p=swift"
+    },
+    {
+      "input" : "https://yandex.ru/search/?text=swift&lr=213&clid=1955454",
+      "output" : "https://yandex.ru/search/?text=swift"
+    },
+    {
+      "input" : "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.example.com/page%3Fid%3D1%26utm_source%3Dgoogle&ved=2ahUKEwi&usg=AOvVaw0",
+      "output" : "https://www.example.com/page?id=1"
+    },
+    {
+      "input" : "https://www.google.co.uk/url?q=https://www.bbc.co.uk/news&sa=U&ved=0ahUKE&usg=AOvVaw",
+      "output" : "https://www.bbc.co.uk/news"
+    },
+    {
+      "input" : "https://www.google.com/url?q=https%3A%2F%2Fwww.amazon.co.uk%2FSony-WH-1000XM5%2Fdp%2FB09XS7JWHH%2Fref%3Dsr_1_3%3Ftag%3Dx-21&sa=D&ved=2ahUK",
+      "output" : "https://www.amazon.co.uk/dp/B09XS7JWHH"
+    },
+    {
+      "input" : "https://www.google.com/amp/s/www.theguardian.com/world/2026/jan/01/x.amp?usqp=mq331AQ",
+      "output" : "https://www.theguardian.com/world/2026/jan/01/x.amp?usqp=mq331AQ"
+    },
+    {
+      "input" : "https://www.google.com/amp/www.example.com/amp/page",
+      "output" : "https://www.google.com/amp/www.example.com/amp/page"
+    },
+    {
+      "input" : "https://www.googleadservices.com/pagead/aclk?sa=L&ai=abc&adurl=https://shop.example.com/p%3Fgclid%3Dx%26id%3D1",
+      "output" : "https://shop.example.com/p?id=1"
+    },
+    {
+      "input" : "https://ad.doubleclick.net/ddm/clk/1;2;3?adurl=https%3A%2F%2Fexample.com%2Fdc",
+      "output" : "https://example.com/dc"
+    },
+    {
+      "input" : "https://www.bing.com/ck/a?!&&p=abc123&ptn=3&ver=2&hsh=3&fclid=1&u=a1aHR0cHM6Ly93d3cuZXhhbXBsZS5jb20vYmluZy1yZXN1bHQ_dXRtX3NvdXJjZT1iaW5nJnBhZ2U9Mg&ntb=1",
+      "output" : "https://www.example.com/bing-result?page=2"
+    },
+    {
+      "input" : "https://www.bing.com/ck/a?u=a1aHR0cHM6Ly_kvovjgYguanAv44OR44K5",
+      "output" : "https://xn--r8jz45g.jp/%E3%83%91%E3%82%B9"
+    },
+    {
+      "input" : "https://duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.example.com%2Fddg%3Futm_source%3Dddg&rut=abc123",
+      "output" : "https://www.example.com/ddg"
+    },
+    {
+      "input" : "https://eur03.safelinks.protection.outlook.com/?url=https%3A%2F%2Fwww.example.com%2Finvoice%3Fid%3D42%26utm_campaign%3Dbilling&data=05%7C02%7Cuser%40example.com%7Cabc&sdata=AbC%3D&reserved=0",
+      "output" : "https://www.example.com/invoice?id=42"
+    },
+    {
+      "input" : "https://nam12.safelinks.protection.outlook.com/ap/w-59584e83/?url=https%3A%2F%2Fexample.sharepoint.com%2Fsites%2Fx&data=05",
+      "output" : "https://example.sharepoint.com/sites/x"
+    },
+    {
+      "input" : "https://urldefense.proofpoint.com/v2/url?u=https-3A__www.example.com_a_b-3Fc-3D1-26utm-5Fsource-3Demail&d=DwMFaQ&c=abc&r=def&m=ghi&s=jkl&e=",
+      "output" : "https://www.example.com/a/b?c=1"
+    },
+    {
+      "input" : "https://urldefense.com/v3/__https://www.example.com/path?a=1&utm_source=pp__;!!ABC!def$",
+      "output" : "https://urldefense.com/v3/__https://www.example.com/path?a=1"
+    },
+    {
+      "input" : "https://urldefense.com/v3/__https://example.com__;!!X",
+      "output" : "https://example.com"
+    },
+    {
+      "input" : "https://slack-redir.net/link?url=https%3A%2F%2Fexample.com%2Fslack%3Futm_source%3Dslack&v=3",
+      "output" : "https://example.com/slack"
+    },
+    {
+      "input" : "https://www.youtube.com/redirect?event=video_description&redir_token=QUFF&q=https%3A%2F%2Fexample.com%2Fyt%3Futm_source%3Dyoutube&v=abc",
+      "output" : "https://example.com/yt"
+    },
+    {
+      "input" : "https://t.umblr.com/redirect?z=https%3A%2F%2Fexample.com%2Ftumblr&t=abc&b=t",
+      "output" : "https://example.com/tumblr"
+    },
+    {
+      "input" : "https://vk.com/away.php?to=https%3A%2F%2Fexample.com%2Fvk&cc_key=",
+      "output" : "https://example.com/vk"
+    },
+    {
+      "input" : "https://disq.us/url?url=https%3A%2F%2Fexample.com%2Fdisqus%3Aabc&cuid=1",
+      "output" : "https://example.com/disqus:abc"
+    },
+    {
+      "input" : "https://www.deviantart.com/users/outgoing?url=https://example.com/da",
+      "output" : "https://example.com/da"
+    },
+    {
+      "input" : "https://steamcommunity.com/linkfilter/?u=https%3A%2F%2Fexample.com%2Fsteam",
+      "output" : "https://example.com/steam"
+    },
+    {
+      "input" : "https://www.curseforge.com/linkout?remoteUrl=https%253a%252f%252fexample.com%252fcf",
+      "output" : "https://www.curseforge.com/linkout?remoteUrl=https%253a%252f%252fexample.com%252fcf"
+    },
+    {
+      "input" : "https://click.linksynergy.com/deeplink?id=abc&mid=1&murl=https%3A%2F%2Fwww.example.com%2Fp%3Fid%3D1",
+      "output" : "https://www.example.com/p?id=1"
+    },
+    {
+      "input" : "https://anonym.to/?https://example.com/anon?utm_source=x&id=1",
+      "output" : "https://example.com/anon?id=1"
+    },
+    {
+      "input" : "https://href.li/?https://example.com/href",
+      "output" : "https://example.com/href"
+    },
+    {
+      "input" : "https://www-example-com.cdn.ampproject.org/c/s/www.example.com/amp/page.html?utm_source=amp",
+      "output" : "https://www.example.com/amp/page.html"
+    },
+    {
+      "input" : "https://www-example-com.cdn.ampproject.org/v/s/www.example.com/amp/v.html?amp_js_v=0.1",
+      "output" : "https://www.example.com/amp/v.html?amp_js_v=0.1"
+    },
+    {
+      "input" : "https://www.google.com/url?q=javascript:alert(1)&sa=D",
+      "output" : "https://www.google.com/url?q=javascript:alert(1)"
+    },
+    {
+      "input" : "https://www.google.com/url?q=ftp://example.com/file&sa=D",
+      "output" : "https://www.google.com/url?q=ftp://example.com/file"
+    },
+    {
+      "input" : "https://www.google.com/url?q=&url=&sa=D",
+      "output" : "https://www.google.com/url?q=&url="
+    },
+    {
+      "input" : "https://www.google.com/url?esrc=s&q=&rct=j&sa=U&url=https://www.example.com/&ved=2ah&usg=AOv",
+      "output" : "https://www.example.com/"
+    },
+    {
+      "input" : "https://click.mailchimp.com/track/click/30000/example.com?p=eyJz",
+      "output" : "https://click.mailchimp.com/track/click/30000/example.com?p=eyJz"
+    },
+    {
+      "input" : "https://bit.ly/3AbCdEf",
+      "output" : "https://bit.ly/3AbCdEf"
+    },
+    {
+      "input" : "https://tinyurl.com/abc123?utm_source=x",
+      "output" : "https://tinyurl.com/abc123"
+    },
+    {
+      "input" : "https://example.us1.list-manage.com/track/click?u=abc&id=def&e=ghi",
+      "output" : "https://example.us1.list-manage.com/track/click?u=abc&id=def&e=ghi"
+    },
+    {
+      "input" : "https://shop.example.com/products/tee?variant=123&_pos=1&_sid=abc&_ss=r&_fd=0&_psq=tee",
+      "output" : "https://shop.example.com/products/tee?variant=123"
+    },
+    {
+      "input" : "https://example.myshopify.com/collections/all?pr_prod_strat=copurchase&pr_rec_id=abc&pr_seq=uniform",
+      "output" : "https://example.myshopify.com/collections/all"
+    },
+    {
+      "input" : "https://www.example.com/?_branch_match_id=123&_branch_referrer=H4sI",
+      "output" : "https://www.example.com/"
+    },
+    {
+      "input" : "https://example.com/?guccounter=1&guce_referrer=aHR0&guce_referrer_sig=AQAA",
+      "output" : "https://example.com/"
+    },
+    {
+      "input" : "https://www.netflix.com/title/80100172?trackId=123&tctx=0%2C0&jbv=1",
+      "output" : "https://www.netflix.com/title/80100172"
+    },
+    {
+      "input" : "https://www.twitch.tv/somebody?tt_medium=redt&tt_content=channel",
+      "output" : "https://www.twitch.tv/somebody"
+    },
+    {
+      "input" : "https://www.bilibili.com/video/BV1xx411c7mD/?spm_id_from=333.1007&vd_source=abc&p=2",
+      "output" : "https://www.bilibili.com/video/BV1xx411c7mD/?p=2"
+    },
+    {
+      "input" : "https://www.pinterest.co.uk/pin/123/?sender=abc&sfo=1&nic_v2=x",
+      "output" : "https://www.pinterest.co.uk/pin/123/?sender=abc&sfo=1&nic_v2=x"
+    },
+    {
+      "input" : "https://www.pinterest.com/pin/123/?nic_v3=1A&invite_code=x",
+      "output" : "https://www.pinterest.com/pin/123/?invite_code=x"
+    },
+    {
+      "input" : "https://www.roblox.com/games/123/x?refPageId=abc",
+      "output" : "https://www.roblox.com/games/123/x"
+    },
+    {
+      "input" : "https://www.imdb.com/title/tt0111161/?ref_=nv_sr_srsg_0",
+      "output" : "https://www.imdb.com/title/tt0111161/"
+    },
+    {
+      "input" : "https://www.imdb.com/title/tt0111161/?ref=x",
+      "output" : "https://www.imdb.com/title/tt0111161/?ref=x"
+    },
+    {
+      "input" : "https://weibo.com/123/abc?refer_flag=1001&from=page",
+      "output" : "https://weibo.com/123/abc"
+    },
+    {
+      "input" : "https://www.douyin.com/video/123?previous_page=app_code_link&iid=1",
+      "output" : "https://www.douyin.com/video/123"
+    },
+    {
+      "input" : "https://www.snapchat.com/add/user?sc_referrer=x&sc_ua=y&share_id=z",
+      "output" : "https://www.snapchat.com/add/user?share_id=z"
+    },
+    {
+      "input" : "https://www.tumblr.com/user/123/post?source=share",
+      "output" : "https://www.tumblr.com/user/123/post"
+    },
+    {
+      "input" : "https://vk.com/wall-1_2?from=search&ref=x&w=wall",
+      "output" : "https://vk.com/wall-1_2?w=wall"
+    },
+    {
+      "input" : "https://www.google.com/search?q=utm_source",
+      "output" : "https://www.google.com/search?q=utm_source"
+    },
+    {
+      "input" : "https://github.com/owner/repo/compare/main...feature?ref=main&expand=1",
+      "output" : "https://github.com/owner/repo/compare/main...feature?ref=main&expand=1"
+    },
+    {
+      "input" : "https://example.com/redirect?url=https%3A%2F%2Fother.com",
+      "output" : "https://example.com/redirect?url=https%3A%2F%2Fother.com"
+    },
+    {
+      "input" : "https://example.com/search?q=amazon+ref%3D&tag=sale&s=1&t=2&k=3",
+      "output" : "https://example.com/search?q=amazon+ref%3D&tag=sale&s=1&t=2&k=3"
+    },
+    {
+      "input" : "https://www.reddit.com/search/?q=swift&type=link&sort=new",
+      "output" : "https://www.reddit.com/search/?q=swift&type=link&sort=new"
+    },
+    {
+      "input" : "https://open.spotify.com/search/si",
+      "output" : "https://open.spotify.com/search/si"
+    },
+    {
+      "input" : "https://www.youtube.com/results?search_query=si+feature",
+      "output" : "https://www.youtube.com/results?search_query=si+feature"
+    },
+    {
+      "input" : "HTTPS://WWW.Example.COM/a?utm_source=1&b=2",
+      "output" : "HTTPS://WWW.Example.COM/a?b=2"
+    },
+    {
+      "input" : "https://ex.com/?a[]=1&utm_source=x",
+      "output" : "https://ex.com/?a%5B%5D=1"
+    },
+    {
+      "input" : "https://ex.com/?a=%zz&utm_source=x",
+      "output" : "https://ex.com/?a=%25zz"
+    },
+    {
+      "input" : "https://ex.com/?a=|&utm_source=x",
+      "output" : "https://ex.com/?a=%7C"
+    },
+    {
+      "input" : "https://ex.com/é?q=é&utm_source=x",
+      "output" : "https://ex.com/%C3%A9?q=%C3%A9"
+    },
+    {
+      "input" : "https://ex.com/a?b=1#frag|pipe",
+      "output" : "https://ex.com/a?b=1#frag%7Cpipe"
+    },
+    {
+      "input" : "https://ex.com/a?b=1&utm_source=x#frag|pipe",
+      "output" : "https://ex.com/a?b=1#frag%7Cpipe"
+    },
+    {
+      "input" : "https://ex.com?&&utm_source=x&&a=1",
+      "output" : "https://ex.com?&&&a=1"
+    },
+    {
+      "input" : "https://ex.com?a=1&utm_source=x#",
+      "output" : "https://ex.com?a=1#"
+    },
+    {
+      "input" : "https://ex.com/?utm_source=x",
+      "output" : "https://ex.com/"
+    },
+    {
+      "input" : "https://ex.com/?utm_source=x#",
+      "output" : "https://ex.com/#"
+    },
+    {
+      "input" : "https://user:pass@ex.com:8080/?utm_source=x",
+      "output" : "https://user:pass@ex.com:8080/"
+    },
+    {
+      "input" : "https://[::1]:8080/?utm_source=x&a=1",
+      "output" : "https://[::1]:8080/?a=1"
+    },
+    {
+      "input" : "https://ex.com?=x&utm_source=1",
+      "output" : "https://ex.com?=x"
+    },
+    {
+      "input" : "https://ex.com?a==b&utm_source=1",
+      "output" : "https://ex.com?a==b"
+    },
+    {
+      "input" : "mailto:a@b.com?utm_source=x&subject=hi",
+      "output" : "mailto:a@b.com?subject=hi"
+    },
+    {
+      "input" : "javascript:alert(1)",
+      "output" : "javascript:alert(1)"
+    },
+    {
+      "input" : "javascript:alert(1)?utm_source=x",
+      "output" : "javascript:alert(1)"
+    },
+    {
+      "input" : "ftp://ex.com/?utm_source=x",
+      "output" : "ftp://ex.com/"
+    },
+    {
+      "input" : "//ex.com/?utm_source=x",
+      "output" : "//ex.com/"
+    },
+    {
+      "input" : "example.com/?utm_source=x",
+      "output" : "example.com/"
+    },
+    {
+      "input" : "www.amazon.com/dp/B08N5WRWNW?tag=x",
+      "output" : "www.amazon.com/dp/B08N5WRWNW?tag=x"
+    },
+    {
+      "input" : "https://müller.de/?utm_source=x",
+      "output" : "https://xn--mller-kva.de/"
+    },
+    {
+      "input" : "https://ex.com/%7Euser?utm_source=1",
+      "output" : "https://ex.com/%7Euser"
+    },
+    {
+      "input" : "https://www.amazon.com/s%20x/ref=abc/foo",
+      "output" : "https://www.amazon.com/s%20x/foo"
+    },
+    {
+      "input" : "https://www.amazon.com/Thing%2FSlash/ref=abc/foo",
+      "output" : "https://www.amazon.com/Thing/Slash/foo"
+    },
+    {
+      "input" : "https://www.amazon.com/Caf%C3%A9/dp/B08N5WRWNW/ref=x",
+      "output" : "https://www.amazon.com/dp/B08N5WRWNW"
+    },
+    {
+      "input" : "https://www.google.com/url?q=https://ex.com/a+b&sa=D",
+      "output" : "https://ex.com/a+b"
+    },
+    {
+      "input" : "https://www.google.com/url?url=https%253A%252F%252Fex.com&q=https://ok.com",
+      "output" : "https://www.google.com/url?url=https%253A%252F%252Fex.com&q=https://ok.com"
+    },
+    {
+      "input" : "https://www.google.com/url?q=example.com&sa=D",
+      "output" : "https://www.google.com/url?q=example.com"
+    },
+    {
+      "input" : "https://ex.com/a?b=c d&utm_source=1",
+      "output" : "https://ex.com/a?b=c d"
+    },
+    {
+      "input" : "https://ex.com/a?b=1&utm_source=1#a b",
+      "output" : "https://ex.com/a?b=1#a b"
+    },
+    {
+      "input" : "https://ex.com/a?b=\"x\"&utm_source=1",
+      "output" : "https://ex.com/a?b=%22x%22"
+    },
+    {
+      "input" : "https://ex.com/a?b=x^y&utm_source=1",
+      "output" : "https://ex.com/a?b=x%5Ey"
+    },
+    {
+      "input" : "https://ex.com/a?b=x`y&utm_source=1",
+      "output" : "https://ex.com/a?b=x%60y"
+    },
+    {
+      "input" : "https://ex.com/a?b={x}&utm_source=1",
+      "output" : "https://ex.com/a?b=%7Bx%7D"
+    },
+    {
+      "input" : "https://ex.com/a<b>?b=1&utm_source=1",
+      "output" : "https://ex.com/a%3Cb%3E?b=1"
+    },
+    {
+      "input" : "https://ex.com/a\\b?b=1&utm_source=1",
+      "output" : "https://ex.com/a%5Cb?b=1"
+    },
+    {
+      "input" : "https://ex.com/a?b=%&utm_source=1",
+      "output" : "https://ex.com/a?b=%25"
+    },
+    {
+      "input" : "https://ex.com/a?b=1&utm_source=1#%zz",
+      "output" : "https://ex.com/a?b=1#%25zz"
+    },
+    {
+      "input" : "https://EX.com:/a?utm_source=1",
+      "output" : "https://EX.com/a"
+    },
+    {
+      "input" : "https://ex.com/a?b=1;c=2&utm_source=1",
+      "output" : "https://ex.com/a?b=1;c=2"
+    },
+    {
+      "input" : "http://ex.com/a?UTM_SOURCE=1&%75tm_medium=2&b=3",
+      "output" : "http://ex.com/a?b=3"
+    },
+    {
+      "input" : "https://ex.com/a?b=%2B&utm_source=1",
+      "output" : "https://ex.com/a?b=%2B"
+    },
+    {
+      "input" : "https://ex.com/a?b=1&utm_source=1#?x",
+      "output" : "https://ex.com/a?b=1#?x"
+    },
+    {
+      "input" : "https://ex.com/a?#",
+      "output" : "https://ex.com/a#"
+    },
+    {
+      "input" : "https://ex.com/a?",
+      "output" : "https://ex.com/a"
+    },
+    {
+      "input" : "https://ex.com/a#xtor=1?utm_source=1",
+      "output" : "https://ex.com/a"
+    },
+    {
+      "input" : "https://ex.com/?utm_source=1&a=1?b=2",
+      "output" : "https://ex.com/?a=1?b=2"
+    },
+    {
+      "input" : "https://ex.com/😀?utm_source=1&a=😀",
+      "output" : "https://ex.com/%F0%9F%98%80?a=%F0%9F%98%80"
+    },
+    {
+      "input" : "https://ex.com:99999/?utm_source=1",
+      "output" : "https://ex.com:99999/"
+    },
+    {
+      "input" : "https://ex com/?utm_source=1",
+      "output" : "https://ex com/"
+    },
+    {
+      "input" : "https://ex.com/a\t?utm_source=1",
+      "output" : "https://ex.com/a\t"
+    },
+    {
+      "input" : "  https://ex.com/?utm_source=1  ",
+      "output" : "https://ex.com/"
+    },
+    {
+      "input" : "https://ex.com/?utm_source=1\n",
+      "output" : "https://ex.com/"
+    },
+    {
+      "input" : "https://www.google.com/url?q=https%3A%2F%2Fex.com%2F%3Fa%3D1%26utm_source%3D2%26b%3Dc%2Bd",
+      "output" : "https://ex.com/?a=1&b=c+d"
+    },
+    {
+      "input" : "https://www.google.com/url?q=https://ex.com/%7Bx%7D",
+      "output" : "https://ex.com/%7Bx%7D"
+    },
+    {
+      "input" : "https://www.google.com/url?q=https%3A%2F%2Fex.com%2F%7Bx%7D",
+      "output" : "https://ex.com/%7Bx%7D"
+    },
+    {
+      "input" : "https://www.google.com/url?q=https%3A%2F%2Fex.com%2Fa%20b",
+      "output" : "https://ex.com/a%20b"
+    },
+    {
+      "input" : "https://www.google.com/url?q=https%3A%2F%2Fm%C3%BCller.de%2F",
+      "output" : "https://xn--mller-kva.de/"
+    },
+    {
+      "input" : "https://www.google.com/url?q=HTTPS://ex.com/",
+      "output" : "HTTPS://ex.com/"
+    },
+    {
+      "input" : "https://www.google.com/url?q=https:/ex.com/",
+      "output" : "https://www.google.com/url?q=https:/ex.com/"
+    },
+    {
+      "input" : "https://www.google.com/url?q=https://",
+      "output" : "https://www.google.com/url?q=https://"
+    },
+    {
+      "input" : "https://www.google.com/url?q=http://a b.com/",
+      "output" : "https://www.google.com/url?q=http://a b.com/"
+    },
+    {
+      "input" : "https://EX.com:/a",
+      "output" : "https://EX.com:/a"
+    },
+    {
+      "input" : "https://ex.com:080/a?x=1&utm_source=1",
+      "output" : "https://ex.com:80/a?x=1"
+    },
+    {
+      "input" : "https://ex.com:/a?x",
+      "output" : "https://ex.com/a?x"
+    },
+    {
+      "input" : "https://@ex.com/?utm_source=1",
+      "output" : "https://@ex.com/"
+    },
+    {
+      "input" : "https://:@ex.com/?utm_source=1",
+      "output" : "https://:@ex.com/"
+    },
+    {
+      "input" : "https://ex.com/?a=1&b=2#%41",
+      "output" : "https://ex.com/?a=1&b=2#%41"
+    },
+    {
+      "input" : "https://ex.com/a?b=1#%41",
+      "output" : "https://ex.com/a?b=1#%41"
+    },
+    {
+      "input" : "https://www.amazon.com/a%3Bb/ref=x/c%3Fd%23e%25f%26g%3Dh%5Bi%5D%7Cj%40k%3Al%21m%24n%27o%28p%29q%2Ar%2Bs%2Ct%7Eu%22v",
+      "output" : "https://www.amazon.com/a;b/c%3Fd%23e%25f&g=h%5Bi%5D%7Cj@k:l!m$n'o(p)q*r+s,t~u%22v"
+    },
+    {
+      "input" : "https://www.amazon.com/caf%C3%A9%20x/ref=x",
+      "output" : "https://www.amazon.com/caf%C3%A9%20x"
+    },
+    {
+      "input" : "https://www.amazon.com/%FF/ref=x",
+      "output" : "https://www.amazon.com/%FF/ref=x"
+    },
+    {
+      "input" : "https://www.amazon.com/x/ref=x?a=1#%FF",
+      "output" : "https://www.amazon.com/x?a=1#%FF"
+    },
+    {
+      "input" : "https://ex.com/a#utm%5Fsource=1",
+      "output" : "https://ex.com/a"
+    },
+    {
+      "input" : "https://ex.com/a#%FF",
+      "output" : "https://ex.com/a#%FF"
+    },
+    {
+      "input" : "https://www.google.com/amp/s/ex.com/p%20q?a=%26b&c=d",
+      "output" : "https://ex.com/p%20q?a=&b&c=d"
+    },
+    {
+      "input" : "https://www.google.com/amp/s/ex.com/p?a=%FF",
+      "output" : "https://ex.com/p"
+    },
+    {
+      "input" : "https://href.li/?https://ex.com/a?b=%26c",
+      "output" : "https://ex.com/a?b=&c"
+    },
+    {
+      "input" : "https://href.li/?https%3A%2F%2Fex.com%2Fa",
+      "output" : "https://ex.com/a"
+    },
+    {
+      "input" : "https://anonym.to/?https://ex.com/a?utm_source=1&b=2",
+      "output" : "https://ex.com/a?b=2"
+    },
+    {
+      "input" : "https://www.google.com/url?q=https://ex.com/a%FF",
+      "output" : "https://www.google.com/url?q=https://ex.com/a%FF"
+    },
+    {
+      "input" : "https://www.google.com/url?q=%FFhttps://ex.com/a",
+      "output" : "https://www.google.com/url?q=%FFhttps://ex.com/a"
+    },
+    {
+      "input" : "https://www.google.com/url?q=https%3A%2F%2Fex.com%2Fa%23b%3Fc",
+      "output" : "https://ex.com/a#b?c"
+    },
+    {
+      "input" : "https://www.google.com/url?q=https://ex.com/a%23utm_source=1",
+      "output" : "https://ex.com/a"
+    },
+    {
+      "input" : "https://www.google.com/url?q=https://ex.com/a b",
+      "output" : "https://www.google.com/url?q=https://ex.com/a b"
+    },
+    {
+      "input" : "https://www.google.com/url?q=https%3A%2F%2Fex.com%2Fa%20b%0A",
+      "output" : "https://ex.com/a%20b%0A"
+    },
+    {
+      "input" : "https://www.google.com/url?q=https%3A%2F%2Fex%20.com%2F",
+      "output" : "https://www.google.com/url?q=https%3A%2F%2Fex%20.com%2F"
+    },
+    {
+      "input" : "https://www.google.com/url?q=https%3A%2F%2Fwww.google.com%2Furl%3Fq%3Dhttps%253A%252F%252Fwww.google.com%252Furl%253Fq%253Dhttps%25253A%25252F%25252Fwww.google.com%25252Furl%25253Fq%25253Dhttps%2525253A%2525252F%2525252Fex.com",
+      "output" : "https://www.google.com/url?q=https%3A%2F%2Fex.com"
+    },
+    {
+      "input" : "https://www.ebay.com/itm/Some-Title/123456789012/extra?_trksid=1",
+      "output" : "https://www.ebay.com/itm/123456789012"
+    },
+    {
+      "input" : "https://www.ebay.com/itm/123456789012?hash=x",
+      "output" : "https://www.ebay.com/itm/123456789012"
+    },
+    {
+      "input" : "https://www.ebay.com/itm/t/12345678?hash=x",
+      "output" : "https://www.ebay.com/itm/t/12345678"
+    },
+    {
+      "input" : "https://www.ebay.com/itm/t/１２３４５６７８９?hash=x",
+      "output" : "https://www.ebay.com/itm/%EF%BC%91%EF%BC%92%EF%BC%93%EF%BC%94%EF%BC%95%EF%BC%96%EF%BC%97%EF%BC%98%EF%BC%99"
+    },
+    {
+      "input" : "https://www.amazon.com/x/dp/B0８N5WRWNW",
+      "output" : "https://www.amazon.com/dp/B0%EF%BC%98N5WRWNW"
+    },
+    {
+      "input" : "https://www.amazon.com/x/dp/ÀBCDEFGHIJ",
+      "output" : "https://www.amazon.com/dp/%C3%80BCDEFGHIJ"
+    },
+    {
+      "input" : "https://ex.com?a=1&utm_source=1#.x.twitter",
+      "output" : "https://ex.com?a=1"
+    },
+    {
+      "input" : "https://ex.com?a=1#..twitter",
+      "output" : "https://ex.com?a=1#..twitter"
+    },
+    {
+      "input" : "https://ex.com#_=_",
+      "output" : "https://ex.com"
+    },
+    {
+      "input" : "https://www.bing.com/ck/a?u=a1aHR0cHM6Ly9leGFtcGxlLmNvbS8_YT0x",
+      "output" : "https://example.com/?a=1"
+    },
+    {
+      "input" : "https://www.bing.com/ck/a?u=a1aHR0cHM6Ly9leGFtcGxlLmNvbS8_YT0xx",
+      "output" : "https://www.bing.com/ck/a?u=a1aHR0cHM6Ly9leGFtcGxlLmNvbS8_YT0xx"
+    },
+    {
+      "input" : "https://www.bing.com/ck/a?u=a1aHR0cHM6Ly9leGFtcGxlLmNvbS8_YT0xxx",
+      "output" : "https://www.bing.com/ck/a?u=a1aHR0cHM6Ly9leGFtcGxlLmNvbS8_YT0xxx"
+    },
+    {
+      "input" : "https://www.bing.com/ck/a?u=a1aHR0cHM6Ly9leGFtcGxl LmNvbS8",
+      "output" : "https://www.bing.com/ck/a?u=a1aHR0cHM6Ly9leGFtcGxl LmNvbS8"
+    },
+    {
+      "input" : "https://ex.com:abc/?utm_source=1",
+      "output" : "https://ex.com:abc/"
+    },
+    {
+      "input" : "https://ex<.com/?utm_source=1&a=1",
+      "output" : "https://ex<.com/?a=1"
+    },
+    {
+      "input" : "1http://x.com?utm_source=1",
+      "output" : "1http://x.com"
+    },
+    {
+      "input" : "https://h%41.com/?utm_source=1",
+      "output" : "https://h%41.com/"
+    },
+    {
+      "input" : "https://[v1.x]/?utm_source=1",
+      "output" : "https://[v1.x]/"
+    },
+    {
+      "input" : "https://ex.com./?utm_source=1",
+      "output" : "https://ex.com./"
+    },
+    {
+      "input" : "https://www.amazon.com./dp/B08N5WRWNW?tag=x",
+      "output" : "https://www.amazon.com./dp/B08N5WRWNW"
+    },
+    {
+      "input" : "https://WWW.AMAZON.COM/Thing/dp/B08N5WRWNW?TAG=x",
+      "output" : "https://WWW.AMAZON.COM/dp/B08N5WRWNW"
+    },
+    {
+      "input" : "https://u:pw:x@h.com/?utm_source=1",
+      "output" : "https://u:pw%3Ax@h.com/"
+    },
+    {
+      "input" : "https://u@x@h.com/p?utm_source=1",
+      "output" : "https://u%40x@h.com/p"
+    },
+    {
+      "input" : "https://ex.com/a?b=1#c#d",
+      "output" : "https://ex.com/a?b=1#c%23d"
+    },
+    {
+      "input" : "mailto:someone@example.com",
+      "output" : "mailto:someone@example.com"
+    },
+    {
+      "input" : "javascript:void(0)",
+      "output" : "javascript:void(0)"
+    },
+    {
+      "input" : "tel:+441234567890",
+      "output" : "tel:+441234567890"
+    },
+    {
+      "input" : "data:text/plain,hi?utm_source=1",
+      "output" : "data:text/plain,hi"
+    },
+    {
+      "input" : "https://bücher.example/?utm_source=1&q=1",
+      "output" : "https://xn--bcher-kva.example/?q=1"
+    },
+    {
+      "input" : "https://example.com/?=utm_source&utm_source=",
+      "output" : "https://example.com/?=utm_source"
+    },
+    {
+      "input" : "not a url",
+      "output" : "not a url"
+    },
+    {
+      "input" : "utm_source=1",
+      "output" : "utm_source=1"
+    },
+    {
+      "input" : "?utm_source=1&a=1",
+      "output" : "?a=1"
+    },
+    {
+      "input" : "https://ex.com/a?a&b&utm_source&c",
+      "output" : "https://ex.com/a?a&b&c"
+    },
+    {
+      "input" : "https://www.bing.com/ck/a?u=a1aHR0cHM6Ly9leGFtcGxlLmNvbS8",
+      "output" : "https://example.com/"
+    },
+    {
+      "input" : "https://urldefense.proofpoint.com/v2/url?u=https-3A__ex.com_a-3F-ZZ-2-25&d=x",
+      "output" : "https://ex.com/a?-ZZ-2%25"
+    },
+    {
+      "input" : "https://ex.com/a?b=%e2%82%ac&utm_source=1",
+      "output" : "https://ex.com/a?b=%e2%82%ac"
+    },
+    {
+      "input" : "https://ex.com/%e2%82%ac/a?utm_source=1",
+      "output" : "https://ex.com/%e2%82%ac/a"
+    }
+  ]
+}
