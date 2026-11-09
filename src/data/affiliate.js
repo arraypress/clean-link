@@ -18,16 +18,24 @@
  * @type {Readonly<Record<string, readonly string[]>>}
  */
 export const AFFILIATE_PARAMETERS = Object.freeze({
-    'Amazon Associates': Object.freeze(['tag']),
+    'Amazon Associates': Object.freeze(['tag', 'asc_campaign', 'asc_refurl', 'asc_source']),
     'eBay Partner Network': Object.freeze(['campid', 'customid', 'toolid', 'mkcid', 'mkrid', 'mkevt']),
     'Awin': Object.freeze(['awc', 'zanpid']),
     'CJ': Object.freeze(['cjevent', 'cjdata']),
     'Rakuten Advertising': Object.freeze(['ranmid', 'raneaid', 'ransiteid']),
-    'Impact': Object.freeze(['irclickid', 'irgwc']),
-    'AliExpress Portals': Object.freeze(['aff_fcid', 'aff_fsk', 'aff_platform', 'aff_trace_key']),
+    'Impact': Object.freeze(['irclickid', 'irgwc', 'im_ref', 'ir_adid', 'ir_campaignid', 'ir_partnerid']),
+    'ShareASale': Object.freeze(['sscid']),
+    'Partnerize': Object.freeze(['pjclid', 'partnerizecampaignid', 'clickref', 'partnerid']),
+    'Admitad': Object.freeze(['admitad_uid']),
+    'AliExpress Portals': Object.freeze(['aff_fcid', 'aff_fsk', 'aff_platform', 'aff_trace_key', 'aff_short_key']),
     'Booking.com Affiliate Partner': Object.freeze(['aid']),
     'Target Partners': Object.freeze(['afid']),
     'Walmart Affiliates': Object.freeze(['u1']),
+    'Humble Partner': Object.freeze(['partner']),
+    'Epic Games Support-A-Creator': Object.freeze(['epic_affiliate']),
+    'Trip.com Affiliates': Object.freeze(['allianceid', 'trip_sub1']),
+    'Newegg Affiliates': Object.freeze(['affname']),
+    'Otto Partnerprogramm': Object.freeze(['affiliateid']),
     'Other networks': Object.freeze(['affid', 'aff_id', 'affiliate_id']),
 });
 
@@ -37,4 +45,7 @@ export const AFFILIATE_PARAMETERS = Object.freeze({
  *
  * @type {ReadonlySet<string>}
  */
-export const AFFILIATE_REDIRECTS = Object.freeze(new Set(['Rakuten', 'eBay']));
+export const AFFILIATE_REDIRECTS = Object.freeze(new Set([
+    'Rakuten', 'eBay', 'Awin', 'CJ', 'Impact', 'ShareASale', 'Partnerize', 'Skimlinks', 'Viglink',
+    'Admitad', 'Tradedoubler',
+]));

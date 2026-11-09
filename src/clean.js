@@ -20,11 +20,11 @@
  * Pure: no DOM, no network.
  */
 
-import {FRAGMENT_SHARE_SUFFIXES, GLOBAL_PARAMETERS, HOST_RULES, REDIRECT_RULES} from './data/rules.js';
+import {FRAGMENT_SHARE_SUFFIXES, GLOBAL_KEPT_ON_PATHS, GLOBAL_PARAMETERS, HOST_RULES, NEVER_STRIP_HOSTS, REDIRECT_RULES} from './data/rules.js';
 import {AFFILIATE_PARAMETERS, AFFILIATE_REDIRECTS} from './data/affiliate.js';
 import {removingPercentEncoding, URLComponents} from './url/components.js';
 
-/** @import {ParameterPattern} from './data/rules.js' */
+/** @import {ParameterPattern, RedirectEncoding, RedirectSource} from './data/rules.js' */
 
 /**
  * What kind of tracking a parameter is (swift-url-kit's `TrackingCategory`).
@@ -88,6 +88,9 @@ const GLOBAL_FLAT = Object.entries(GLOBAL_PARAMETERS).flatMap(([category, patter
 
 /** Every affiliate parameter name, for `keepAffiliate`. */
 const AFFILIATE_NAMES = new Set(Object.values(AFFILIATE_PARAMETERS).flat());
+
+/** `http://` or `https://`, the letters in any ASCII case (Redirects.hasHTTPScheme). */
+const HTTP_SCHEME = /^https?:\/\//i;
 
 /**
  * The link without its tracking, for inserting or sharing; null when there
@@ -166,7 +169,11 @@ export function cleanReport(input, options = {}) {
     }
 
     const host = normaliseHost(components.host);
+    // An archived page, a signed link that didn't unwrap: its query is the
+    // content. Unwrapped, never cleaned.
+    if (host !== null && matchesAny(host, NEVER_STRIP_HOSTS)) return report(input, components.string, {unwrapped});
     const rules = host === null ? [] : HOST_RULES.filter((rule) => matchesAny(host, rule.hosts) && !matchesAny(host, rule.excluding ?? []));
+    const path = components.path;
 
     // 2. Query. Work on the percent-encoded items so kept parameters come
     //    back byte for byte: `+` stays `+`, `%20` stays `%20`.
@@ -177,9 +184,9 @@ export function cleanReport(input, options = {}) {
         const kept = items.filter((item) => {
             const name = (removingPercentEncoding(item.name) ?? item.name).toLowerCase();
             if (keepAffiliate && AFFILIATE_NAMES.has(name)) return true;
-            const global = GLOBAL_FLAT.find(([pattern]) => matchesParameter(name, [pattern]));
+            const global = globalCategory(name, path);
             if (global) {
-                removed.push({name, category: global[1], scope: 'global'});
+                removed.push({name, category: global, scope: 'global'});
                 return false;
             }
             const rule = rules.find((r) => matchesParameter(name, r.parameters));
@@ -252,11 +259,28 @@ function fallback(original, s, keepAffiliate) {
         // pieces, so "=utm_source" is named utm_source.
         const name = (pair.split('=').find((piece) => piece !== '') ?? pair).toLowerCase();
         if (keepAffiliate && AFFILIATE_NAMES.has(name)) return true;
-        const global = GLOBAL_FLAT.find(([pattern]) => matchesParameter(name, [pattern]));
-        if (global) removed.push({name, category: global[1], scope: 'global'});
+        const global = globalCategory(name, base);
+        if (global) removed.push({name, category: global, scope: 'global'});
         return !global;
     });
     return report(original, base + (kept.length ? `?${kept.join('&')}` : '') + fragment, {removed});
+}
+
+/**
+ * The category a lowercased name has on a page with this path, or null
+ * (GlobalParameters.category(of:onPath:)): `GLOBAL_KEPT_ON_PATHS` first,
+ * so an unsubscribe page keeps the token it reads, then the global table.
+ *
+ * @param {string} name - Lowercased.
+ * @param {string} path - Decoded; for text that isn't a URL, what's before the `?`.
+ * @returns {TrackingCategory|null}
+ */
+function globalCategory(name, path) {
+    if (Object.hasOwn(GLOBAL_KEPT_ON_PATHS, name)) {
+        const lower = path.toLowerCase();
+        if (GLOBAL_KEPT_ON_PATHS[name].some((fragment) => lower.includes(fragment))) return null;
+    }
+    return GLOBAL_FLAT.find(([pattern]) => matchesParameter(name, [pattern]))?.[1] ?? null;
 }
 
 // MARK: - HostMatcher
@@ -333,7 +357,9 @@ function unwrap(components, keepAffiliate) {
 }
 
 /**
- * @param {{query?: string[], pathAfter?: string, proofpointV3?: boolean}} source
+ * Where a redirect keeps its destination, read out as written (Redirects.extract).
+ *
+ * @param {RedirectSource} source
  * @param {URLComponents} components
  * @returns {string|null}
  */
@@ -360,32 +386,108 @@ function extract(source, components) {
         if (query) rest += `?${query}`;
         return rest || null;
     }
-    // Proofpoint v3: /v3/__https://example.com/path__;!!Hash$
-    const open = path.indexOf('__');
-    const close = open < 0 ? -1 : path.indexOf('__;', open + 2);
-    return close < 0 ? null : path.slice(open + 2, close);
+    const encodedPath = components.percentEncodedPath;
+    if (source.lastPathSegment) return pathSegments(encodedPath).at(-1) ?? null;
+    if (source.pathSegment !== undefined) {
+        const prefix = source.pathSegment;
+        const segment = pathSegments(encodedPath).find((s) => s.startsWith(prefix) && s.length > prefix.length);
+        return segment === undefined ? null : segment.slice(prefix.length);
+    }
+    if (source.pathSegmentAfter !== undefined) {
+        if (!encodedPath.startsWith(source.pathSegmentAfter)) return null;
+        const segment = encodedPath.slice(source.pathSegmentAfter.length).split('/')[0];
+        return segment || null;
+    }
+    const query = components.percentEncodedQuery;
+    const fragment = components.percentEncodedFragment;
+    if (source.pathAfterSegments !== undefined) {
+        // "/x/c/token/https://example.com/a" after 3 → "https://example.com/a"
+        let rest = encodedPath;
+        for (let i = 0; i < source.pathAfterSegments; i++) {
+            const slash = rest.startsWith('/') ? rest.indexOf('/', 1) : -1;
+            if (slash < 0) return null;
+            rest = rest.slice(slash);
+        }
+        if (!rest.startsWith('/')) return null;
+        let out = rest.slice(1);
+        if (query) out += `?${query}`;
+        if (fragment) out += `#${fragment}`;
+        return out || null;
+    }
+    // Proofpoint v3: /v3/__https://example.com/path?a=1__;Iw!!Hash$. The wrapped
+    // URL keeps its own query, so read the whole string as written.
+    let raw = encodedPath;
+    if (query !== null) raw += `?${query}`;
+    if (fragment !== null) raw += `#${fragment}`;
+    if (!raw.startsWith('/v3/__')) return null;
+    const payload = raw.slice(6);
+    const close = payload.indexOf('__;', 1);
+    if (close < 0) return null;
+    const bang = payload.indexOf('!', close + 3);
+    return payload.slice(0, bang < 0 ? payload.length : bang);
 }
 
 /**
+ * A path's non-empty segments as written (still percent-encoded), so an
+ * encoded `/` inside one stays inside it.
+ *
+ * @param {string} encodedPath
+ * @returns {string[]}
+ */
+function pathSegments(encodedPath) {
+    return encodedPath.split('/').filter(Boolean);
+}
+
+/**
+ * The destination decoded (Redirects.decode); null when it can't be.
+ *
  * @param {string} raw
- * @param {'percent'|'schemeless'|'bingBase64'|'proofpointV2'} encoding
+ * @param {RedirectEncoding} encoding
  * @returns {string|null}
  */
 function decode(raw, encoding) {
+    if (typeof encoding === 'object') {
+        // Base64 of a JSON object holding the URL at a key: Customer.io's {"href": …}.
+        const text = base64Utf8(padBase64(removingPercentEncoding(raw) ?? raw));
+        if (text === null) return null;
+        let object;
+        try {
+            object = JSON.parse(text);
+        } catch {
+            return null;
+        }
+        const value = object !== null && typeof object === 'object' && !Array.isArray(object) ? object[encoding.base64JSON] : undefined;
+        return typeof value === 'string' ? value : null;
+    }
     switch (encoding) {
         case 'percent':
-            // Already decoded once as a query value; Google sometimes double-encodes.
-            return raw.startsWith('http') ? raw : removingPercentEncoding(raw);
+            // A query value is decoded once already. Google sometimes double-encodes,
+            // CurseForge always does, and a path segment arrives still encoded.
+            return HTTP_SCHEME.test(raw) ? raw : removingPercentEncoding(raw);
         case 'schemeless': {
             const stripped = raw.startsWith('/') ? raw.slice(1) : raw;
             return stripped ? `https://${stripped}` : null;
         }
-        case 'bingBase64': {
+        case 'schemeOptional': {
+            const url = decode(raw, 'percent');
+            if (url === null || HTTP_SCHEME.test(url)) return url;
+            return url.includes('://') ? null : decode(url, 'schemeless');
+        }
+        case 'bingBase64':
             // Bing prefixes base64url of the URL with "a1".
-            if (!raw.startsWith('a1')) return null;
-            let b64 = raw.slice(2).replace(/-/g, '+').replace(/_/g, '/');
-            while ([...b64].length % 4 !== 0) b64 += '=';
-            return base64Utf8(b64);
+            return raw.startsWith('a1') ? base64Utf8(padBase64(raw.slice(2))) : null;
+        case 'base64':
+            return base64Utf8(padBase64(removingPercentEncoding(raw) ?? raw));
+        case 'disqus': {
+            // https://example.com/page:AbC12: Disqus's hash after the last colon,
+            // past the scheme's; a port (all digits) is not one.
+            const url = decode(raw, 'percent');
+            if (url === null) return null;
+            const scheme = url.indexOf('://');
+            const colon = url.lastIndexOf(':');
+            if (scheme < 0 || colon <= scheme) return url;
+            const hash = url.slice(colon + 1);
+            return /^[A-Za-z0-9_-]+$/.test(hash) && !/^[0-9]+$/.test(hash) ? url.slice(0, colon) : url;
         }
         case 'proofpointV2': {
             // `_` stands for `/`; `-XX` for `%XX`.
@@ -393,9 +495,71 @@ function decode(raw, encoding) {
                 (match, hex) => (match === '_' ? '/' : `%${hex}`));
             return removingPercentEncoding(out) ?? out;
         }
+        case 'proofpointV3':
+            return proofpointV3(raw);
         default:
             return null;
     }
+}
+
+/** Proofpoint v3's run lengths: `**A` is 2 characters … `**_` is 65. */
+const PROOFPOINT_RUNS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+
+/**
+ * Proofpoint v3, as its reference decoder (urldecoder.py) reads it:
+ * `<url>__;<replacements>`, the URL percent-encoded, each `*` standing for
+ * the next character of the base64url replacement list and `**X` for the
+ * next 2…65 of them, by X's place in `A–Z a–z 0–9 - _`.
+ *
+ * @param {string} raw - What `extract` read: `<url>__;<replacements>`.
+ * @returns {string|null}
+ */
+function proofpointV3(raw) {
+    const split = raw.indexOf('__;');
+    if (split < 0) return null;
+    // A scheme written with one slash, "https:/example.com", gets its second.
+    let url = raw.slice(0, split).replace(/^([A-Za-z0-9+.-]+:\/)([^/].)/, '$1/$2');
+    url = removingPercentEncoding(url) ?? url;
+    const chars = [...url];
+    if (!chars.includes('*')) return url;
+    const text = base64Utf8(padBase64(raw.slice(split + 3)));
+    if (text === null) return null;
+    const replacements = [...text];
+    let out = '';
+    let used = 0;
+    for (let i = 0; i < chars.length;) {
+        if (chars[i] !== '*') {
+            out += chars[i++];
+            continue;
+        }
+        let length = 1;
+        if (i + 2 < chars.length && chars[i + 1] === '*') {
+            const place = PROOFPOINT_RUNS.indexOf(chars[i + 2]);
+            if (place < 0) return null;
+            length = place + 2;
+            i += 3;
+        } else {
+            i += 1;
+        }
+        if (used + length > replacements.length) return null;
+        out += replacements.slice(used, used + length).join('');
+        used += length;
+    }
+    return out;
+}
+
+/**
+ * Base64 (standard or URL-safe) as Foundation reads it after Swift's
+ * `base64Text` pads it: `-` and `_` swapped for `+` and `/`, `=` added up to
+ * a multiple of four.
+ *
+ * @param {string} s
+ * @returns {string}
+ */
+function padBase64(s) {
+    let b64 = s.replace(/-/g, '+').replace(/_/g, '/');
+    while ([...b64].length % 4 !== 0) b64 += '=';
+    return b64;
 }
 
 /**

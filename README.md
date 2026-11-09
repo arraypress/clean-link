@@ -1,8 +1,8 @@
 # @arraypress/clean-link
 
-Take the tracking out of a link, offline: tracking query parameters, redirect wrappers (google.com/url?q=, Outlook Safe Links, Facebook's l.php, Bing, Proofpoint, Slack…), Amazon's `/ref=` path segments and slugs (→ `/dp/ASIN`), eBay's item slugs, and share fragments (`#xtor=`, AddThis). It can say what it took out and why, leave affiliate credit in place, and recognise short links (bit.ly, t.co…) whose destination only their server knows. It never fetches anything.
+Take the tracking out of a link, offline: tracking query parameters, redirect wrappers (google.com/url?q=, Outlook and Teams Safe Links, Facebook's l.php, LinkedIn, Bing, Proofpoint, the mail gateways, affiliate networks…), Amazon's `/ref=` path segments and slugs (→ `/dp/ASIN`), eBay's item slugs, and share fragments (`#xtor=`, AddThis). It can say what it took out and why, leave affiliate credit in place, and recognise short links (bit.ly, t.co…) whose destination only their server knows. It never fetches anything.
 
-A port of [swift-url-kit](https://github.com/arraypress)'s URLStripper (default options), held to the Swift's own output, and its own report of what it removed, for 523 links by golden files. Rules are host-scoped: `ref` is Amazon's affiliate tag but GitHub's branch, `t` is Twitter's share token but YouTube's timestamp, so a global list would break real links.
+A port of [swift-url-kit](https://github.com/arraypress)'s URLStripper (default options), held to the Swift's own output, and its own report of what it removed, for 795 links by golden files. Rules are host-scoped: `ref` is Amazon's affiliate tag but GitHub's branch, `t` is Twitter's share token but YouTube's timestamp, so a global list would break real links.
 
 Zero dependencies. Works in Node.js, browsers, extensions and workers (anything with `URL`).
 
@@ -65,7 +65,7 @@ The Swift's `URLStripper.report`: the cleaned link and everything taken out, for
 
 | Option | |
 |---|---|
-| `keepAffiliate` | Keep what credits a referrer for a sale, so a creator's link still pays them: the names in `AFFILIATE_PARAMETERS` (Amazon's `tag`, eBay Partner Network's `campid`…, Awin's `awc`, Impact's `irclickid`, …) and the affiliate networks' own redirect pages (Rakuten's linksynergy, eBay's rover), left wrapped. The tracking around them still goes. Off by default. JavaScript only: the Swift has no such option, so it isn't in the golden files. |
+| `keepAffiliate` | Keep what credits a referrer for a sale, so a creator's link still pays them: the names in `AFFILIATE_PARAMETERS` (Amazon's `tag`, eBay Partner Network's `campid`…, Awin's `awc`, Impact's `irclickid`, …) and the affiliate networks' own redirect pages (Awin, CJ, Impact, ShareASale, Partnerize, Skimlinks, Viglink, Admitad, Tradedoubler, Rakuten's linksynergy, eBay's rover), left wrapped. The tracking around them still goes. Off by default. JavaScript only: the Swift has no such option, so it isn't in the golden files. |
 
 ### `shortenerService(urlOrHost: string): string | null`
 

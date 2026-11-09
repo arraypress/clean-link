@@ -141,6 +141,8 @@ export class URLComponents {
     static parse(string) {
         const c = new URLComponents();
         let rest = string;
+        /** Whether any part had to be encoded (or a host punycoded). */
+        let encoded = false;
 
         // A scheme is everything before a ":" that comes before any "/?#".
         // A colon there that can't end a scheme ("1a:b") is a failure;
@@ -165,8 +167,10 @@ export class URLComponents {
                 const info = authority.slice(0, at);
                 hostPort = authority.slice(at + 1);
                 const colon = info.indexOf(':');
-                c.percentEncodedUser = encode(colon < 0 ? info : info.slice(0, colon), ALLOWED.user, true);
+                const user = colon < 0 ? info : info.slice(0, colon);
+                c.percentEncodedUser = encode(user, ALLOWED.user, true);
                 c.percentEncodedPassword = colon < 0 ? null : encode(info.slice(colon + 1), ALLOWED.password, true);
+                encoded ||= c.percentEncodedUser !== user || (colon >= 0 && c.percentEncodedPassword !== info.slice(colon + 1));
             }
 
             let rawHost = hostPort;
@@ -184,19 +188,27 @@ export class URLComponents {
             c.percentEncodedHost = host.encoded;
             c.unicodeHost = host.unicode;
             c.portText = port;
+            encoded ||= host.unicode !== null;
         }
 
         const hash = rest.indexOf('#');
         if (hash >= 0) {
             c.percentEncodedFragment = encode(rest.slice(hash + 1), ALLOWED.fragment, true);
+            encoded ||= c.percentEncodedFragment !== rest.slice(hash + 1);
             rest = rest.slice(0, hash);
         }
         const mark = rest.indexOf('?');
         if (mark >= 0) {
             c.percentEncodedQuery = encode(rest.slice(mark + 1), ALLOWED.query, true);
+            encoded ||= c.percentEncodedQuery !== rest.slice(mark + 1);
             rest = rest.slice(0, mark);
         }
         c.percentEncodedPath = encode(rest, ALLOWED.path, true);
+        encoded ||= c.percentEncodedPath !== rest;
+        // Foundation writes a string it had to encode out again from its
+        // parts, so the port comes back as a number: "host:/" → "host/",
+        // ":080" → ":80".
+        c.rebuilt = encoded;
         return c;
     }
 

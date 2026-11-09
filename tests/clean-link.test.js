@@ -10,6 +10,8 @@ import {describe, it} from 'node:test';
 import assert from 'node:assert/strict';
 import {AFFILIATE_PARAMETERS, cleanLink, cleanReport, SHORTENER_HOSTS, shortenerService, withoutTracking} from '../src/index.js';
 import {URLComponents} from '../src/url/components.js';
+import {REDIRECT_RULES} from '../src/data/rules.js';
+import {AFFILIATE_REDIRECTS} from '../src/data/affiliate.js';
 import {mismatches, readGolden, readReports, reportMismatches} from '../scripts/golden/compare.mjs';
 
 /**
@@ -250,6 +252,215 @@ describe('withoutTracking (URLStripperTests)', () => {
     });
 });
 
+// Ported from swift-url-kit 0.2.0's URLStripperTests: the rules audited
+// against seven tracking lists (2026-11-09). Each fix failed before it.
+describe('withoutTracking (URLStripperTests, 0.2.0 fixes)', () => {
+    const clean = withoutTracking;
+
+    it('Microsoft’s fwlink keeps its LinkId; Amazon’s linkId still goes', () => {
+        assert.equal(clean('https://go.microsoft.com/fwlink/?LinkId=550986'), 'https://go.microsoft.com/fwlink/?LinkId=550986');
+        assert.equal(clean('https://www.amazon.com/dp/B08N5WRWNW?linkId=abc&tag=x-20'), 'https://www.amazon.com/dp/B08N5WRWNW');
+    });
+
+    it('affiliate ids are only tracking where a list says so', () => {
+        const affwp = 'https://example.com/wp-admin/admin.php?page=affiliate-wp-affiliates&action=edit_affiliate&affiliate_id=5';
+        assert.equal(clean(affwp), affwp);
+        assert.equal(clean('https://example.com/edd?aff_id=5&affid=6'), 'https://example.com/edd?aff_id=5&affid=6');
+        assert.equal(clean('https://www.newegg.com/p/N82E1?affid=1&item=2'), 'https://www.newegg.com/p/N82E1?item=2');
+    });
+
+    it('a MusicBrainz id is data off Condé Nast', () => {
+        const lastfm = 'https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&mbid=a74b1b7f-71a5-4011-9441-d0b5e4122711';
+        assert.equal(clean(lastfm), lastfm);
+        assert.equal(clean('https://www.wired.com/story/x/?mbid=social_twitter'), 'https://www.wired.com/story/x/');
+        assert.equal(clean('https://www.newyorker.com/a?mbid=nl&cndid=1&bxid=2'), 'https://www.newyorker.com/a');
+    });
+
+    it('Google keeps the query’s code page; oe still goes', () => {
+        assert.equal(clean('https://www.google.com/search?q=%83%7B&ie=Shift_JIS'), 'https://www.google.com/search?q=%83%7B&ie=Shift_JIS');
+        assert.equal(clean('https://www.google.com/search?q=x&oe=UTF-8'), 'https://www.google.com/search?q=x');
+    });
+
+    it('Yandex’s region and Netflix’s title survive', () => {
+        assert.equal(clean('https://yandex.ru/search/?text=weather&lr=2'), 'https://yandex.ru/search/?text=weather&lr=2');
+        assert.equal(clean('https://www.netflix.com/browse?jbv=80100172'), 'https://www.netflix.com/browse?jbv=80100172');
+        assert.equal(clean('https://www.netflix.com/title/80100172?trackId=1&tctx=2'), 'https://www.netflix.com/title/80100172');
+    });
+
+    it('Apps Script parameters are the app’s', () => {
+        const gas = 'https://script.google.com/macros/s/AKfy/exec?source=sheet&cd=1';
+        assert.equal(clean(gas), gas);
+    });
+
+    it('Proofpoint v3 keeps the wrapped query and decodes its replacements', () => {
+        assert.equal(clean('https://urldefense.com/v3/__https://www.example.com/path?a=1&utm_source=pp__;!!ABC!def$'), 'https://www.example.com/path?a=1');
+        assert.equal(clean('https://urldefense.com/v3/__https://example.com/a*b__;Iw!!ABC!def$'), 'https://example.com/a#b');
+        // `**A` is a run of two; "JmFi" is base64url of "&ab".
+        assert.equal(clean('https://urldefense.com/v3/__https://example.com/p?x=1*y=2**Az__;JmFi!!ABC$'), 'https://example.com/p?x=1&y=2abz');
+        assert.equal(clean('https://urldefense.com/v3/__https:/example.com/s__;!!ABC$'), 'https://example.com/s');
+    });
+
+    it('a Proofpoint link that does not unwrap is left whole (its signature)', () => {
+        const v4 = 'https://urldefense.com/v4/__https://example.com/?utm_source=x__;!!ABC$';
+        assert.equal(clean(v4), v4);
+        const short = 'https://urldefense.com/v3/__https://example.com/a*b__;!!ABC$';
+        assert.equal(clean(short), short);
+    });
+
+    it('Disqus drops its hash and nothing else', () => {
+        assert.equal(clean('https://disq.us/url?url=https%3A%2F%2Fexample.com%2Fdisqus%3Aabc&cuid=1'), 'https://example.com/disqus');
+        assert.equal(clean('https://disq.us/url?url=https%3A%2F%2Fexample.com%3A8080%2F'), 'https://example.com:8080/');
+    });
+
+    it('double-encoded destinations unwrap', () => {
+        assert.equal(clean('https://www.curseforge.com/linkout?remoteUrl=https%253a%252f%252fexample.com%252fcf'), 'https://example.com/cf');
+    });
+
+    it('unsubscribe tokens survive on unsubscribe pages only', () => {
+        assert.equal(clean('https://info.example.com/unsubscribe?mkt_tok=abc'), 'https://info.example.com/unsubscribe?mkt_tok=abc');
+        assert.equal(clean('https://go.example.com/UnsubscribePage.html?mkt_unsubscribe=1&mkt_tok=abc'), 'https://go.example.com/UnsubscribePage.html?mkt_unsubscribe=1&mkt_tok=abc');
+        assert.equal(clean('https://go.example.com/index.php/email/emailWebview?mkt_tok=abc&utm_source=x'), 'https://go.example.com/index.php/email/emailWebview?mkt_tok=abc');
+        assert.equal(clean('https://app.kit.com/unsubscribe?ck_subscriber_id=1'), 'https://app.kit.com/unsubscribe?ck_subscriber_id=1');
+        assert.equal(clean('https://example.com/post?mkt_tok=abc&id=1'), 'https://example.com/post?id=1');
+        assert.equal(clean('https://example.com/post?ck_subscriber_id=1&id=1'), 'https://example.com/post?id=1');
+        // A parameter named like an Object.prototype key is just a parameter.
+        assert.equal(clean('https://example.com/?constructor=1&__proto__=2&utm_source=x'), 'https://example.com/?constructor=1&__proto__=2');
+    });
+
+    it('archives, signed links and tickets are never cleaned', () => {
+        for (const url of [
+            'https://web.archive.org/web/20200101000000/https://example.com/page?id=1&utm_source=x',
+            'https://archive.ph/newest/https://example.com/page?id=1&utm_source=x',
+            'https://s123.t.eloqua.com/e/er?s=1&lid=2&elqTrackId=abc&elqaid=3&elqat=1',
+            'https://univis.uni-erlangen.de/form?__s=2&dsc=anew/lecture_view',
+            'https://tix.axs.com/abc?irclickid=x&utm_source=y',
+            'https://web.archive.org/web/2020/https://www.amazon.com/T/dp/B08N5WRWNW/ref=x?tag=a#xtor=1',
+            'https://archive.ph/x?',
+        ]) assert.equal(clean(url), url);
+        // A redirect to an archive is still unwrapped; the archived URL is kept whole.
+        const google = 'https://www.google.com/url?q=https%3A%2F%2Fweb.archive.org%2Fweb%2F2020%2Fhttps%3A%2F%2Fexample.com%2F%3Fid%3D1%26utm_source%3Dx';
+        assert.equal(cleanReport(google).cleaned, 'https://web.archive.org/web/2020/https://example.com/?id=1&utm_source=x');
+        assert.deepEqual(cleanReport(google).unwrapped, ['Google']);
+        assert.equal(clean('https://example.com/a?__s=abcdef&id=1'), 'https://example.com/a?id=1');
+    });
+
+    it('TikTok keeps enter_from; Douyin and Google’s viewport size still go', () => {
+        assert.equal(clean('https://www.tiktok.com/effect/1?enter_from=x&is_from_webapp=1'), 'https://www.tiktok.com/effect/1?enter_from=x');
+        assert.equal(clean('https://www.douyin.com/video/1?enter_from=x'), 'https://www.douyin.com/video/1');
+        assert.equal(clean('https://www.google.com/search?q=x&biw=440&bih=974'), 'https://www.google.com/search?q=x');
+    });
+
+    it('names lists strip but sites need are kept', () => {
+        for (const url of [
+            'https://www.ebay.com/itm/123456789012?var=987',
+            'https://www.amazon.com/dp/B08N5WRWNW?psc=1',
+            'https://www.tiktok.com/search?q=cats',
+            'https://www.temu.com/goods.html?goods_id=1&sku_id=2',
+            'https://example.com/?spm=1&ref=nav&referrer=x',
+            'https://onelink.me/abc?pid=email&af_force_deeplink=true',
+            'https://example.com/ads?adId=123&adgroupid=4',
+            'https://t.me/iv?url=https%3A%2F%2Fexample.com%2Fa&rhash=1',
+            'https://www.kickstarter.com/discover/advanced?term=board+games',
+            'https://www.flipkart.com/p/itm1?pid=X&lid=LST1',
+            'https://shop.example.com/authentication/login?analytics_trace_id=1',
+            'https://app.adjust.com/abc?adj_t=xyz&adj_campaign=c',
+            'https://www.shein.com/p.html?mallCode=1',
+        ]) assert.equal(clean(url), url, url);
+        assert.equal(clean('https://www.xiaohongshu.com/explore/abc?xsec_token=T&xhsshare=CopyLink'), 'https://www.xiaohongshu.com/explore/abc?xsec_token=T');
+    });
+});
+
+describe('withoutTracking (URLStripperTests, 0.2.0 additions)', () => {
+    const clean = withoutTracking;
+
+    it('new global names, each in its category', () => {
+        assert.equal(clean('https://example.com/?s_cid=em&rdt_cid=1&qclid=2&tblci=3&vmcid=4&id=1'), 'https://example.com/?id=1');
+        assert.equal(clean('https://example.com/?itm_source=a&itm_medium=b&ga_source=c&fbadid=d&ttadid=e&sscid=f&id=1'), 'https://example.com/?id=1');
+        assert.equal(clean('https://example.com/?nb_placement=a&mt_click_id=b&et_rid=c&mindbox-click-id=d&cm_cr=e&int_term=f&id=1'), 'https://example.com/?id=1');
+        const {removed} = cleanReport('https://example.com/?pjclid=1&fb_comment_id=2&oft_id=3&cq_src=4');
+        assert.deepEqual(removed.map((r) => r.category), ['ecommerce', 'social', 'email', 'analytics']);
+        assert.ok(removed.every((r) => r.scope === 'global'));
+    });
+
+    it('new site rules', () => {
+        assert.equal(clean('https://www.instagram.com/p/C1/?igsh=x&ig_rid=y&stkn=z'), 'https://www.instagram.com/p/C1/');
+        assert.equal(clean('https://x.com/u/status/1?refsrc=a&a=b&s=20'), 'https://x.com/u/status/1');
+        assert.equal(clean('https://youtu.be/dQw4w9WgXcQ?si=a&is=b&t=30'), 'https://youtu.be/dQw4w9WgXcQ?t=30');
+        assert.equal(clean('https://www.linkedin.com/feed/update/urn:li:activity:1/?rcm=x&origin=y'), 'https://www.linkedin.com/feed/update/urn:li:activity:1/');
+        assert.equal(clean('https://www.msn.com/en-gb/news/x?ocid=a&cvid=b&ei=c&pc=d'), 'https://www.msn.com/en-gb/news/x');
+        assert.equal(clean('https://www.temu.com/goods.html?goods_id=1&_x_ads_id=2&refer_page_name=3'), 'https://www.temu.com/goods.html?goods_id=1');
+        assert.equal(clean('https://www.amazon.co.uk/dp/B08N5WRWNW?hvadid=1&hvdev=c&ingress=0&psc=1'), 'https://www.amazon.co.uk/dp/B08N5WRWNW?psc=1');
+        assert.equal(clean('https://www.audible.co.uk/pd/B0?ref_=a&qid=1&source_code=PROMO'), 'https://www.audible.co.uk/pd/B0?source_code=PROMO');
+        assert.equal(clean('https://www.tiktok.com/@u/video/1?share_region=GB&ug_btm=x'), 'https://www.tiktok.com/@u/video/1');
+        assert.equal(clean('https://www.reddit.com/r/swift/comments/1/x/?entry_point=feed&post_index=2'), 'https://www.reddit.com/r/swift/comments/1/x/');
+        assert.equal(clean('https://open.spotify.com/track/1?si=a&pi=b&sp_cid=c'), 'https://open.spotify.com/track/1');
+        assert.equal(clean('https://www.wsj.com/articles/x?mod=hp_lead_pos1&reflink=share'), 'https://www.wsj.com/articles/x');
+        assert.equal(clean('https://www.flipkart.com/p/itm1?pid=X&otracker=search&ssid=1'), 'https://www.flipkart.com/p/itm1?pid=X');
+    });
+
+    it('new redirect wrappers, each with its label', () => {
+        const T = 'https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1';
+        const D = 'https://example.com/dest?id=1';
+        /** @type {[string, string, string][]} */
+        const cases = [
+            [`https://www.google.com/aclk?sa=l&ai=DChc&ae=2&adurl=${T}`, D, 'Google Ads'],
+            ['https://www.google.com/amp/www.example.com/amp/page', 'https://www.example.com/amp/page', 'Google AMP'],
+            ['https://www.linkedin.com/safety/go?url=https%3A%2F%2Fexample.com%2Fl&trk=x', 'https://example.com/l', 'LinkedIn'],
+            [`https://www.linkedin.com/safety/go/?url=${T}&trk=flagship-messaging-web`, D, 'LinkedIn'],
+            ['https://www.facebook.com/l.php?u=https%3A%2F%2Fexample.com%2F', 'https://example.com/', 'Facebook'],
+            [`https://m.facebook.com/l.php?u=${T}&h=AT0`, D, 'Facebook'],
+            ['https://www.facebook.com/flx/warn/?u=https%3A%2F%2Fexample.com%2Ff&h=AT0', 'https://example.com/f', 'Facebook'],
+            ['https://l.wl.co/l?u=https%3A%2F%2Fexample.com%2Fw', 'https://example.com/w', 'WhatsApp'],
+            ['https://m.vk.com/away.php?to=https%3A%2F%2Fexample.com%2Fv', 'https://example.com/v', 'VK'],
+            [`https://vk.ru/away.php?to=${T}`, D, 'VK'],
+            [`https://ok.ru/dk?cmd=logExternal&st.cmd=x&st.link=${T}`, D, 'OK'],
+            [`https://gcc02.safelinks.protection.office365.us/?url=${T}&data=x`, D, 'Outlook Safe Links'],
+            ['https://statics.teams.cdn.office.net/evergreen-assets/safelinks/2/atp-safelinks.html?url=https%3A%2F%2Fexample.com%2Ft&locale=en-gb', 'https://example.com/t', 'Teams Safe Links'],
+            [`https://urldefense.proofpoint.com/v1/url?u=${T}&k=abc`, D, 'Proofpoint'],
+            ['https://urldefense.com/v3/__https://example.com/dest?id=1__;!!ABC!def$', D, 'Proofpoint'],
+            ['https://linkprotect.cudasvc.com/url?a=https%3a%2f%2fexample.com%2fb&c=E,1,x&typo=1', 'https://example.com/b', 'Barracuda'],
+            ['https://secure-web.cisco.com/1AbC/https%3A%2F%2Fexample.com%2Fc', 'https://example.com/c', 'Cisco Secure Email'],
+            ['https://eu-central-1.protection.sophos.com?d=example.com&u=aHR0cHM6Ly9leGFtcGxlLmNvbS9kZXN0P2lkPTE%3D&i=x&t=y&h=z', D, 'Sophos'],
+            [`https://imsva91-ctp.trendmicro.com:443/wis/clicktime/v1/query?url=${T}&umid=abc&auth=x`, D, 'Trend Micro'],
+            [`https://clicktime.symantec.com/15tSyX?u=${T}`, D, 'Symantec'],
+            [`https://medium.com/r/?url=${T}`, D, 'Medium'],
+            [`https://www.pinterest.com/offsite/?url=${T}&pin=1&token=x`, D, 'Pinterest'],
+            ['https://r.search.yahoo.com/_ylt=Awr/RV=2/RE=1/RO=10/RU=https%3a%2f%2fexample.com%2fdest/RK=2/RS=abc-', 'https://example.com/dest', 'Yahoo'],
+            [`https://gate.sc/?url=${T}&token=x`, D, 'SoundCloud'],
+            [`https://link.zhihu.com/?target=${T}`, D, 'Zhihu'],
+            [`https://weibo.cn/sinaurl?u=${T}`, D, 'Weibo'],
+            [`https://www.douban.com/link2/?url=${T}`, D, 'Douban'],
+            [`https://search.naver.com/p/crd/rd?m=1&px=1&u=${T}`, D, 'Naver'],
+            [`https://gitee.com/link?target=${T}`, D, 'Gitee'],
+            [`https://link.csdn.net/?target=${T}`, D, 'CSDN'],
+            [`https://link.juejin.cn/?target=${T}`, D, 'Juejin'],
+            [`https://links.jianshu.com/go?to=${T}`, D, 'Jianshu'],
+            ['https://links.govdelivery.com/track?type=click&enid=abc&msgid=1&url=https://example.com/dest', 'https://example.com/dest', 'GovDelivery'],
+            ['https://abc.r.us-east-1.awstrack.me/L0/https:%2F%2Fexample.com%2Fdest%3Fid=1/1/0100-abc/xyz=', D, 'Amazon SES'],
+            ['https://e.customeriomail.com/e/c/eyJlbWFpbF9pZCI6IngiLCJocmVmIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9kZXN0P2lkPTEiLCJsaW5rX2lkIjoxfQ/sig', D, 'Customer.io'],
+            ['https://click.convertkit-mail2.com/abc/def/aHR0cHM6Ly9leGFtcGxlLmNvbS9kZXN0P2lkPTE', D, 'Kit'],
+            ['https://aax-us-east.amazon-adsystem.com/x/c/Qabc/https://example.com/dest', 'https://example.com/dest', 'Amazon Ads'],
+            ['https://www.awin1.com/cread.php?awinmid=1&awinaffid=2&ued=https%3A%2F%2Fexample.com%2Fa', 'https://example.com/a', 'Awin'],
+            [`https://www.anrdoezrs.net/click-123-456?url=${T}`, D, 'CJ'],
+            [`https://www.dpbolvw.net/click-123-456?url=${T}`, D, 'CJ'],
+            [`https://brand.sjv.io/c/123/456/789?u=${T}`, D, 'Impact'],
+            ['https://shareasale.com/r.cfm?b=1&u=2&m=3&urllink=example.com%2Fdest%3Fid%3D1&afftrack=', D, 'ShareASale'],
+            [`https://prf.hn/click/camref:1100l/destination:${T}`, D, 'Partnerize'],
+            [`https://go.skimresources.com/?id=123X456&xs=1&url=${T}`, D, 'Skimlinks'],
+            [`https://redirect.viglink.com/?key=x&u=${T}`, D, 'Viglink'],
+            [`https://ad.admitad.com/g/abc/?ulp=${T}`, D, 'Admitad'],
+            [`https://clk.tradedoubler.com/click?p=1&a=2&url=${T}`, D, 'Tradedoubler'],
+        ];
+        for (const [wrapped, destination, label] of cases) {
+            const report = cleanReport(wrapped);
+            assert.equal(report.cleaned, destination, wrapped);
+            assert.deepEqual(report.unwrapped, [label], wrapped);
+        }
+        assert.equal(clean('https://shareasale.com/r.cfm?urllink=https%3A%2F%2Fexample.com%2Fs'), 'https://example.com/s');
+        assert.equal(clean('https://eu-central-1.protection.sophos.com?d=x&u=bm90IGEgdXJs'), 'https://eu-central-1.protection.sophos.com?d=x&u=bm90IGEgdXJs');
+    });
+});
+
 describe('cleanLink', () => {
     it('returns the cleaned link', () => {
         assert.equal(cleanLink('https://example.com/a?utm_source=newsletter&id=1'), 'https://example.com/a?id=1');
@@ -343,6 +554,39 @@ describe('keepAffiliate', () => {
         assert.equal(cleanLink('https://www.amazon.com/dp/B08N5WRWNW?tag=creator-20'), 'https://www.amazon.com/dp/B08N5WRWNW');
     });
 
+    it('leaves every affiliate network’s wrapper wrapped (Awin, CJ, Impact, ShareASale…), with its credit', () => {
+        const awin = 'https://www.awin1.com/cread.php?awinmid=1&ued=https%3A%2F%2Fexample.com%2Fa';
+        assert.equal(withoutTracking(awin, keep), awin);
+        assert.equal(withoutTracking(awin), 'https://example.com/a');
+        for (const wrapped of [
+            'https://www.anrdoezrs.net/click-123-456?url=https%3A%2F%2Fexample.com%2Fc',
+            'https://brand.sjv.io/c/123/456/789?u=https%3A%2F%2Fexample.com%2Fi',
+            'https://shareasale.com/r.cfm?b=1&u=2&m=3&urllink=example.com%2Fs',
+            'https://prf.hn/click/camref:1100l/destination:https%3A%2F%2Fexample.com%2Fp',
+            'https://go.skimresources.com/?id=1X2&url=https%3A%2F%2Fexample.com%2Fk',
+            'https://redirect.viglink.com/?key=x&u=https%3A%2F%2Fexample.com%2Fv',
+            'https://ad.admitad.com/g/abc/?ulp=https%3A%2F%2Fexample.com%2Fa',
+            'https://clk.tradedoubler.com/click?p=1&a=2&url=https%3A%2F%2Fexample.com%2Ft',
+        ]) {
+            assert.equal(withoutTracking(wrapped, keep), wrapped, wrapped);
+            assert.notEqual(withoutTracking(wrapped), wrapped, wrapped);
+        }
+        // Not an affiliate network: still unwrapped.
+        assert.equal(withoutTracking('https://www.linkedin.com/safety/go?url=https%3A%2F%2Fexample.com%2Fl', keep), 'https://example.com/l');
+    });
+
+    it('keeps the new networks’ and shops’ credit (ShareASale, Partnerize, Impact, Amazon OneLink, Humble…)', () => {
+        assert.equal(withoutTracking('https://shop.example/p?sscid=1&pjclid=2&im_ref=3&gclid=x', keep), 'https://shop.example/p?sscid=1&pjclid=2&im_ref=3');
+        assert.equal(withoutTracking('https://www.amazon.com/dp/B08N5WRWNW?asc_source=a&hvadid=1', keep), 'https://www.amazon.com/dp/B08N5WRWNW?asc_source=a');
+        assert.equal(withoutTracking('https://www.humblebundle.com/store/x?partner=y&mcid=z', keep), 'https://www.humblebundle.com/store/x?partner=y');
+        assert.equal(withoutTracking('https://wise.com/invite?partnerizecampaignid=1&clickref=2', keep), 'https://wise.com/invite?partnerizecampaignid=1&clickref=2');
+    });
+
+    it('names only redirect labels that exist', () => {
+        const labels = new Set(REDIRECT_RULES.map((rule) => rule.label));
+        for (const label of AFFILIATE_REDIRECTS) assert.ok(labels.has(label), label);
+    });
+
     it('lists lowercased names, each in one programme', () => {
         const names = Object.values(AFFILIATE_PARAMETERS).flat();
         assert.deepEqual(names, names.map((n) => n.toLowerCase()));
@@ -395,6 +639,19 @@ describe('URLComponents (Foundation’s reading)', () => {
         assert.equal(URLComponents.parse('https://ex<.com/'), null);
         assert.equal(URLComponents.parse('https://ex.com:8a/'), null);
         assert.equal(URLComponents.parse('1a:b'), null);
+    });
+
+    it('writes the port as a number when it had to encode anything, as Foundation rewrites the string', () => {
+        // Checked against Foundation (macOS 27): an empty port goes, a leading zero goes.
+        assert.equal(parsed('https://example.com:/\u0301/x').string, 'https://example.com/%CC%81/x');
+        assert.equal(parsed('https://example.com:/a?q=é').string, 'https://example.com/a?q=%C3%A9');
+        assert.equal(parsed('https://u é@example.com:/a').string, 'https://u%20%C3%A9@example.com/a');
+        assert.equal(parsed('https://bücher.example:080/a').string, 'https://xn--bcher-kva.example:80/a');
+        assert.equal(parsed('https://example.com:/a%').string, 'https://example.com/a%25');
+        // Nothing to encode: the string as given.
+        assert.equal(parsed('https://example.com:/a%20b').string, 'https://example.com:/a%20b');
+        assert.equal(parsed('https://example.com:080/a').string, 'https://example.com:080/a');
+        assert.equal(withoutTracking('https://www.google.com/url?q=https%3A%2F%2Fexample.com%3A%2F%CC%81%2Fx'), 'https://example.com/%CC%81/x');
     });
 
     it('decodes like Foundation: a path that won’t decode is "", a value null', () => {

@@ -4519,7 +4519,7 @@
       ]
     },
     {
-      "cleaned" : "https://www.facebook.com/l.php?u=https%3A%2F%2Fexample.com%2F",
+      "cleaned" : "https://example.com/",
       "fragmentRemoved" : false,
       "original" : "https://www.facebook.com/l.php?u=https%3A%2F%2Fexample.com%2F",
       "pathChanges" : [
@@ -4529,7 +4529,7 @@
 
       ],
       "unwrapped" : [
-
+        "Facebook"
       ]
     },
     {
@@ -5082,7 +5082,7 @@
         {
           "category" : "ecommerce",
           "name" : "linkid",
-          "scope" : "global"
+          "scope" : "Amazon"
         }
       ],
       "unwrapped" : [
@@ -5319,7 +5319,7 @@
       ]
     },
     {
-      "cleaned" : "https://www.ebay.com/itm/256000000000?ssspo=abc&sssrc=2047675&ssuid=x&var=1",
+      "cleaned" : "https://www.ebay.com/itm/256000000000?var=1",
       "fragmentRemoved" : false,
       "original" : "https://www.ebay.com/itm/256000000000?mkcid=16&mkevt=1&mkrid=711-127632-2357-0&ssspo=abc&sssrc=2047675&ssuid=x&var=1",
       "pathChanges" : [
@@ -5339,6 +5339,21 @@
         {
           "category" : "ecommerce",
           "name" : "mkrid",
+          "scope" : "eBay"
+        },
+        {
+          "category" : "ecommerce",
+          "name" : "ssspo",
+          "scope" : "eBay"
+        },
+        {
+          "category" : "ecommerce",
+          "name" : "sssrc",
+          "scope" : "eBay"
+        },
+        {
+          "category" : "ecommerce",
+          "name" : "ssuid",
           "scope" : "eBay"
         }
       ],
@@ -5649,7 +5664,7 @@
       ]
     },
     {
-      "cleaned" : "https://www.nytimes.com/2026/01/01/technology/x.html?sgrp=c-cb",
+      "cleaned" : "https://www.nytimes.com/2026/01/01/technology/x.html",
       "fragmentRemoved" : false,
       "original" : "https://www.nytimes.com/2026/01/01/technology/x.html?smid=nytcore-ios-share&referringSource=articleShare&sgrp=c-cb",
       "pathChanges" : [
@@ -5664,6 +5679,11 @@
         {
           "category" : "other",
           "name" : "referringsource",
+          "scope" : "New York Times"
+        },
+        {
+          "category" : "other",
+          "name" : "sgrp",
           "scope" : "New York Times"
         }
       ],
@@ -6232,7 +6252,7 @@
       ]
     },
     {
-      "cleaned" : "https://www.google.com/search?q=swift+url",
+      "cleaned" : "https://www.google.com/search?q=swift+url&ie=UTF-8",
       "fragmentRemoved" : false,
       "original" : "https://www.google.com/search?q=swift+url&rlz=1C5CHFA&oq=swift+url&gs_lcrp=EgZj&sourceid=chrome&ie=UTF-8",
       "pathChanges" : [
@@ -6257,11 +6277,6 @@
         {
           "category" : "analytics",
           "name" : "sourceid",
-          "scope" : "Google"
-        },
-        {
-          "category" : "analytics",
-          "name" : "ie",
           "scope" : "Google"
         }
       ],
@@ -6308,14 +6323,18 @@
       ]
     },
     {
-      "cleaned" : "https://www.google.com/maps/place/London/@51.5,-0.1,10z?entry=ttu&g_ep=EgoyMDI0",
+      "cleaned" : "https://www.google.com/maps/place/London/@51.5,-0.1,10z?entry=ttu",
       "fragmentRemoved" : false,
       "original" : "https://www.google.com/maps/place/London/@51.5,-0.1,10z?entry=ttu&g_ep=EgoyMDI0",
       "pathChanges" : [
 
       ],
       "removed" : [
-
+        {
+          "category" : "analytics",
+          "name" : "g_ep",
+          "scope" : "Google"
+        }
       ],
       "unwrapped" : [
 
@@ -6434,18 +6453,13 @@
       ]
     },
     {
-      "cleaned" : "https://yandex.ru/search/?text=swift",
+      "cleaned" : "https://yandex.ru/search/?text=swift&lr=213",
       "fragmentRemoved" : false,
       "original" : "https://yandex.ru/search/?text=swift&lr=213&clid=1955454",
       "pathChanges" : [
 
       ],
       "removed" : [
-        {
-          "category" : "analytics",
-          "name" : "lr",
-          "scope" : "Yandex"
-        },
         {
           "category" : "analytics",
           "name" : "clid",
@@ -6508,21 +6522,25 @@
       ]
     },
     {
-      "cleaned" : "https://www.theguardian.com/world/2026/jan/01/x.amp?usqp=mq331AQ",
+      "cleaned" : "https://www.theguardian.com/world/2026/jan/01/x.amp",
       "fragmentRemoved" : false,
       "original" : "https://www.google.com/amp/s/www.theguardian.com/world/2026/jan/01/x.amp?usqp=mq331AQ",
       "pathChanges" : [
 
       ],
       "removed" : [
-
+        {
+          "category" : "analytics",
+          "name" : "usqp",
+          "scope" : "global"
+        }
       ],
       "unwrapped" : [
         "Google AMP"
       ]
     },
     {
-      "cleaned" : "https://www.google.com/amp/www.example.com/amp/page",
+      "cleaned" : "https://www.example.com/amp/page",
       "fragmentRemoved" : false,
       "original" : "https://www.google.com/amp/www.example.com/amp/page",
       "pathChanges" : [
@@ -6532,7 +6550,7 @@
 
       ],
       "unwrapped" : [
-
+        "Google AMP"
       ]
     },
     {
@@ -6668,7 +6686,7 @@
       ]
     },
     {
-      "cleaned" : "https://urldefense.com/v3/__https://www.example.com/path?a=1",
+      "cleaned" : "https://www.example.com/path?a=1",
       "fragmentRemoved" : false,
       "original" : "https://urldefense.com/v3/__https://www.example.com/path?a=1&utm_source=pp__;!!ABC!def$",
       "pathChanges" : [
@@ -6682,7 +6700,7 @@
         }
       ],
       "unwrapped" : [
-
+        "Proofpoint"
       ]
     },
     {
@@ -6764,7 +6782,7 @@
       ]
     },
     {
-      "cleaned" : "https://example.com/disqus:abc",
+      "cleaned" : "https://example.com/disqus",
       "fragmentRemoved" : false,
       "original" : "https://disq.us/url?url=https%3A%2F%2Fexample.com%2Fdisqus%3Aabc&cuid=1",
       "pathChanges" : [
@@ -6806,7 +6824,7 @@
       ]
     },
     {
-      "cleaned" : "https://www.curseforge.com/linkout?remoteUrl=https%253a%252f%252fexample.com%252fcf",
+      "cleaned" : "https://example.com/cf",
       "fragmentRemoved" : false,
       "original" : "https://www.curseforge.com/linkout?remoteUrl=https%253a%252f%252fexample.com%252fcf",
       "pathChanges" : [
@@ -6816,7 +6834,7 @@
 
       ],
       "unwrapped" : [
-
+        "CurseForge"
       ]
     },
     {
@@ -7143,7 +7161,7 @@
       ]
     },
     {
-      "cleaned" : "https://www.netflix.com/title/80100172",
+      "cleaned" : "https://www.netflix.com/title/80100172?jbv=1",
       "fragmentRemoved" : false,
       "original" : "https://www.netflix.com/title/80100172?trackId=123&tctx=0%2C0&jbv=1",
       "pathChanges" : [
@@ -7158,11 +7176,6 @@
         {
           "category" : "other",
           "name" : "tctx",
-          "scope" : "Netflix"
-        },
-        {
-          "category" : "other",
-          "name" : "jbv",
           "scope" : "Netflix"
         }
       ],
@@ -7984,7 +7997,7 @@
       ]
     },
     {
-      "cleaned" : "https://www.google.com/url?url=https%253A%252F%252Fex.com&q=https://ok.com",
+      "cleaned" : "https://ex.com",
       "fragmentRemoved" : false,
       "original" : "https://www.google.com/url?url=https%253A%252F%252Fex.com&q=https://ok.com",
       "pathChanges" : [
@@ -7994,7 +8007,7 @@
 
       ],
       "unwrapped" : [
-
+        "Google"
       ]
     },
     {
@@ -9576,6 +9589,4262 @@
       "cleaned" : "https://ex.com/%e2%82%ac/a",
       "fragmentRemoved" : false,
       "original" : "https://ex.com/%e2%82%ac/a?utm_source=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "analytics",
+          "name" : "utm_source",
+          "scope" : "global"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://go.microsoft.com/fwlink/?LinkId=550986",
+      "fragmentRemoved" : false,
+      "original" : "https://go.microsoft.com/fwlink/?LinkId=550986",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.amazon.com/dp/B08N5WRWNW",
+      "fragmentRemoved" : false,
+      "original" : "https://www.amazon.com/dp/B08N5WRWNW?linkId=abc&tag=x-20",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "ecommerce",
+          "name" : "linkid",
+          "scope" : "Amazon"
+        },
+        {
+          "category" : "ecommerce",
+          "name" : "tag",
+          "scope" : "Amazon"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.amazon.com/dp/B08N5WRWNW",
+      "fragmentRemoved" : false,
+      "original" : "https://www.amazon.com/dp/B08N5WRWNW",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/wp-admin/admin.php?page=affiliate-wp-affiliates&action=edit_affiliate&affiliate_id=5",
+      "fragmentRemoved" : false,
+      "original" : "https://example.com/wp-admin/admin.php?page=affiliate-wp-affiliates&action=edit_affiliate&affiliate_id=5",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/edd?aff_id=5&affid=6",
+      "fragmentRemoved" : false,
+      "original" : "https://example.com/edd?aff_id=5&affid=6",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.newegg.com/p/N82E1?item=2",
+      "fragmentRemoved" : false,
+      "original" : "https://www.newegg.com/p/N82E1?affid=1&item=2",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "ecommerce",
+          "name" : "affid",
+          "scope" : "Newegg"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.newegg.com/p/N82E1?item=2",
+      "fragmentRemoved" : false,
+      "original" : "https://www.newegg.com/p/N82E1?item=2",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&mbid=a74b1b7f-71a5-4011-9441-d0b5e4122711",
+      "fragmentRemoved" : false,
+      "original" : "https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&mbid=a74b1b7f-71a5-4011-9441-d0b5e4122711",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.wired.com/story/x/",
+      "fragmentRemoved" : false,
+      "original" : "https://www.wired.com/story/x/?mbid=social_twitter",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "other",
+          "name" : "mbid",
+          "scope" : "Condé Nast"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.wired.com/story/x/",
+      "fragmentRemoved" : false,
+      "original" : "https://www.wired.com/story/x/",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.newyorker.com/a",
+      "fragmentRemoved" : false,
+      "original" : "https://www.newyorker.com/a?mbid=nl&cndid=1&bxid=2",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "other",
+          "name" : "mbid",
+          "scope" : "Condé Nast"
+        },
+        {
+          "category" : "other",
+          "name" : "cndid",
+          "scope" : "Condé Nast"
+        },
+        {
+          "category" : "other",
+          "name" : "bxid",
+          "scope" : "Condé Nast"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.newyorker.com/a",
+      "fragmentRemoved" : false,
+      "original" : "https://www.newyorker.com/a",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.google.com/search?q=%83%7B&ie=Shift_JIS",
+      "fragmentRemoved" : false,
+      "original" : "https://www.google.com/search?q=%83%7B&ie=Shift_JIS",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.google.com/search?q=x",
+      "fragmentRemoved" : false,
+      "original" : "https://www.google.com/search?q=x&oe=UTF-8",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "analytics",
+          "name" : "oe",
+          "scope" : "Google"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.google.com/search?q=x",
+      "fragmentRemoved" : false,
+      "original" : "https://www.google.com/search?q=x",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://yandex.ru/search/?text=weather&lr=2",
+      "fragmentRemoved" : false,
+      "original" : "https://yandex.ru/search/?text=weather&lr=2",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.netflix.com/browse?jbv=80100172",
+      "fragmentRemoved" : false,
+      "original" : "https://www.netflix.com/browse?jbv=80100172",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.netflix.com/title/80100172",
+      "fragmentRemoved" : false,
+      "original" : "https://www.netflix.com/title/80100172?trackId=1&tctx=2",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "other",
+          "name" : "trackid",
+          "scope" : "Netflix"
+        },
+        {
+          "category" : "other",
+          "name" : "tctx",
+          "scope" : "Netflix"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.netflix.com/title/80100172",
+      "fragmentRemoved" : false,
+      "original" : "https://www.netflix.com/title/80100172",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://script.google.com/macros/s/AKfy/exec?source=sheet&cd=1",
+      "fragmentRemoved" : false,
+      "original" : "https://script.google.com/macros/s/AKfy/exec?source=sheet&cd=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.example.com/path?a=1",
+      "fragmentRemoved" : false,
+      "original" : "https://www.example.com/path?a=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/a#b",
+      "fragmentRemoved" : false,
+      "original" : "https://urldefense.com/v3/__https://example.com/a*b__;Iw!!ABC!def$",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Proofpoint"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/a#b",
+      "fragmentRemoved" : false,
+      "original" : "https://example.com/a#b",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/p?x=1&y=2abz",
+      "fragmentRemoved" : false,
+      "original" : "https://urldefense.com/v3/__https://example.com/p?x=1*y=2**Az__;JmFi!!ABC$",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Proofpoint"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/p?x=1&y=2abz",
+      "fragmentRemoved" : false,
+      "original" : "https://example.com/p?x=1&y=2abz",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/s",
+      "fragmentRemoved" : false,
+      "original" : "https://urldefense.com/v3/__https:/example.com/s__;!!ABC$",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Proofpoint"
+      ]
+    },
+    {
+      "cleaned" : "https://urldefense.com/v4/__https://example.com/?utm_source=x__;!!ABC$",
+      "fragmentRemoved" : false,
+      "original" : "https://urldefense.com/v4/__https://example.com/?utm_source=x__;!!ABC$",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://urldefense.com/v3/__https://example.com/a*b__;!!ABC$",
+      "fragmentRemoved" : false,
+      "original" : "https://urldefense.com/v3/__https://example.com/a*b__;!!ABC$",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/disqus",
+      "fragmentRemoved" : false,
+      "original" : "https://example.com/disqus",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com:8080/",
+      "fragmentRemoved" : false,
+      "original" : "https://disq.us/url?url=https%3A%2F%2Fexample.com%3A8080%2F",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Disqus"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com:8080/",
+      "fragmentRemoved" : false,
+      "original" : "https://example.com:8080/",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/cf",
+      "fragmentRemoved" : false,
+      "original" : "https://example.com/cf",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://info.example.com/unsubscribe?mkt_tok=abc",
+      "fragmentRemoved" : false,
+      "original" : "https://info.example.com/unsubscribe?mkt_tok=abc",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://go.example.com/UnsubscribePage.html?mkt_unsubscribe=1&mkt_tok=abc",
+      "fragmentRemoved" : false,
+      "original" : "https://go.example.com/UnsubscribePage.html?mkt_unsubscribe=1&mkt_tok=abc",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://go.example.com/index.php/email/emailWebview?mkt_tok=abc",
+      "fragmentRemoved" : false,
+      "original" : "https://go.example.com/index.php/email/emailWebview?mkt_tok=abc&utm_source=x",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "analytics",
+          "name" : "utm_source",
+          "scope" : "global"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://go.example.com/index.php/email/emailWebview?mkt_tok=abc",
+      "fragmentRemoved" : false,
+      "original" : "https://go.example.com/index.php/email/emailWebview?mkt_tok=abc",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://app.kit.com/unsubscribe?ck_subscriber_id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://app.kit.com/unsubscribe?ck_subscriber_id=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/post?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://example.com/post?mkt_tok=abc&id=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "email",
+          "name" : "mkt_tok",
+          "scope" : "global"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/post?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://example.com/post?id=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/post?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://example.com/post?ck_subscriber_id=1&id=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "email",
+          "name" : "ck_subscriber_id",
+          "scope" : "global"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://web.archive.org/web/20200101000000/https://example.com/page?id=1&utm_source=x",
+      "fragmentRemoved" : false,
+      "original" : "https://web.archive.org/web/20200101000000/https://example.com/page?id=1&utm_source=x",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://archive.ph/newest/https://example.com/page?id=1&utm_source=x",
+      "fragmentRemoved" : false,
+      "original" : "https://archive.ph/newest/https://example.com/page?id=1&utm_source=x",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://s123.t.eloqua.com/e/er?s=1&lid=2&elqTrackId=abc&elqaid=3&elqat=1",
+      "fragmentRemoved" : false,
+      "original" : "https://s123.t.eloqua.com/e/er?s=1&lid=2&elqTrackId=abc&elqaid=3&elqat=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://univis.uni-erlangen.de/form?__s=2&dsc=anew/lecture_view",
+      "fragmentRemoved" : false,
+      "original" : "https://univis.uni-erlangen.de/form?__s=2&dsc=anew/lecture_view",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://tix.axs.com/abc?irclickid=x&utm_source=y",
+      "fragmentRemoved" : false,
+      "original" : "https://tix.axs.com/abc?irclickid=x&utm_source=y",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://web.archive.org/web/2020/https://example.com/?id=1&utm_source=x",
+      "fragmentRemoved" : false,
+      "original" : "https://www.google.com/url?q=https%3A%2F%2Fweb.archive.org%2Fweb%2F2020%2Fhttps%3A%2F%2Fexample.com%2F%3Fid%3D1%26utm_source%3Dx",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Google"
+      ]
+    },
+    {
+      "cleaned" : "https://web.archive.org/web/2020/https://example.com/?id=1&utm_source=x",
+      "fragmentRemoved" : false,
+      "original" : "https://web.archive.org/web/2020/https://example.com/?id=1&utm_source=x",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/a?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://example.com/a?__s=abcdef&id=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "email",
+          "name" : "__s",
+          "scope" : "global"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://web.archive.org/web/2020/https://www.amazon.com/T/dp/B08N5WRWNW/ref=x?tag=a#xtor=1",
+      "fragmentRemoved" : false,
+      "original" : "https://web.archive.org/web/2020/https://www.amazon.com/T/dp/B08N5WRWNW/ref=x?tag=a#xtor=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://archive.ph/x?",
+      "fragmentRemoved" : false,
+      "original" : "https://archive.ph/x?",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://web.archive.org/web/2020/https://example.com/?utm_source=x&debug=1",
+      "fragmentRemoved" : false,
+      "original" : "https://web.archive.org/web/2020/https://example.com/?utm_source=x&debug=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://web.archive.org/web/2020/https://example.com/?utm_source=x",
+      "fragmentRemoved" : false,
+      "original" : "https://web.archive.org/web/2020/https://example.com/?utm_source=x",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.tiktok.com/effect/1?enter_from=x",
+      "fragmentRemoved" : false,
+      "original" : "https://www.tiktok.com/effect/1?enter_from=x&is_from_webapp=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "social",
+          "name" : "is_from_webapp",
+          "scope" : "TikTok"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.tiktok.com/effect/1?enter_from=x",
+      "fragmentRemoved" : false,
+      "original" : "https://www.tiktok.com/effect/1?enter_from=x",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.douyin.com/video/1",
+      "fragmentRemoved" : false,
+      "original" : "https://www.douyin.com/video/1?enter_from=x",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "social",
+          "name" : "enter_from",
+          "scope" : "Douyin"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.douyin.com/video/1",
+      "fragmentRemoved" : false,
+      "original" : "https://www.douyin.com/video/1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.google.com/search?q=x",
+      "fragmentRemoved" : false,
+      "original" : "https://www.google.com/search?q=x&biw=440&bih=974",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "analytics",
+          "name" : "biw",
+          "scope" : "Google"
+        },
+        {
+          "category" : "analytics",
+          "name" : "bih",
+          "scope" : "Google"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.ebay.com/itm/123456789012?var=987",
+      "fragmentRemoved" : false,
+      "original" : "https://www.ebay.com/itm/123456789012?var=987",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.tiktok.com/search?q=cats",
+      "fragmentRemoved" : false,
+      "original" : "https://www.tiktok.com/search?q=cats",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.temu.com/goods.html?goods_id=1&sku_id=2",
+      "fragmentRemoved" : false,
+      "original" : "https://www.temu.com/goods.html?goods_id=1&sku_id=2",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/?spm=1&ref=nav&referrer=x",
+      "fragmentRemoved" : false,
+      "original" : "https://example.com/?spm=1&ref=nav&referrer=x",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://onelink.me/abc?pid=email&af_force_deeplink=true",
+      "fragmentRemoved" : false,
+      "original" : "https://onelink.me/abc?pid=email&af_force_deeplink=true",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/ads?adId=123&adgroupid=4",
+      "fragmentRemoved" : false,
+      "original" : "https://example.com/ads?adId=123&adgroupid=4",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://t.me/iv?url=https%3A%2F%2Fexample.com%2Fa&rhash=1",
+      "fragmentRemoved" : false,
+      "original" : "https://t.me/iv?url=https%3A%2F%2Fexample.com%2Fa&rhash=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.kickstarter.com/discover/advanced?term=board+games",
+      "fragmentRemoved" : false,
+      "original" : "https://www.kickstarter.com/discover/advanced?term=board+games",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.flipkart.com/p/itm1?pid=X&lid=LST1",
+      "fragmentRemoved" : false,
+      "original" : "https://www.flipkart.com/p/itm1?pid=X&lid=LST1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://shop.example.com/authentication/login?analytics_trace_id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://shop.example.com/authentication/login?analytics_trace_id=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://app.adjust.com/abc?adj_t=xyz&adj_campaign=c",
+      "fragmentRemoved" : false,
+      "original" : "https://app.adjust.com/abc?adj_t=xyz&adj_campaign=c",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.shein.com/p.html?mallCode=1",
+      "fragmentRemoved" : false,
+      "original" : "https://www.shein.com/p.html?mallCode=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.xiaohongshu.com/explore/abc?xsec_token=T",
+      "fragmentRemoved" : false,
+      "original" : "https://www.xiaohongshu.com/explore/abc?xsec_token=T&xhsshare=CopyLink",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "social",
+          "name" : "xhsshare",
+          "scope" : "Xiaohongshu"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.xiaohongshu.com/explore/abc?xsec_token=T",
+      "fragmentRemoved" : false,
+      "original" : "https://www.xiaohongshu.com/explore/abc?xsec_token=T",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://example.com/?s_cid=em&rdt_cid=1&qclid=2&tblci=3&vmcid=4&id=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "analytics",
+          "name" : "s_cid",
+          "scope" : "global"
+        },
+        {
+          "category" : "analytics",
+          "name" : "rdt_cid",
+          "scope" : "global"
+        },
+        {
+          "category" : "analytics",
+          "name" : "qclid",
+          "scope" : "global"
+        },
+        {
+          "category" : "analytics",
+          "name" : "tblci",
+          "scope" : "global"
+        },
+        {
+          "category" : "analytics",
+          "name" : "vmcid",
+          "scope" : "global"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://example.com/?id=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://example.com/?itm_source=a&itm_medium=b&ga_source=c&fbadid=d&ttadid=e&sscid=f&id=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "analytics",
+          "name" : "itm_source",
+          "scope" : "global"
+        },
+        {
+          "category" : "analytics",
+          "name" : "itm_medium",
+          "scope" : "global"
+        },
+        {
+          "category" : "analytics",
+          "name" : "ga_source",
+          "scope" : "global"
+        },
+        {
+          "category" : "social",
+          "name" : "fbadid",
+          "scope" : "global"
+        },
+        {
+          "category" : "social",
+          "name" : "ttadid",
+          "scope" : "global"
+        },
+        {
+          "category" : "ecommerce",
+          "name" : "sscid",
+          "scope" : "global"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://example.com/?nb_placement=a&mt_click_id=b&et_rid=c&mindbox-click-id=d&cm_cr=e&int_term=f&id=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "analytics",
+          "name" : "nb_placement",
+          "scope" : "global"
+        },
+        {
+          "category" : "analytics",
+          "name" : "mt_click_id",
+          "scope" : "global"
+        },
+        {
+          "category" : "email",
+          "name" : "et_rid",
+          "scope" : "global"
+        },
+        {
+          "category" : "email",
+          "name" : "mindbox-click-id",
+          "scope" : "global"
+        },
+        {
+          "category" : "analytics",
+          "name" : "cm_cr",
+          "scope" : "global"
+        },
+        {
+          "category" : "analytics",
+          "name" : "int_term",
+          "scope" : "global"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/",
+      "fragmentRemoved" : false,
+      "original" : "https://example.com/?pjclid=1&fb_comment_id=2&oft_id=3&cq_src=4",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "ecommerce",
+          "name" : "pjclid",
+          "scope" : "global"
+        },
+        {
+          "category" : "social",
+          "name" : "fb_comment_id",
+          "scope" : "global"
+        },
+        {
+          "category" : "email",
+          "name" : "oft_id",
+          "scope" : "global"
+        },
+        {
+          "category" : "analytics",
+          "name" : "cq_src",
+          "scope" : "global"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.instagram.com/p/C1/",
+      "fragmentRemoved" : false,
+      "original" : "https://www.instagram.com/p/C1/?igsh=x&ig_rid=y&stkn=z",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "social",
+          "name" : "igsh",
+          "scope" : "global"
+        },
+        {
+          "category" : "social",
+          "name" : "ig_rid",
+          "scope" : "Instagram"
+        },
+        {
+          "category" : "social",
+          "name" : "stkn",
+          "scope" : "Instagram"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.instagram.com/p/C1/",
+      "fragmentRemoved" : false,
+      "original" : "https://www.instagram.com/p/C1/",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://x.com/u/status/1",
+      "fragmentRemoved" : false,
+      "original" : "https://x.com/u/status/1?refsrc=a&a=b&s=20",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "social",
+          "name" : "refsrc",
+          "scope" : "Twitter/X"
+        },
+        {
+          "category" : "social",
+          "name" : "a",
+          "scope" : "Twitter/X"
+        },
+        {
+          "category" : "social",
+          "name" : "s",
+          "scope" : "Twitter/X"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://x.com/u/status/1",
+      "fragmentRemoved" : false,
+      "original" : "https://x.com/u/status/1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://youtu.be/dQw4w9WgXcQ?t=30",
+      "fragmentRemoved" : false,
+      "original" : "https://youtu.be/dQw4w9WgXcQ?si=a&is=b&t=30",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "other",
+          "name" : "si",
+          "scope" : "YouTube"
+        },
+        {
+          "category" : "other",
+          "name" : "is",
+          "scope" : "YouTube"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://youtu.be/dQw4w9WgXcQ?t=30",
+      "fragmentRemoved" : false,
+      "original" : "https://youtu.be/dQw4w9WgXcQ?t=30",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.linkedin.com/feed/update/urn:li:activity:1/",
+      "fragmentRemoved" : false,
+      "original" : "https://www.linkedin.com/feed/update/urn:li:activity:1/?rcm=x&origin=y",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "social",
+          "name" : "rcm",
+          "scope" : "LinkedIn"
+        },
+        {
+          "category" : "social",
+          "name" : "origin",
+          "scope" : "LinkedIn"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.linkedin.com/feed/update/urn:li:activity:1/",
+      "fragmentRemoved" : false,
+      "original" : "https://www.linkedin.com/feed/update/urn:li:activity:1/",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.msn.com/en-gb/news/x",
+      "fragmentRemoved" : false,
+      "original" : "https://www.msn.com/en-gb/news/x?ocid=a&cvid=b&ei=c&pc=d",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "analytics",
+          "name" : "ocid",
+          "scope" : "global"
+        },
+        {
+          "category" : "analytics",
+          "name" : "cvid",
+          "scope" : "MSN"
+        },
+        {
+          "category" : "analytics",
+          "name" : "ei",
+          "scope" : "MSN"
+        },
+        {
+          "category" : "analytics",
+          "name" : "pc",
+          "scope" : "MSN"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.msn.com/en-gb/news/x",
+      "fragmentRemoved" : false,
+      "original" : "https://www.msn.com/en-gb/news/x",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.temu.com/goods.html?goods_id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://www.temu.com/goods.html?goods_id=1&_x_ads_id=2&refer_page_name=3",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "ecommerce",
+          "name" : "_x_ads_id",
+          "scope" : "Temu"
+        },
+        {
+          "category" : "ecommerce",
+          "name" : "refer_page_name",
+          "scope" : "Temu"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.temu.com/goods.html?goods_id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://www.temu.com/goods.html?goods_id=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.amazon.co.uk/dp/B08N5WRWNW?psc=1",
+      "fragmentRemoved" : false,
+      "original" : "https://www.amazon.co.uk/dp/B08N5WRWNW?hvadid=1&hvdev=c&ingress=0&psc=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "ecommerce",
+          "name" : "hvadid",
+          "scope" : "Amazon"
+        },
+        {
+          "category" : "ecommerce",
+          "name" : "hvdev",
+          "scope" : "Amazon"
+        },
+        {
+          "category" : "ecommerce",
+          "name" : "ingress",
+          "scope" : "Amazon"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.audible.co.uk/pd/B0?source_code=PROMO",
+      "fragmentRemoved" : false,
+      "original" : "https://www.audible.co.uk/pd/B0?ref_=a&qid=1&source_code=PROMO",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "ecommerce",
+          "name" : "ref_",
+          "scope" : "Audible"
+        },
+        {
+          "category" : "ecommerce",
+          "name" : "qid",
+          "scope" : "Audible"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.audible.co.uk/pd/B0?source_code=PROMO",
+      "fragmentRemoved" : false,
+      "original" : "https://www.audible.co.uk/pd/B0?source_code=PROMO",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.tiktok.com/@u/video/1",
+      "fragmentRemoved" : false,
+      "original" : "https://www.tiktok.com/@u/video/1?share_region=GB&ug_btm=x",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "social",
+          "name" : "share_region",
+          "scope" : "TikTok"
+        },
+        {
+          "category" : "social",
+          "name" : "ug_btm",
+          "scope" : "TikTok"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.tiktok.com/@u/video/1",
+      "fragmentRemoved" : false,
+      "original" : "https://www.tiktok.com/@u/video/1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.reddit.com/r/swift/comments/1/x/",
+      "fragmentRemoved" : false,
+      "original" : "https://www.reddit.com/r/swift/comments/1/x/?entry_point=feed&post_index=2",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "social",
+          "name" : "entry_point",
+          "scope" : "Reddit"
+        },
+        {
+          "category" : "social",
+          "name" : "post_index",
+          "scope" : "Reddit"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.reddit.com/r/swift/comments/1/x/",
+      "fragmentRemoved" : false,
+      "original" : "https://www.reddit.com/r/swift/comments/1/x/",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://open.spotify.com/track/1",
+      "fragmentRemoved" : false,
+      "original" : "https://open.spotify.com/track/1?si=a&pi=b&sp_cid=c",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "other",
+          "name" : "si",
+          "scope" : "Spotify"
+        },
+        {
+          "category" : "other",
+          "name" : "pi",
+          "scope" : "Spotify"
+        },
+        {
+          "category" : "other",
+          "name" : "sp_cid",
+          "scope" : "Spotify"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://open.spotify.com/track/1",
+      "fragmentRemoved" : false,
+      "original" : "https://open.spotify.com/track/1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.wsj.com/articles/x",
+      "fragmentRemoved" : false,
+      "original" : "https://www.wsj.com/articles/x?mod=hp_lead_pos1&reflink=share",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "other",
+          "name" : "mod",
+          "scope" : "WSJ"
+        },
+        {
+          "category" : "other",
+          "name" : "reflink",
+          "scope" : "WSJ"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.wsj.com/articles/x",
+      "fragmentRemoved" : false,
+      "original" : "https://www.wsj.com/articles/x",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.flipkart.com/p/itm1?pid=X",
+      "fragmentRemoved" : false,
+      "original" : "https://www.flipkart.com/p/itm1?pid=X&otracker=search&ssid=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "ecommerce",
+          "name" : "otracker",
+          "scope" : "Flipkart"
+        },
+        {
+          "category" : "ecommerce",
+          "name" : "ssid",
+          "scope" : "Flipkart"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.flipkart.com/p/itm1?pid=X",
+      "fragmentRemoved" : false,
+      "original" : "https://www.flipkart.com/p/itm1?pid=X",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "www.bing.com",
+      "fragmentRemoved" : false,
+      "original" : "www.bing.com",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "www.instagram.com",
+      "fragmentRemoved" : false,
+      "original" : "www.instagram.com",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "example.com",
+      "fragmentRemoved" : false,
+      "original" : "example.com",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://www.google.com/aclk?sa=l&ai=DChc&ae=2&adurl=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Google Ads"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://example.com/dest?id=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.example.com/amp/page",
+      "fragmentRemoved" : false,
+      "original" : "https://www.example.com/amp/page",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/l",
+      "fragmentRemoved" : false,
+      "original" : "https://www.linkedin.com/safety/go?url=https%3A%2F%2Fexample.com%2Fl&trk=x",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "LinkedIn"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://www.linkedin.com/safety/go/?url=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1&trk=flagship-messaging-web",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "LinkedIn"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/",
+      "fragmentRemoved" : false,
+      "original" : "https://example.com/",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://m.facebook.com/l.php?u=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1&h=AT0",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Facebook"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/f",
+      "fragmentRemoved" : false,
+      "original" : "https://www.facebook.com/flx/warn/?u=https%3A%2F%2Fexample.com%2Ff&h=AT0",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Facebook"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/w",
+      "fragmentRemoved" : false,
+      "original" : "https://l.wl.co/l?u=https%3A%2F%2Fexample.com%2Fw",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "WhatsApp"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/w",
+      "fragmentRemoved" : false,
+      "original" : "https://example.com/w",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/v",
+      "fragmentRemoved" : false,
+      "original" : "https://m.vk.com/away.php?to=https%3A%2F%2Fexample.com%2Fv",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "VK"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://vk.ru/away.php?to=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "VK"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://ok.ru/dk?cmd=logExternal&st.cmd=x&st.link=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "OK"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://gcc02.safelinks.protection.office365.us/?url=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1&data=x",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Outlook Safe Links"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/t",
+      "fragmentRemoved" : false,
+      "original" : "https://statics.teams.cdn.office.net/evergreen-assets/safelinks/2/atp-safelinks.html?url=https%3A%2F%2Fexample.com%2Ft&locale=en-gb",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Teams Safe Links"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://urldefense.proofpoint.com/v1/url?u=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1&k=abc",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Proofpoint"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://urldefense.com/v3/__https://example.com/dest?id=1__;!!ABC!def$",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Proofpoint"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/b",
+      "fragmentRemoved" : false,
+      "original" : "https://linkprotect.cudasvc.com/url?a=https%3a%2f%2fexample.com%2fb&c=E,1,x&typo=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Barracuda"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/b",
+      "fragmentRemoved" : false,
+      "original" : "https://example.com/b",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/c",
+      "fragmentRemoved" : false,
+      "original" : "https://secure-web.cisco.com/1AbC/https%3A%2F%2Fexample.com%2Fc",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Cisco Secure Email"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/c",
+      "fragmentRemoved" : false,
+      "original" : "https://example.com/c",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://eu-central-1.protection.sophos.com?d=example.com&u=aHR0cHM6Ly9leGFtcGxlLmNvbS9kZXN0P2lkPTE%3D&i=x&t=y&h=z",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Sophos"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://imsva91-ctp.trendmicro.com:443/wis/clicktime/v1/query?url=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1&umid=abc&auth=x",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Trend Micro"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://clicktime.symantec.com/15tSyX?u=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Symantec"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://medium.com/r/?url=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Medium"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://www.pinterest.com/offsite/?url=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1&pin=1&token=x",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Pinterest"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest",
+      "fragmentRemoved" : false,
+      "original" : "https://r.search.yahoo.com/_ylt=Awr/RV=2/RE=1/RO=10/RU=https%3a%2f%2fexample.com%2fdest/RK=2/RS=abc-",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Yahoo"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest",
+      "fragmentRemoved" : false,
+      "original" : "https://example.com/dest",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://gate.sc/?url=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1&token=x",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "SoundCloud"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://link.zhihu.com/?target=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Zhihu"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://weibo.cn/sinaurl?u=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Weibo"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://www.douban.com/link2/?url=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Douban"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://search.naver.com/p/crd/rd?m=1&px=1&u=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Naver"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://gitee.com/link?target=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Gitee"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://link.csdn.net/?target=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "CSDN"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://link.juejin.cn/?target=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Juejin"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://links.jianshu.com/go?to=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Jianshu"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest",
+      "fragmentRemoved" : false,
+      "original" : "https://links.govdelivery.com/track?type=click&enid=abc&msgid=1&url=https://example.com/dest",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "GovDelivery"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://abc.r.us-east-1.awstrack.me/L0/https:%2F%2Fexample.com%2Fdest%3Fid=1/1/0100-abc/xyz=",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Amazon SES"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://e.customeriomail.com/e/c/eyJlbWFpbF9pZCI6IngiLCJocmVmIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9kZXN0P2lkPTEiLCJsaW5rX2lkIjoxfQ/sig",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Customer.io"
+      ]
+    },
+    {
+      "cleaned" : "Customer.io",
+      "fragmentRemoved" : false,
+      "original" : "Customer.io",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://click.convertkit-mail2.com/abc/def/aHR0cHM6Ly9leGFtcGxlLmNvbS9kZXN0P2lkPTE",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Kit"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest",
+      "fragmentRemoved" : false,
+      "original" : "https://aax-us-east.amazon-adsystem.com/x/c/Qabc/https://example.com/dest",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Amazon Ads"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/a",
+      "fragmentRemoved" : false,
+      "original" : "https://www.awin1.com/cread.php?awinmid=1&awinaffid=2&ued=https%3A%2F%2Fexample.com%2Fa",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Awin"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://www.anrdoezrs.net/click-123-456?url=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "CJ"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://www.dpbolvw.net/click-123-456?url=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "CJ"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://brand.sjv.io/c/123/456/789?u=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Impact"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://shareasale.com/r.cfm?b=1&u=2&m=3&urllink=example.com%2Fdest%3Fid%3D1&afftrack=",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "ShareASale"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://prf.hn/click/camref:1100l/destination:https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Partnerize"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://go.skimresources.com/?id=123X456&xs=1&url=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Skimlinks"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://redirect.viglink.com/?key=x&u=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Viglink"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://ad.admitad.com/g/abc/?ulp=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Admitad"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://clk.tradedoubler.com/click?p=1&a=2&url=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Tradedoubler"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/s",
+      "fragmentRemoved" : false,
+      "original" : "https://shareasale.com/r.cfm?urllink=https%3A%2F%2Fexample.com%2Fs",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "ShareASale"
+      ]
+    },
+    {
+      "cleaned" : "https://eu-central-1.protection.sophos.com?d=x&u=bm90IGEgdXJs",
+      "fragmentRemoved" : false,
+      "original" : "https://eu-central-1.protection.sophos.com?d=x&u=bm90IGEgdXJs",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://protect-eu.mimecast.com/s/AbCdEfGh?domain=example.com",
+      "fragmentRemoved" : false,
+      "original" : "https://protect-eu.mimecast.com/s/AbCdEfGh?domain=example.com",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://www.google.com/url?q=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1&sa=D",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Google"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://www.google.com/url?hl=en&q=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1&source=gmail&ust=1&usg=AOv",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Google"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://www.linkedin.com/redir/redirect?url=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1&urlhash=x",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "LinkedIn"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://www.linkedin.com/safety/go?url=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1&trk=flagship-messaging-web&messageThreadUrn=urn",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "LinkedIn"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://www.linkedin.com/safety/go/?url=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1&trk=x",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "LinkedIn"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://l.facebook.com/l.php?u=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1&h=AT0",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Facebook"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://www.facebook.com/l.php?u=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1&h=AT0",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Facebook"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://www.facebook.com/flx/warn/?u=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1&h=AT0",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Facebook"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://l.messenger.com/l.php?u=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1&h=AT0",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Facebook"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://l.wl.co/l?u=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "WhatsApp"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://l.instagram.com/?u=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1&e=AT0",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Instagram"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://l.threads.com/?u=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1&e=AT0",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Threads"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://www.youtube.com/redirect?event=video_description&redir_token=x&q=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1&v=abc",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "YouTube"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://m.youtube.com/redirect?q=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "YouTube"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://out.reddit.com/t3_abc?url=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1&token=x",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Reddit"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://steamcommunity.com/linkfilter/?u=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Steam"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://steamcommunity.com/linkfilter/?url=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Steam"
+      ]
+    },
+    {
+      "cleaned" : "https://click.discord.com/ls/click?upn=abc",
+      "fragmentRemoved" : false,
+      "original" : "https://click.discord.com/ls/click?upn=abc",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://slack-redir.net/link?url=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Slack"
+      ]
+    },
+    {
+      "cleaned" : "https://t.me/iv?url=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1&rhash=abc",
+      "fragmentRemoved" : false,
+      "original" : "https://t.me/iv?url=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1&rhash=abc",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://vk.com/away.php?to=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1&cc_key=",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "VK"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://m.vk.com/away.php?to=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "VK"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1&data=05%7C01&sdata=x&reserved=0",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Outlook Safe Links"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://statics.teams.cdn.office.net/evergreen-assets/safelinks/2/atp-safelinks.html?url=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1&locale=en-gb",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Teams Safe Links"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://urldefense.proofpoint.com/v2/url?u=https-3A__example.com_dest-3Fid-3D1&d=DwMF&c=x",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Proofpoint"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest",
+      "fragmentRemoved" : false,
+      "original" : "https://urldefense.com/v3/__https://example.com/dest__;!!ABC!def$",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Proofpoint"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://linkprotect.cudasvc.com/url?a=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1&c=E,1,abc&typo=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Barracuda"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://secure-web.cisco.com/1AbCdEf-xyz/https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Cisco Secure Email"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://www.awin1.com/cread.php?awinmid=1&awinaffid=2&ued=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Awin"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://click.linksynergy.com/deeplink?id=x&mid=1&murl=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Rakuten"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://rover.ebay.com/rover/1/711-53200-19255-0/1?mpre=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1&campid=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "eBay"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://abc.r.us-east-1.awstrack.me/L0/https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1/1/0100-abc/xyz=",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Amazon SES"
+      ]
+    },
+    {
+      "cleaned" : "https://u123.ct.sendgrid.net/ls/click?upn=abc",
+      "fragmentRemoved" : false,
+      "original" : "https://u123.ct.sendgrid.net/ls/click?upn=abc",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://www.deviantart.com/users/outgoing?url=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "DeviantArt"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://disq.us/url?url=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1%3Aabc&cuid=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Disqus"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://www.bing.com/ck/a?!&&p=x&u=a1aHR0cHM6Ly9leGFtcGxlLmNvbS9kZXN0P2lkPTE&ntb=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Bing"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://duckduckgo.com/l/?uddg=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1&rut=x",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "DuckDuckGo"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://www.googleadservices.com/pagead/aclk?sa=L&ai=x&adurl=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Google Ads"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://t.umblr.com/redirect?z=https%3A%2F%2Fexample.com%2Fdest%3Fid%3D1&t=x",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Tumblr"
+      ]
+    },
+    {
+      "cleaned" : "https://substack.com/redirect/2/eyJlIjoiaHR0cHM6Ly9leGFtcGxlLmNvbSJ9.sig",
+      "fragmentRemoved" : false,
+      "original" : "https://substack.com/redirect/2/eyJlIjoiaHR0cHM6Ly9leGFtcGxlLmNvbSJ9.sig",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://go.example.com/UNSUBSCRIBE?mkt_tok=a",
+      "fragmentRemoved" : false,
+      "original" : "https://go.example.com/UNSUBSCRIBE?mkt_tok=a&utm_source=b",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "analytics",
+          "name" : "utm_source",
+          "scope" : "global"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://go.example.com/un%73ubscribe?mkt_tok=a",
+      "fragmentRemoved" : false,
+      "original" : "https://go.example.com/un%73ubscribe?mkt_tok=a",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "not a url/unsubscribe?mkt_tok=a",
+      "fragmentRemoved" : false,
+      "original" : "not a url/unsubscribe?mkt_tok=a&utm_source=b",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "analytics",
+          "name" : "utm_source",
+          "scope" : "global"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "not a url/post?id=1",
+      "fragmentRemoved" : false,
+      "original" : "not a url/post?mkt_tok=a&id=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "email",
+          "name" : "mkt_tok",
+          "scope" : "global"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/a",
+      "fragmentRemoved" : false,
+      "original" : "https://example.com/a?MKT_TOK=1&Ck_Subscriber_Id=2",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "email",
+          "name" : "mkt_tok",
+          "scope" : "global"
+        },
+        {
+          "category" : "email",
+          "name" : "ck_subscriber_id",
+          "scope" : "global"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://wayback.archive.org/web/2020/https://www.amazon.com/T/dp/B08N5WRWNW/ref=x?tag=a#xtor=1",
+      "fragmentRemoved" : false,
+      "original" : "https://wayback.archive.org/web/2020/https://www.amazon.com/T/dp/B08N5WRWNW/ref=x?tag=a#xtor=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.archive.org/details/x?utm_source=a",
+      "fragmentRemoved" : false,
+      "original" : "https://www.archive.org/details/x?utm_source=a",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://archive.today/2024/https://example.com/?fbclid=1",
+      "fragmentRemoved" : false,
+      "original" : "https://archive.today/2024/https://example.com/?fbclid=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://notarchive.org/",
+      "fragmentRemoved" : false,
+      "original" : "https://notarchive.org/?utm_source=a",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "analytics",
+          "name" : "utm_source",
+          "scope" : "global"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://urldefense.proofpoint.com/v9/url?u=x&utm_source=y",
+      "fragmentRemoved" : false,
+      "original" : "https://urldefense.proofpoint.com/v9/url?u=x&utm_source=y",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/aabcz",
+      "fragmentRemoved" : false,
+      "original" : "https://urldefense.com/v3/__https://example.com/a**Bz__;YWJj!!x$",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Proofpoint"
+      ]
+    },
+    {
+      "cleaned" : "https://urldefense.com/v3/__https://example.com/a**!z__;YWJj!!x$",
+      "fragmentRemoved" : false,
+      "original" : "https://urldefense.com/v3/__https://example.com/a**!z__;YWJj!!x$",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/%E2%82%AC#",
+      "fragmentRemoved" : false,
+      "original" : "https://urldefense.com/v3/__https://example.com/%E2%82%AC*__;Iw!!x$",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Proofpoint"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/a%C3%A9b",
+      "fragmentRemoved" : false,
+      "original" : "https://urldefense.com/v3/__https://example.com/a*b__;w6k!!x$",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Proofpoint"
+      ]
+    },
+    {
+      "cleaned" : "https://urldefense.com/v3/____;!!x$",
+      "fragmentRemoved" : false,
+      "original" : "https://urldefense.com/v3/____;!!x$",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/q?a=1",
+      "fragmentRemoved" : false,
+      "original" : "https://urldefense.com/v3/__https://example.com/q?a=1__;",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Proofpoint"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/a",
+      "fragmentRemoved" : false,
+      "original" : "https://urldefense.com/v3/__https://example.com/a__;!!x$#frag",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Proofpoint"
+      ]
+    },
+    {
+      "cleaned" : "https://urldefense.com/v3/__https://example.com/a*b__;Iw*!!x$",
+      "fragmentRemoved" : false,
+      "original" : "https://urldefense.com/v3/__https://example.com/a*b__;Iw*!!x$",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "HTTPS://example.com/s",
+      "fragmentRemoved" : false,
+      "original" : "https://urldefense.com/v3/__HTTPS:/example.com/s__;!!ABC$",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Proofpoint"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/wiki/Help:Contents",
+      "fragmentRemoved" : false,
+      "original" : "https://disq.us/url?url=https%3A%2F%2Fexample.com%2Fwiki%2FHelp%3AContents%3Ahash9",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Disqus"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com:123",
+      "fragmentRemoved" : false,
+      "original" : "https://disq.us/url?url=https%3A%2F%2Fexample.com%3A123",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Disqus"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/a:ab.cd",
+      "fragmentRemoved" : false,
+      "original" : "https://disq.us/url?url=https%3A%2F%2Fexample.com%2Fa%3Aab.cd",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Disqus"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com",
+      "fragmentRemoved" : false,
+      "original" : "https://disq.us/url?url=https%3A%2F%2Fexample.com",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Disqus"
+      ]
+    },
+    {
+      "cleaned" : "HTTPS://example.com/a?b=1",
+      "fragmentRemoved" : false,
+      "original" : "https://www.google.com/url?q=HTTPS://example.com/a%3Fb%3D1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Google"
+      ]
+    },
+    {
+      "cleaned" : "http://example.com/d",
+      "fragmentRemoved" : false,
+      "original" : "https://www.google.com/url?q=http%253A%252F%252Fexample.com%252Fd",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Google"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/a%20b",
+      "fragmentRemoved" : false,
+      "original" : "https://www.google.com/url?q=https%3A%2F%2Fexample.com%2Fa%2520b",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Google"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/c",
+      "fragmentRemoved" : false,
+      "original" : "https://secure-web.cisco.com/1AbC/https%3A%2F%2Fexample.com%2Fc/",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Cisco Secure Email"
+      ]
+    },
+    {
+      "cleaned" : "https://secure-web.cisco.com/",
+      "fragmentRemoved" : false,
+      "original" : "https://secure-web.cisco.com/",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/y",
+      "fragmentRemoved" : false,
+      "original" : "https://r.search.yahoo.com/RU=/RU=https%3a%2f%2fexample.com%2fy/RK=0",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Yahoo"
+      ]
+    },
+    {
+      "cleaned" : "https://abc.awstrack.me/L0//1/x",
+      "fragmentRemoved" : false,
+      "original" : "https://abc.awstrack.me/L0//1/x",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/p?a=1",
+      "fragmentRemoved" : false,
+      "original" : "https://abc.awstrack.me/L0/https:%2F%2Fexample.com%2Fp%3Fa=1%26utm_source=x/1/x",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "analytics",
+          "name" : "utm_source",
+          "scope" : "global"
+        }
+      ],
+      "unwrapped" : [
+        "Amazon SES"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/dest?a=1#frag",
+      "fragmentRemoved" : false,
+      "original" : "https://aax-eu.amazon-adsystem.com/x/c/tok/https://example.com/dest?a=1&utm_source=x#frag",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "analytics",
+          "name" : "utm_source",
+          "scope" : "global"
+        }
+      ],
+      "unwrapped" : [
+        "Amazon Ads"
+      ]
+    },
+    {
+      "cleaned" : "https://aax-eu.amazon-adsystem.com/x/c/tok",
+      "fragmentRemoved" : false,
+      "original" : "https://aax-eu.amazon-adsystem.com/x/c/tok",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/e",
+      "fragmentRemoved" : false,
+      "original" : "https://aax-eu.amazon-adsystem.com/x/c/tok/https%3A%2F%2Fexample.com%2Fe",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Amazon Ads"
+      ]
+    },
+    {
+      "cleaned" : "https://prf.hn/click/camref:1/destination:/creativeref:2",
+      "fragmentRemoved" : false,
+      "original" : "https://prf.hn/click/camref:1/destination:/creativeref:2",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://e.customeriomail.com/e/c/WyJodHRwczovL2V4YW1wbGUuY29tLyJd/sig",
+      "fragmentRemoved" : false,
+      "original" : "https://e.customeriomail.com/e/c/WyJodHRwczovL2V4YW1wbGUuY29tLyJd/sig",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://e.customeriomail.com/e/c/eyJocmVmIjo1fQ/sig",
+      "fragmentRemoved" : false,
+      "original" : "https://e.customeriomail.com/e/c/eyJocmVmIjo1fQ/sig",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://e.customeriomail.com/e/c/bm90IGpzb24/sig",
+      "fragmentRemoved" : false,
+      "original" : "https://e.customeriomail.com/e/c/bm90IGpzb24/sig",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/s?a=1&b=2",
+      "fragmentRemoved" : false,
+      "original" : "https://eu.protection.sophos.com?u=aHR0cHM6Ly9leGFtcGxlLmNvbS9zP2E9MSZiPTI%3D",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Sophos"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/%3E??",
+      "fragmentRemoved" : false,
+      "original" : "https://eu.protection.sophos.com?u=aHR0cHM6Ly9leGFtcGxlLmNvbS8+Pz8",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Sophos"
+      ]
+    },
+    {
+      "cleaned" : "https://eu.protection.sophos.com?u=%25%25%25",
+      "fragmentRemoved" : false,
+      "original" : "https://eu.protection.sophos.com?u=%%%",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/%C3%BC",
+      "fragmentRemoved" : false,
+      "original" : "https://click.convertkit-mail.com/x/aHR0cHM6Ly9leGFtcGxlLmNvbS_DvD91dG1fc291cmNlPWs",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "analytics",
+          "name" : "utm_source",
+          "scope" : "global"
+        }
+      ],
+      "unwrapped" : [
+        "Kit"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/p",
+      "fragmentRemoved" : false,
+      "original" : "https://shareasale.com/r.cfm?urllink=%2Fexample.com%2Fp",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "ShareASale"
+      ]
+    },
+    {
+      "cleaned" : "https://shareasale.com/r.cfm?urllink=javascript%3Aalert(1)",
+      "fragmentRemoved" : false,
+      "original" : "https://shareasale.com/r.cfm?urllink=javascript%3Aalert(1)",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://shareasale.com/r.cfm?urllink=ftp%3A%2F%2Fexample.com",
+      "fragmentRemoved" : false,
+      "original" : "https://shareasale.com/r.cfm?urllink=ftp%3A%2F%2Fexample.com",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://shareasale.com/r.cfm?urllink=",
+      "fragmentRemoved" : false,
+      "original" : "https://shareasale.com/r.cfm?urllink=",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/a:%CC%81b",
+      "fragmentRemoved" : false,
+      "original" : "https://disq.us/url?url=https%3A%2F%2Fexample.com%2Fa%3A%CC%81b",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Disqus"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/a:b%CC%81",
+      "fragmentRemoved" : false,
+      "original" : "https://disq.us/url?url=https%3A%2F%2Fexample.com%2Fa%3Ab%CC%81",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Disqus"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/a:%C3%A9",
+      "fragmentRemoved" : false,
+      "original" : "https://disq.us/url?url=https%3A%2F%2Fexample.com%2Fa%3A%C3%A9",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Disqus"
+      ]
+    },
+    {
+      "cleaned" : "https://www.google.com/url?q=http://%CC%81example.com/",
+      "fragmentRemoved" : false,
+      "original" : "https://www.google.com/url?q=http://%CC%81example.com/",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.google.com/url?q=https:/%CC%81/example.com/",
+      "fragmentRemoved" : false,
+      "original" : "https://www.google.com/url?q=https:/%CC%81/example.com/",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.google.com/url?q=HTTP%C5%BF%3A%2F%2Fexample.com",
+      "fragmentRemoved" : false,
+      "original" : "https://www.google.com/url?q=HTTP%C5%BF%3A%2F%2Fexample.com",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.google.com/url?q=%E2%84%AAhttps%3A%2F%2Fexample.com",
+      "fragmentRemoved" : false,
+      "original" : "https://www.google.com/url?q=%E2%84%AAhttps%3A%2F%2Fexample.com",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/%C4%B0unsubscribe?mkt_tok=1",
+      "fragmentRemoved" : false,
+      "original" : "https://example.com/%C4%B0unsubscribe?mkt_tok=1&utm_source=2",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "analytics",
+          "name" : "utm_source",
+          "scope" : "global"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/unsubscrib%C3%A9",
+      "fragmentRemoved" : false,
+      "original" : "https://example.com/unsubscrib%C3%A9?mkt_tok=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "email",
+          "name" : "mkt_tok",
+          "scope" : "global"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/a#%CC%81",
+      "fragmentRemoved" : false,
+      "original" : "https://urldefense.com/v3/__https://example.com/a*%CC%81__;Iw!!x$",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Proofpoint"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/a%F0%9F%98%80",
+      "fragmentRemoved" : false,
+      "original" : "https://urldefense.com/v3/__https://example.com/a*__;8J-YgA!!x$",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Proofpoint"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/a%F0%9F%98%80#",
+      "fragmentRemoved" : false,
+      "original" : "https://urldefense.com/v3/__https://example.com/a**A__;8J-YgCM!!x$",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Proofpoint"
+      ]
+    },
+    {
+      "cleaned" : "https://www.google.com/search?q=x&ie=UTF-8",
+      "fragmentRemoved" : false,
+      "original" : "https://www.google.com/search?q=x&site=webhp&sclient=gws&ie=UTF-8",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "analytics",
+          "name" : "site",
+          "scope" : "Google"
+        },
+        {
+          "category" : "analytics",
+          "name" : "sclient",
+          "scope" : "Google"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.amazon.com/s?k=hub&keywords=x",
+      "fragmentRemoved" : false,
+      "original" : "https://www.amazon.com/s?k=hub&hvadid=1&linkId=2&keywords=x",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "ecommerce",
+          "name" : "hvadid",
+          "scope" : "Amazon"
+        },
+        {
+          "category" : "ecommerce",
+          "name" : "linkid",
+          "scope" : "Amazon"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.msn.com/en-us/video",
+      "fragmentRemoved" : false,
+      "original" : "https://www.msn.com/en-us/video?vid=1&pc=U531",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "analytics",
+          "name" : "vid",
+          "scope" : "MSN"
+        },
+        {
+          "category" : "analytics",
+          "name" : "pc",
+          "scope" : "MSN"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://learn.microsoft.com/en-us/x?view=net-8",
+      "fragmentRemoved" : false,
+      "original" : "https://learn.microsoft.com/en-us/x?cvid=1&view=net-8",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "analytics",
+          "name" : "cvid",
+          "scope" : "Microsoft"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.reuters.com/world/x?id=1",
+      "fragmentRemoved" : false,
+      "original" : "https://www.reuters.com/world/x?rpc=401&id=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "other",
+          "name" : "rpc",
+          "scope" : "Reuters"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.vogue.com/article/x",
+      "fragmentRemoved" : false,
+      "original" : "https://www.vogue.com/article/x?mbid=social&source=nl",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "other",
+          "name" : "mbid",
+          "scope" : "Condé Nast"
+        },
+        {
+          "category" : "other",
+          "name" : "source",
+          "scope" : "Condé Nast"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.gq.com/story/x?page=2",
+      "fragmentRemoved" : false,
+      "original" : "https://www.gq.com/story/x?esrc=a&page=2",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "other",
+          "name" : "esrc",
+          "scope" : "Condé Nast"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://www.humblebundle.com/store/x",
+      "fragmentRemoved" : false,
+      "original" : "https://www.humblebundle.com/store/x?partner=y&linkid=z&mcid=w",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "ecommerce",
+          "name" : "partner",
+          "scope" : "Humble Bundle"
+        },
+        {
+          "category" : "ecommerce",
+          "name" : "linkid",
+          "scope" : "Humble Bundle"
+        },
+        {
+          "category" : "ecommerce",
+          "name" : "mcid",
+          "scope" : "Humble Bundle"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/%CC%81/x",
+      "fragmentRemoved" : false,
+      "original" : "https://shareasale.com/r.cfm?urllink=example.com:/%CC%81/x",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "ShareASale"
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/%CC%81/x",
+      "fragmentRemoved" : false,
+      "original" : "https://example.com:/́/x",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/%CC%81/x",
+      "fragmentRemoved" : false,
+      "original" : "https://www.google.com/url?q=https%3A%2F%2Fexample.com%3A%2F%CC%81%2Fx",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+
+      ],
+      "unwrapped" : [
+        "Google"
+      ]
+    },
+    {
+      "cleaned" : "https://xn--bcher-kva.example:80/a",
+      "fragmentRemoved" : false,
+      "original" : "https://bücher.example:080/a?utm_source=1",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "analytics",
+          "name" : "utm_source",
+          "scope" : "global"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com/a?q=%C3%A9",
+      "fragmentRemoved" : false,
+      "original" : "https://example.com:/a?q=é&utm_source=x",
+      "pathChanges" : [
+
+      ],
+      "removed" : [
+        {
+          "category" : "analytics",
+          "name" : "utm_source",
+          "scope" : "global"
+        }
+      ],
+      "unwrapped" : [
+
+      ]
+    },
+    {
+      "cleaned" : "https://example.com:80/a",
+      "fragmentRemoved" : false,
+      "original" : "https://example.com:080/a?utm_source=x",
       "pathChanges" : [
 
       ],
