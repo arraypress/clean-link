@@ -1,8 +1,8 @@
 # @arraypress/clean-link
 
-Take the tracking out of a link, offline: tracking query parameters, redirect wrappers (google.com/url?q=, Outlook Safe Links, Facebook's l.php, Bing, Proofpoint, Slack…), Amazon's `/ref=` path segments and slugs (→ `/dp/ASIN`), eBay's item slugs, and share fragments (`#xtor=`, AddThis). It never fetches anything.
+Take the tracking out of a link, offline: tracking query parameters, redirect wrappers (google.com/url?q=, Outlook Safe Links, Facebook's l.php, Bing, Proofpoint, Slack…), Amazon's `/ref=` path segments and slugs (→ `/dp/ASIN`), eBay's item slugs, and share fragments (`#xtor=`, AddThis). It can say what it took out and why, leave affiliate credit in place, and recognise short links (bit.ly, t.co…) whose destination only their server knows. It never fetches anything.
 
-A port of [swift-url-kit](https://github.com/arraypress)'s URLStripper (default options), held to the Swift's own output for 523 links by a golden file. Rules are host-scoped: `ref` is Amazon's affiliate tag but GitHub's branch, `t` is Twitter's share token but YouTube's timestamp, so a global list would break real links.
+A port of [swift-url-kit](https://github.com/arraypress)'s URLStripper (default options), held to the Swift's own output, and its own report of what it removed, for 523 links by golden files. Rules are host-scoped: `ref` is Amazon's affiliate tag but GitHub's branch, `t` is Twitter's share token but YouTube's timestamp, so a global list would break real links.
 
 Zero dependencies. Works in Node.js, browsers, extensions and workers (anything with `URL`).
 
@@ -15,7 +15,7 @@ npm install @arraypress/clean-link
 ## Usage
 
 ```js
-import { cleanLink, withoutTracking } from '@arraypress/clean-link';
+import { cleanLink, cleanReport, shortenerService, withoutTracking } from '@arraypress/clean-link';
 
 withoutTracking('https://example.com/?utm_source=x&id=1')   // 'https://example.com/?id=1'
 withoutTracking('https://www.google.com/url?q=https%3A%2F%2Fexample.com%2Fa')  // 'https://example.com/a'
@@ -25,17 +25,55 @@ withoutTracking('https://www.amazon.co.uk/Some-Product/dp/B08N5WRWNW/ref=sr_1_1?
 cleanLink('https://example.com/?utm_source=x')   // 'https://example.com/'
 cleanLink('https://example.com/?id=1')           // null: nothing to take out
 cleanLink('mailto:a@example.com?utm_source=x')    // null: not an http(s) link
+
+cleanReport('https://www.google.com/url?q=https%3A%2F%2Fexample.com%2Fa%3Futm_source%3Dx')
+// { original: '…', cleaned: 'https://example.com/a', unwrapped: ['Google'],
+//   removed: [{ name: 'utm_source', category: 'analytics', scope: 'global' }],
+//   pathChanges: [], fragmentRemoved: false }
+
+withoutTracking('https://www.amazon.com/dp/B08N5WRWNW?tag=creator-20&utm_source=x', { keepAffiliate: true })
+// 'https://www.amazon.com/dp/B08N5WRWNW?tag=creator-20'
+
+shortenerService('https://bit.ly/3xYz')   // 'Bitly': only a request to bit.ly can say where it goes
+shortenerService('https://example.com/')  // null
 ```
 
 ## API
 
-### `withoutTracking(url: string): string`
+### `withoutTracking(url: string, options?: CleanOptions): string`
 
 The link with its tracking taken out, as the Swift's `String.withoutTracking` returns it. Text that isn't a URL comes back as given (trimmed). Up to three nested redirects are peeled (a Gmail link to a Safe Link to a page); a redirect to anything but http(s) stays wrapped.
 
-### `cleanLink(url: string): string | null`
+### `cleanLink(url: string, options?: CleanOptions): string | null`
 
 For inserting or sharing: the cleaned link, or `null` when there was nothing to take out or it isn't an http(s) link. "Nothing to take out" includes changes that are only the URL written differently (`|` as `%7C`), so the user's own link is kept.
+
+### `cleanReport(url: string, options?: CleanOptions): CleanReport`
+
+The Swift's `URLStripper.report`: the cleaned link and everything taken out, for showing rather than just trusting it. `cleaned` is exactly what `withoutTracking` returns.
+
+| Field | |
+|---|---|
+| `original` | The link as given. |
+| `cleaned` | The link without its tracking. |
+| `removed` | Each parameter removed, in order: `{name, category, scope}`. `name` is decoded and lowercased; `category` is `'analytics'`, `'social'`, `'email'`, `'ecommerce'` or `'other'`; `scope` is `'global'` (tracking everywhere) or the site whose rule removed it (`'Amazon'`). |
+| `unwrapped` | The redirect pages peeled, outermost first: `['Google', 'Outlook Safe Links']`. |
+| `pathChanges` | Path changes in words: `'removed /ref=sr_1_3'`, `'canonicalised to /dp/B08N5WRWNW'`. |
+| `fragmentRemoved` | Whether a tracking `#fragment` was dropped. |
+
+### `CleanOptions`
+
+| Option | |
+|---|---|
+| `keepAffiliate` | Keep what credits a referrer for a sale, so a creator's link still pays them: the names in `AFFILIATE_PARAMETERS` (Amazon's `tag`, eBay Partner Network's `campid`…, Awin's `awc`, Impact's `irclickid`, …) and the affiliate networks' own redirect pages (Rakuten's linksynergy, eBay's rover), left wrapped. The tracking around them still goes. Off by default. JavaScript only: the Swift has no such option, so it isn't in the golden files. |
+
+### `shortenerService(urlOrHost: string): string | null`
+
+The service behind a short link (`'Bitly'`, `'Twitter/X'`, `'LinkedIn'`), or `null`. A link's destination is kept on a shortener's server, so nothing offline can show it: this only recognises one (swift-url-kit's `Shorteners`), so an app can offer to ask. Takes a link or a bare host; `www.`, case and subdomains don't matter, and the longer of two matching hosts wins (`maps.app.goo.gl` is Google Maps).
+
+### `SHORTENER_HOSTS`, `AFFILIATE_PARAMETERS`
+
+The tables behind those two, frozen: host → service, and affiliate programme → its parameter names.
 
 ## How it reads URLs
 
@@ -43,7 +81,7 @@ Not with WHATWG `URL`, on purpose: that one lowercases hosts, adds a "/" path, d
 
 ## Golden file
 
-`tests/fixtures/golden.json` is swift-url-kit's output for every input in `scripts/golden/inputs.json`; `npm test` holds the port to every line (`npm run golden` prints any mismatch). `scripts/golden/README.md` explains regenerating it with Swift when either side changes.
+`tests/fixtures/golden.json` is swift-url-kit's output for every input in `scripts/golden/inputs.json`, and `tests/fixtures/golden-reports.json` its `URLStripper.report` for each; `npm test` holds the port to every line and every report (`npm run golden` prints any mismatch). `scripts/golden/README.md` explains regenerating it with Swift when either side changes.
 
 ## Development
 

@@ -17,6 +17,34 @@ export type HostPattern = Readonly<{
     kind: 'suffix' | 'brand';
     value: string;
 }>;
+export type HostRule = {
+    /**
+     * Where it applies (exact, suffix or brand).
+     */
+    hosts: readonly Readonly<{
+        kind: string;
+        value: string;
+    }>[];
+    /**
+     * The names it removes there.
+     */
+    parameters: readonly ParameterPattern[];
+    /**
+     * What kind of tracking they are.
+     */
+    category: 'analytics' | 'social' | 'email' | 'ecommerce' | 'other';
+    /**
+     * The site, as reports name it ("Amazon").
+     */
+    label: string;
+    /**
+     * Hosts spared though `hosts` matches them.
+     */
+    excluding?: readonly Readonly<{
+        kind: string;
+        value: string;
+    }>[];
+};
 export type RedirectRule = {
     /**
      * Where it applies.
@@ -75,37 +103,7 @@ export declare const GLOBAL_PARAMETERS: Readonly<{
  * Amazon's tag and GitHub's branch, so it is removed on the one and kept on
  * the other. `excluding` spares hosts that match `hosts` (Gmail under Google).
  */
-export declare const HOST_RULES: readonly ({
-    hosts: Readonly<{
-        kind: 'suffix' | 'brand';
-        value: string;
-    }>[];
-    parameters: Readonly<{
-        kind: 'exact' | 'prefix';
-        value: string;
-    }>[];
-    category: string;
-    label: string;
-    excluding: Readonly<{
-        kind: 'suffix' | 'brand';
-        value: string;
-    }>[];
-} | {
-    excluding?: undefined;
-    hosts: (Readonly<{
-        kind: 'exact' | 'prefix';
-        value: string;
-    }> | Readonly<{
-        kind: 'suffix' | 'brand';
-        value: string;
-    }>)[];
-    parameters: Readonly<{
-        kind: 'exact' | 'prefix';
-        value: string;
-    }>[];
-    category: string;
-    label: string;
-})[];
+export declare const HOST_RULES: readonly HostRule[];
 /**
  * Redirect pages that carry their destination in the URL (Redirects.rules),
  * peeled offline. The first matching rule that yields an http(s) URL wins.

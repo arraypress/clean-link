@@ -6,7 +6,10 @@
  */
 
 import { readFileSync } from 'node:fs';
-import { withoutTracking } from '../../src/index.js';
+import { isDeepStrictEqual } from 'node:util';
+import { cleanReport, withoutTracking } from '../../src/index.js';
+
+/** @import { CleanReport } from '../../src/index.js' */
 
 /**
  * One line of the golden file: an input and the Swift's answer.
@@ -19,6 +22,9 @@ import { withoutTracking } from '../../src/index.js';
  *
  * @typedef {{input: string, swift: string, js: string}} Mismatch
  */
+
+/** The Swift's `URLStripper.report` for every input (the harness's third argument). */
+export const REPORTS_FIXTURE = new URL('../../tests/fixtures/golden-reports.json', import.meta.url);
 
 /** The checked-in golden file. */
 export const GOLDEN_FIXTURE = new URL('../../tests/fixtures/golden.json', import.meta.url);
@@ -50,5 +56,28 @@ export function mismatches(lines) {
       js = `THROW ${/** @type {Error} */ (error).message}`;
     }
     return js === output ? [] : [{ input, swift: output, js }];
+  });
+}
+
+/**
+ * Read a reports file the harness wrote (`{about, reports}`).
+ *
+ * @param {string | URL} [file] - Default {@link REPORTS_FIXTURE}.
+ * @returns {CleanReport[]} The Swift's reports, in input order.
+ */
+export function readReports(file = REPORTS_FIXTURE) {
+  return JSON.parse(readFileSync(file, 'utf8')).reports;
+}
+
+/**
+ * Every report the port gives differently from the Swift's, field by field.
+ *
+ * @param {readonly CleanReport[]} reports - From {@link readReports}.
+ * @returns {{input: string, swift: CleanReport, js: CleanReport}[]} Empty when every report matches.
+ */
+export function reportMismatches(reports) {
+  return reports.flatMap((swift) => {
+    const js = cleanReport(swift.original);
+    return isDeepStrictEqual({ ...js }, { ...swift }) ? [] : [{ input: swift.original, swift, js }];
   });
 }

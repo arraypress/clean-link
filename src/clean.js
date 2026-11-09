@@ -21,7 +21,54 @@
  */
 
 import {FRAGMENT_SHARE_SUFFIXES, GLOBAL_PARAMETERS, HOST_RULES, REDIRECT_RULES} from './data/rules.js';
+import {AFFILIATE_PARAMETERS, AFFILIATE_REDIRECTS} from './data/affiliate.js';
 import {removingPercentEncoding, URLComponents} from './url/components.js';
+
+/** @import {ParameterPattern} from './data/rules.js' */
+
+/**
+ * What kind of tracking a parameter is (swift-url-kit's `TrackingCategory`).
+ *
+ * @typedef {'analytics' | 'social' | 'email' | 'ecommerce' | 'other'} TrackingCategory
+ */
+
+/**
+ * One parameter a clean removed, and why (the Swift's `RemovedParameter`).
+ *
+ * @typedef {object} RemovedParameter
+ * @property {string} name The name, percent-decoded and lowercased.
+ * @property {TrackingCategory} category What kind of tracking it is.
+ * @property {string} scope `'global'` for a name that's tracking on every
+ *   site; otherwise the site whose rule removed it (`'Amazon'`, `'YouTube'`).
+ */
+
+/**
+ * Everything a clean changed, so it can be shown rather than just trusted
+ * (the Swift's `CleanReport`).
+ *
+ * @typedef {object} CleanReport
+ * @property {string} original The link as given.
+ * @property {string} cleaned The link with the tracking gone: what
+ *   {@link withoutTracking} returns.
+ * @property {RemovedParameter[]} removed Every parameter removed, in the order found.
+ * @property {string[]} unwrapped The redirect pages peeled, outermost first
+ *   (`['Google', 'Outlook Safe Links']` for a Gmail link to a Safe Link).
+ * @property {string[]} pathChanges What changed in the path, in words
+ *   (`'removed /ref=sr_1_3'`, `'canonicalised to /dp/B08N5WRWNW'`).
+ * @property {boolean} fragmentRemoved Whether a tracking `#fragment` was dropped.
+ */
+
+/**
+ * What a clean may leave alone. Every option is off by default, which is the
+ * Swift's default clean.
+ *
+ * @typedef {object} CleanOptions
+ * @property {boolean} [keepAffiliate] Keep what credits a referrer for a sale:
+ *   the parameters in `AFFILIATE_PARAMETERS` (Amazon's `tag`, eBay's `campid`,
+ *   Awin's `awc`…) and the affiliate networks' own redirect pages (Rakuten,
+ *   eBay's rover), so a creator's link still pays them. The tracking around
+ *   them still goes.
+ */
 
 /** How many nested redirects to peel: a Gmail link to a Safe Link to a page is three. */
 const MAXIMUM_UNWRAPS = 3;
@@ -31,8 +78,16 @@ const TRIM = /^[\p{Z}\t\n\v\f\r\u0085]+|[\p{Z}\t\n\v\f\r\u0085]+$/gu;
 /** Swift's `Character.isWhitespace`. */
 const WHITESPACE = /\p{White_Space}/u;
 
-/** Flattened for one-pass matching (GlobalParameters.flat). */
-const GLOBAL_FLAT = Object.values(GLOBAL_PARAMETERS).flat();
+/**
+ * Flattened for one-pass matching, each with its category (GlobalParameters.flat).
+ *
+ * @type {readonly [ParameterPattern, TrackingCategory][]}
+ */
+const GLOBAL_FLAT = Object.entries(GLOBAL_PARAMETERS).flatMap(([category, patterns]) =>
+    patterns.map((pattern) => /** @type {[ParameterPattern, TrackingCategory]} */ ([pattern, /** @type {TrackingCategory} */ (category)])));
+
+/** Every affiliate parameter name, for `keepAffiliate`. */
+const AFFILIATE_NAMES = new Set(Object.values(AFFILIATE_PARAMETERS).flat());
 
 /**
  * The link without its tracking, for inserting or sharing; null when there
@@ -42,15 +97,19 @@ const GLOBAL_FLAT = Object.values(GLOBAL_PARAMETERS).flat();
  * "Nothing to take out" includes changes that are only Foundation writing
  * the same URL differently (`|` as `%7C`): the user's link is left as it was.
  *
- * @param {string} url
- * @returns {string|null}
+ * @param {string} url - The link.
+ * @param {CleanOptions} [options] - What to leave alone. Default: nothing.
+ * @returns {string|null} The cleaned link, or null.
+ * @example
+ * cleanLink('https://example.com/?utm_source=x'); // 'https://example.com/'
+ * cleanLink('https://example.com/?id=1');         // null
  */
-export function cleanLink(url) {
+export function cleanLink(url, options = {}) {
     if (typeof url !== 'string') return null;
     const trimmed = url.replace(TRIM, '');
     const parts = WHITESPACE.test(trimmed) ? null : URLComponents.parse(trimmed);
     if (!parts || !/^https?$/i.test(parts.scheme ?? '') || !parts.host) return null;
-    const cleaned = withoutTracking(trimmed);
+    const cleaned = withoutTracking(trimmed, options);
     // The same link only re-written by Foundation (`|` as `%7C`, "host:/" as
     // "host/") isn't worth swapping in for the user's.
     parts.rebuilt = true;
@@ -62,22 +121,48 @@ export function cleanLink(url) {
  * string out (unchanged when there's nothing to clean). Strings that aren't
  * URLs still lose `utm_*` and the other global names.
  *
- * @param {string} input
- * @returns {string}
+ * @param {string} input - Any text; usually a link.
+ * @param {CleanOptions} [options] - What to leave alone. Default: nothing.
+ * @returns {string} The cleaned text.
+ * @example
+ * withoutTracking('https://example.com/?utm_source=x&id=1'); // 'https://example.com/?id=1'
  */
-export function withoutTracking(input) {
+export function withoutTracking(input, options = {}) {
+    return cleanReport(input, options).cleaned;
+}
+
+/**
+ * Swift's `URLStripper.report`: the cleaned link together with everything
+ * that was taken out and why, for showing the user. `cleaned` is exactly
+ * what {@link withoutTracking} returns; with the default options every field
+ * matches the Swift's report (`tests/fixtures/golden-reports.json`).
+ *
+ * @param {string} input - Any text; usually a link.
+ * @param {CleanOptions} [options] - What to leave alone. Default: nothing.
+ * @returns {CleanReport} What changed.
+ * @example
+ * cleanReport('https://www.google.com/url?q=https://example.com/a%3Futm_source%3Dx');
+ * // {original: …, cleaned: 'https://example.com/a', unwrapped: ['Google'],
+ * //  removed: [{name: 'utm_source', category: 'analytics', scope: 'global'}],
+ * //  pathChanges: [], fragmentRemoved: false}
+ */
+export function cleanReport(input, options = {}) {
+    const keepAffiliate = options.keepAffiliate === true;
     const trimmed = input.replace(TRIM, '');
-    if (!trimmed) return input;
+    if (!trimmed) return report(input, input);
     // A URL can't contain whitespace; Foundation would encode it anyway and
     // rewrite text that was never a URL. Those get the by-hand fallback.
     let components = WHITESPACE.test(trimmed) ? null : URLComponents.parse(trimmed);
-    if (!components) return fallback(input, trimmed);
+    if (!components) return fallback(input, trimmed, keepAffiliate);
 
     // 1. Redirects, outermost first.
-    for (let unwraps = 0; unwraps < MAXIMUM_UNWRAPS; unwraps++) {
-        const target = unwrap(components);
-        if (!target) break;
-        components = target;
+    /** @type {string[]} */
+    const unwrapped = [];
+    while (unwrapped.length < MAXIMUM_UNWRAPS) {
+        const found = unwrap(components, keepAffiliate);
+        if (!found) break;
+        components = found.target;
+        unwrapped.push(found.label);
     }
 
     const host = normaliseHost(components.host);
@@ -85,26 +170,57 @@ export function withoutTracking(input) {
 
     // 2. Query. Work on the percent-encoded items so kept parameters come
     //    back byte for byte: `+` stays `+`, `%20` stays `%20`.
+    /** @type {RemovedParameter[]} */
+    const removed = [];
     const items = components.percentEncodedQueryItems;
     if (items) {
         const kept = items.filter((item) => {
             const name = (removingPercentEncoding(item.name) ?? item.name).toLowerCase();
-            return !matchesParameter(name, GLOBAL_FLAT) && !rules.some((rule) => matchesParameter(name, rule.parameters));
+            if (keepAffiliate && AFFILIATE_NAMES.has(name)) return true;
+            const global = GLOBAL_FLAT.find(([pattern]) => matchesParameter(name, [pattern]));
+            if (global) {
+                removed.push({name, category: global[1], scope: 'global'});
+                return false;
+            }
+            const rule = rules.find((r) => matchesParameter(name, r.parameters));
+            if (rule) {
+                removed.push({name, category: rule.category, scope: rule.label});
+                return false;
+            }
+            return true;
         });
         components.percentEncodedQueryItems = kept.length ? kept : null;
     }
 
     // 3. Path.
+    /** @type {string[]} */
+    let pathChanges = [];
     if (host !== null) {
         const path = cleanPath(components.path, host);
-        if (path !== null) components.path = path;
+        if (path) {
+            components.path = path.path;
+            pathChanges = path.changes;
+        }
     }
 
     // 4. Fragment.
     const fragment = components.fragment;
-    if (fragment !== null && isTrackingFragment(fragment)) components.fragment = null;
+    const fragmentRemoved = fragment !== null && isTrackingFragment(fragment);
+    if (fragmentRemoved) components.fragment = null;
 
-    return components.string;
+    return report(input, components.string, {removed, unwrapped, pathChanges, fragmentRemoved});
+}
+
+/**
+ * A report, with nothing changed unless `changes` says so.
+ *
+ * @param {string} original - The input.
+ * @param {string} cleaned - The output.
+ * @param {Partial<Omit<CleanReport, 'original' | 'cleaned'>>} [changes] - What changed.
+ * @returns {CleanReport} The report.
+ */
+function report(original, cleaned, changes = {}) {
+    return {original, cleaned, removed: [], unwrapped: [], pathChanges: [], fragmentRemoved: false, ...changes};
 }
 
 // MARK: - Fallback
@@ -113,13 +229,14 @@ export function withoutTracking(input) {
  * For strings Foundation refuses (spaces, stray characters): split on `?`
  * and `&` by hand and apply only the host-independent rules.
  *
- * @param {string} original
+ * @param {string} original - As given.
  * @param {string} s - Trimmed.
- * @returns {string}
+ * @param {boolean} keepAffiliate - Keep affiliate names.
+ * @returns {CleanReport} What changed.
  */
-function fallback(original, s) {
+function fallback(original, s, keepAffiliate) {
     const q = s.indexOf('?');
-    if (q < 0) return original;
+    if (q < 0) return report(original, original);
     const base = s.slice(0, q);
     let rest = s.slice(q + 1);
     let fragment = '';
@@ -128,24 +245,31 @@ function fallback(original, s) {
         fragment = rest.slice(hash);
         rest = rest.slice(0, hash);
     }
+    /** @type {RemovedParameter[]} */
+    const removed = [];
     const kept = rest.split('&').filter((pair) => {
         // Swift's `split(separator: "=", maxSplits: 1).first` skips empty
         // pieces, so "=utm_source" is named utm_source.
         const name = (pair.split('=').find((piece) => piece !== '') ?? pair).toLowerCase();
-        return !matchesParameter(name, GLOBAL_FLAT);
+        if (keepAffiliate && AFFILIATE_NAMES.has(name)) return true;
+        const global = GLOBAL_FLAT.find(([pattern]) => matchesParameter(name, [pattern]));
+        if (global) removed.push({name, category: global[1], scope: 'global'});
+        return !global;
     });
-    return base + (kept.length ? `?${kept.join('&')}` : '') + fragment;
+    return report(original, base + (kept.length ? `?${kept.join('&')}` : '') + fragment, {removed});
 }
 
 // MARK: - HostMatcher
 
 /**
- * Lowercased, no trailing dot, no `www.`; null for none or empty.
+ * A host as the rules compare it: lowercased, no trailing dot, no `www.`;
+ * null for none or empty (HostMatcher.normalise). Internal: shared with
+ * `shorteners.js`, not exported from the package.
  *
- * @param {string|null} host
- * @returns {string|null}
+ * @param {string|null} host - A host as written.
+ * @returns {string|null} The normalised host.
  */
-function normaliseHost(host) {
+export function normaliseHost(host) {
     if (!host) return null;
     let h = host.toLowerCase();
     if (h.endsWith('.')) h = h.slice(0, -1);
@@ -155,7 +279,7 @@ function normaliseHost(host) {
 
 /**
  * @param {string} host - Normalised.
- * @param {{kind: string, value: string}[]} patterns
+ * @param {readonly {kind: string, value: string}[]} patterns
  * @returns {boolean}
  */
 function matchesAny(host, patterns) {
@@ -173,7 +297,7 @@ function matchesAny(host, patterns) {
 
 /**
  * @param {string} name - Lowercased.
- * @param {{kind: string, value: string}[]} patterns
+ * @param {readonly {kind: string, value: string}[]} patterns
  * @returns {boolean}
  */
 function matchesParameter(name, patterns) {
@@ -183,24 +307,27 @@ function matchesParameter(name, patterns) {
 // MARK: - Redirects
 
 /**
- * The destination a redirect URL carries, or null when it isn't one.
+ * The destination a redirect URL carries and who runs the redirect, or null
+ * when it isn't one (or, keeping affiliate credit, is an affiliate network's).
  *
  * @param {URLComponents} components
- * @returns {URLComponents|null}
+ * @param {boolean} keepAffiliate - Leave affiliate networks' redirects wrapped.
+ * @returns {{target: URLComponents, label: string}|null}
  */
-function unwrap(components) {
+function unwrap(components, keepAffiliate) {
     const host = normaliseHost(components.host);
     if (host === null) return null;
     const path = components.path;
     for (const rule of REDIRECT_RULES) {
         if (!matchesAny(host, rule.hosts)) continue;
+        if (keepAffiliate && AFFILIATE_REDIRECTS.has(rule.label)) continue;
         if (rule.pathPrefix && !path.startsWith(rule.pathPrefix)) continue;
         const raw = extract(rule.source, components);
         const decoded = raw === null ? null : decode(raw, rule.encoding ?? 'percent');
         const target = decoded === null ? null : URLComponents.parse(decoded);
         // Only http(s): a redirect to `javascript:` stays wrapped.
         if (!target || !/^https?$/.test(target.scheme?.toLowerCase() ?? '') || !target.host) continue;
-        return target;
+        return {target, label: rule.label};
     }
     return null;
 }
@@ -291,11 +418,17 @@ function base64Utf8(b64) {
 // MARK: - Paths
 
 /**
+ * A path's tracking taken out, and what changed in words (Paths.clean).
+ *
+ * @typedef {{path: string, changes: string[]}} PathClean
+ */
+
+/**
  * The path without tracking for a normalised host, or null when unchanged.
  *
  * @param {string} path - Decoded.
  * @param {string} host
- * @returns {string|null}
+ * @returns {PathClean|null}
  */
 function cleanPath(path, host) {
     if (matchesAny(host, [{kind: 'brand', value: 'amazon'}, {kind: 'exact', value: 'a.co'}])) return amazonPath(path);
@@ -309,14 +442,16 @@ function cleanPath(path, host) {
  * `/dp/ASIN`, after a `/-/xx` locale prefix when there is one.
  *
  * @param {string} path
- * @returns {string|null}
+ * @returns {PathClean|null}
  */
 function amazonPath(path) {
-    let changed = false;
+    /** @type {string[]} */
+    const changes = [];
     let segments = path.split('/').filter(Boolean);
-    if (segments.some((s) => s.startsWith('ref='))) {
+    const refs = segments.filter((s) => s.startsWith('ref='));
+    if (refs.length) {
         segments = segments.filter((s) => !s.startsWith('ref='));
-        changed = true;
+        changes.push(`removed /${refs.join(', /')}`);
     }
     const locale = segments.length >= 2 && segments[0] === '-' ? segments.slice(0, 2) : [];
     const id = asin(segments);
@@ -324,11 +459,11 @@ function amazonPath(path) {
         const canonical = [...locale, 'dp', id];
         if (canonical.join('/') !== segments.join('/')) {
             segments = canonical;
-            changed = true;
+            changes.push(`canonicalised to /dp/${id}`);
         }
     }
-    if (!changed) return null;
-    return segments.length ? `/${segments.join('/')}` : '/';
+    if (!changes.length) return null;
+    return {path: segments.length ? `/${segments.join('/')}` : '/', changes};
 }
 
 /**
@@ -372,7 +507,7 @@ function asin(segments) {
  * is `/itm/123456789012`.
  *
  * @param {string} path
- * @returns {string|null}
+ * @returns {PathClean|null}
  */
 function ebayPath(path) {
     const segments = path.split('/').filter(Boolean);
@@ -381,7 +516,7 @@ function ebayPath(path) {
     const id = segments[i + 2];
     const digits = [...id];
     if (digits.length < 9 || !digits.every(isNumber)) return null;
-    return `/${[...segments.slice(0, i + 1), id].join('/')}`;
+    return {path: `/${[...segments.slice(0, i + 1), id].join('/')}`, changes: [`canonicalised to /itm/${id}`]};
 }
 
 // MARK: - Fragments

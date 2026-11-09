@@ -24,6 +24,17 @@
  */
 
 /**
+ * Parameters that are tracking on one site only (HostRules' `HostRule`).
+ *
+ * @typedef {object} HostRule
+ * @property {readonly Readonly<{kind: string, value: string}>[]} hosts Where it applies (exact, suffix or brand).
+ * @property {readonly ParameterPattern[]} parameters The names it removes there.
+ * @property {'analytics' | 'social' | 'email' | 'ecommerce' | 'other'} category What kind of tracking they are.
+ * @property {string} label The site, as reports name it ("Amazon").
+ * @property {readonly Readonly<{kind: string, value: string}>[]} [excluding] Hosts spared though `hosts` matches them.
+ */
+
+/**
  * A redirect page and where it keeps its destination.
  *
  * @typedef {object} RedirectRule
@@ -124,7 +135,7 @@ export const GLOBAL_PARAMETERS = Object.freeze({
  * Amazon's tag and GitHub's branch, so it is removed on the one and kept on
  * the other. `excluding` spares hosts that match `hosts` (Gmail under Google).
  */
-export const HOST_RULES = Object.freeze([
+export const HOST_RULES = Object.freeze(/** @type {HostRule[]} */ ([
 
     // MARK: Search engines
 
@@ -419,7 +430,7 @@ export const HOST_RULES = Object.freeze([
 
     {hosts: [suffix('mozilla.org')], parameters: [exact('src'), exact('redirect_source')],
              category: 'other', label: 'Mozilla'},
-]);
+]));
 
 /**
  * Redirect pages that carry their destination in the URL (Redirects.rules),

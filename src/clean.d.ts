@@ -19,6 +19,61 @@
  *
  * Pure: no DOM, no network.
  */
+export type TrackingCategory = 'analytics' | 'social' | 'email' | 'ecommerce' | 'other';
+export type RemovedParameter = {
+    /**
+     * The name, percent-decoded and lowercased.
+     */
+    name: string;
+    /**
+     * What kind of tracking it is.
+     */
+    category: TrackingCategory;
+    /**
+     * `'global'` for a name that's tracking on every
+     * site; otherwise the site whose rule removed it (`'Amazon'`, `'YouTube'`).
+     */
+    scope: string;
+};
+export type CleanReport = {
+    /**
+     * The link as given.
+     */
+    original: string;
+    /**
+     * The link with the tracking gone: what
+     * {@link withoutTracking} returns.
+     */
+    cleaned: string;
+    /**
+     * Every parameter removed, in the order found.
+     */
+    removed: RemovedParameter[];
+    /**
+     * The redirect pages peeled, outermost first
+     * (`['Google', 'Outlook Safe Links']` for a Gmail link to a Safe Link).
+     */
+    unwrapped: string[];
+    /**
+     * What changed in the path, in words
+     * (`'removed /ref=sr_1_3'`, `'canonicalised to /dp/B08N5WRWNW'`).
+     */
+    pathChanges: string[];
+    /**
+     * Whether a tracking `#fragment` was dropped.
+     */
+    fragmentRemoved: boolean;
+};
+export type CleanOptions = {
+    /**
+     * Keep what credits a referrer for a sale:
+     * the parameters in `AFFILIATE_PARAMETERS` (Amazon's `tag`, eBay's `campid`,
+     * Awin's `awc`…) and the affiliate networks' own redirect pages (Rakuten,
+     * eBay's rover), so a creator's link still pays them. The tracking around
+     * them still goes.
+     */
+    keepAffiliate?: boolean;
+};
 /**
  * The link without its tracking, for inserting or sharing; null when there
  * was nothing to take out or it isn't an http(s) link (`mailto:`,
@@ -27,16 +82,52 @@
  * "Nothing to take out" includes changes that are only Foundation writing
  * the same URL differently (`|` as `%7C`): the user's link is left as it was.
  *
- * @param {string} url
- * @returns {string|null}
+ * @param {string} url - The link.
+ * @param {CleanOptions} [options] - What to leave alone. Default: nothing.
+ * @returns {string|null} The cleaned link, or null.
+ * @example
+ * cleanLink('https://example.com/?utm_source=x'); // 'https://example.com/'
+ * cleanLink('https://example.com/?id=1');         // null
  */
-export declare function cleanLink(url: string): string | null;
+export declare function cleanLink(url: string, options?: CleanOptions): string | null;
 /**
  * Swift's `String.withoutTracking`, exactly: any string in, the cleaned
  * string out (unchanged when there's nothing to clean). Strings that aren't
  * URLs still lose `utm_*` and the other global names.
  *
- * @param {string} input
- * @returns {string}
+ * @param {string} input - Any text; usually a link.
+ * @param {CleanOptions} [options] - What to leave alone. Default: nothing.
+ * @returns {string} The cleaned text.
+ * @example
+ * withoutTracking('https://example.com/?utm_source=x&id=1'); // 'https://example.com/?id=1'
  */
-export declare function withoutTracking(input: string): string;
+export declare function withoutTracking(input: string, options?: CleanOptions): string;
+/**
+ * Swift's `URLStripper.report`: the cleaned link together with everything
+ * that was taken out and why, for showing the user. `cleaned` is exactly
+ * what {@link withoutTracking} returns; with the default options every field
+ * matches the Swift's report (`tests/fixtures/golden-reports.json`).
+ *
+ * @param {string} input - Any text; usually a link.
+ * @param {CleanOptions} [options] - What to leave alone. Default: nothing.
+ * @returns {CleanReport} What changed.
+ * @example
+ * cleanReport('https://www.google.com/url?q=https://example.com/a%3Futm_source%3Dx');
+ * // {original: …, cleaned: 'https://example.com/a', unwrapped: ['Google'],
+ * //  removed: [{name: 'utm_source', category: 'analytics', scope: 'global'}],
+ * //  pathChanges: [], fragmentRemoved: false}
+ */
+export declare function cleanReport(input: string, options?: CleanOptions): CleanReport;
+/**
+ * A host as the rules compare it: lowercased, no trailing dot, no `www.`;
+ * null for none or empty (HostMatcher.normalise). Internal: shared with
+ * `shorteners.js`, not exported from the package.
+ *
+ * @param {string|null} host - A host as written.
+ * @returns {string|null} The normalised host.
+ */
+export declare function normaliseHost(host: string | null): string | null;
+export type PathClean = {
+    path: string;
+    changes: string[];
+};

@@ -1,9 +1,11 @@
 import Foundation
 import URLStripper
 
-// Usage: golden <inputs.json> <out.json>
+// Usage: golden <inputs.json> <out.json> [<reports.json>]
 // Runs swift-url-kit's `withoutTracking` over every input and writes the
-// golden file: tests/fixtures/golden.json.
+// golden file: tests/fixtures/golden.json. With a third path, also writes
+// `URLStripper.report` for every input (tests/fixtures/golden-reports.json):
+// what was removed and why, held to by `cleanReport`.
 let args = CommandLine.arguments
 let inputs = try JSONDecoder().decode([String].self, from: Data(contentsOf: URL(fileURLWithPath: args[1])))
 struct Line: Encodable { let input: String; let output: String }
@@ -14,3 +16,11 @@ let encoder = JSONEncoder()
 encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
 try encoder.encode(golden).write(to: URL(fileURLWithPath: args[2]))
 print("\(lines.count) lines, \(lines.filter { $0.input != $0.output }.count) changed")
+
+if args.count > 3 {
+    struct Reports: Encodable { let about: String; let reports: [CleanReport] }
+    let reports = inputs.map { URLStripper.report($0) }
+    let out = Reports(about: "swift-url-kit URLStripper.report (default options) for every golden input, run by the same harness. cleanReport must match every one.", reports: reports)
+    try encoder.encode(out).write(to: URL(fileURLWithPath: args[3]))
+    print("\(reports.count) reports, \(reports.filter { !$0.removed.isEmpty || !$0.unwrapped.isEmpty }.count) with removals")
+}

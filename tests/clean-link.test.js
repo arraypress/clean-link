@@ -8,9 +8,9 @@
 
 import {describe, it} from 'node:test';
 import assert from 'node:assert/strict';
-import {cleanLink, withoutTracking} from '../src/index.js';
+import {AFFILIATE_PARAMETERS, cleanLink, cleanReport, SHORTENER_HOSTS, shortenerService, withoutTracking} from '../src/index.js';
 import {URLComponents} from '../src/url/components.js';
-import {mismatches, readGolden} from '../scripts/golden/compare.mjs';
+import {mismatches, readGolden, readReports, reportMismatches} from '../scripts/golden/compare.mjs';
 
 /**
  * `URLComponents.parse`, failing the test when it can't read `text`.
@@ -29,6 +29,15 @@ describe('golden parity with swift-url-kit', () => {
         const lines = readGolden();
         assert.ok(lines.length >= 500);
         assert.deepEqual(mismatches(lines), []);
+    });
+
+    it('reports exactly what the Swift’s URLStripper.report does, for every input', () => {
+        const reports = readReports();
+        assert.equal(reports.length, readGolden().length);
+        // Every kind of change is in there, not only parameters.
+        for (const field of /** @type {const} */ (['removed', 'unwrapped', 'pathChanges'])) assert.ok(reports.filter((r) => r[field].length).length >= 20, field);
+        assert.ok(reports.filter((r) => r.fragmentRemoved).length >= 5);
+        assert.deepEqual(reportMismatches(reports), []);
     });
 });
 
@@ -264,6 +273,110 @@ describe('cleanLink', () => {
         assert.equal(cleanLink('https:///path?utm_source=x'), null);
         assert.equal(cleanLink(''), null);
         assert.equal(cleanLink(/** @type {any} */ (undefined)), null);
+    });
+});
+
+describe('cleanReport', () => {
+    it('names each parameter removed, its kind and the rule that removed it, in order', () => {
+        const report = cleanReport('https://www.amazon.co.uk/Some-Thing/dp/B08N5WRWNW/ref=sr_1_3?utm_source=x&th=1&keep=1');
+        assert.equal(report.cleaned, 'https://www.amazon.co.uk/dp/B08N5WRWNW?keep=1');
+        assert.deepEqual(report.removed, [
+            {name: 'utm_source', category: 'analytics', scope: 'global'},
+            {name: 'th', category: 'ecommerce', scope: 'Amazon'},
+        ]);
+        assert.deepEqual(report.pathChanges, ['removed /ref=sr_1_3', 'canonicalised to /dp/B08N5WRWNW']);
+        assert.deepEqual(report.unwrapped, []);
+        assert.equal(report.fragmentRemoved, false);
+    });
+
+    it('lists nested redirects outermost first, and cleans the destination', () => {
+        const safe = `https://eur01.safelinks.protection.outlook.com/?url=${encodeURIComponent('https://example.com/a?fbclid=1')}&data=x`;
+        const report = cleanReport(`https://www.google.com/url?q=${encodeURIComponent(safe)}&sa=D`);
+        assert.deepEqual(report.unwrapped, ['Google', 'Outlook Safe Links']);
+        assert.equal(report.cleaned, 'https://example.com/a');
+        assert.deepEqual(report.removed, [{name: 'fbclid', category: 'social', scope: 'global'}]);
+    });
+
+    it('reports a dropped tracking fragment, and an encoded name decoded', () => {
+        const report = cleanReport('https://example.com/a?%55TM_Source=x#xtor=RSS-1');
+        assert.equal(report.cleaned, 'https://example.com/a');
+        assert.deepEqual(report.removed, [{name: 'utm_source', category: 'analytics', scope: 'global'}]);
+        assert.equal(report.fragmentRemoved, true);
+    });
+
+    it('text that isn’t a URL: the global rules, reported; nothing to do is an empty report', () => {
+        assert.deepEqual(cleanReport('see example.com?utm_source=x&a=1').removed, [{name: 'utm_source', category: 'analytics', scope: 'global'}]);
+        assert.deepEqual(cleanReport('  '), {original: '  ', cleaned: '  ', removed: [], unwrapped: [], pathChanges: [], fragmentRemoved: false});
+    });
+
+    it('cleaned is always what withoutTracking returns', () => {
+        for (const {input} of readGolden()) assert.equal(cleanReport(input).cleaned, withoutTracking(input), input);
+    });
+});
+
+describe('keepAffiliate', () => {
+    const keep = {keepAffiliate: true};
+    const amazon = 'https://www.amazon.com/dp/B08N5WRWNW?tag=creator-20&linkCode=ll1&ref_=as_li_ss_tl&utm_source=x';
+
+    it('keeps Amazon’s tag and takes out the rest; by default the tag goes too', () => {
+        assert.equal(withoutTracking(amazon), 'https://www.amazon.com/dp/B08N5WRWNW');
+        assert.equal(withoutTracking(amazon, keep), 'https://www.amazon.com/dp/B08N5WRWNW?tag=creator-20');
+        assert.deepEqual(cleanReport(amazon, keep).removed.map((r) => r.name), ['linkcode', 'ref_', 'utm_source']);
+    });
+
+    it('keeps the networks’ global names (Awin, Impact) and eBay Partner Network’s', () => {
+        assert.equal(withoutTracking('https://shop.example/p?awc=1_2_3&irclickid=abc&gclid=x', keep), 'https://shop.example/p?awc=1_2_3&irclickid=abc');
+        assert.equal(withoutTracking('https://www.ebay.com/itm/123456789012?campid=533&mkevt=1&_trksid=p1', keep), 'https://www.ebay.com/itm/123456789012?campid=533&mkevt=1');
+        assert.equal(withoutTracking('not a url?awc=1&utm_source=x', keep), 'not a url?awc=1');
+    });
+
+    it('leaves an affiliate network’s redirect wrapped (unwrapping skips the credit), but not others', () => {
+        const rakuten = `https://click.linksynergy.com/deeplink?id=abc&murl=${encodeURIComponent('https://shop.example/p')}`;
+        assert.equal(withoutTracking(rakuten), 'https://shop.example/p');
+        assert.equal(withoutTracking(rakuten, keep), rakuten);
+        assert.deepEqual(cleanReport(rakuten, keep).unwrapped, []);
+        assert.equal(withoutTracking('https://www.google.com/url?q=https://example.com/a', keep), 'https://example.com/a');
+    });
+
+    it('cleanLink takes the option: a link with only its credit has nothing to take out', () => {
+        assert.equal(cleanLink('https://www.amazon.com/dp/B08N5WRWNW?tag=creator-20', keep), null);
+        assert.equal(cleanLink('https://www.amazon.com/dp/B08N5WRWNW?tag=creator-20'), 'https://www.amazon.com/dp/B08N5WRWNW');
+    });
+
+    it('lists lowercased names, each in one programme', () => {
+        const names = Object.values(AFFILIATE_PARAMETERS).flat();
+        assert.deepEqual(names, names.map((n) => n.toLowerCase()));
+        assert.equal(new Set(names).size, names.length);
+    });
+});
+
+describe('shortenerService', () => {
+    it('names the service behind a short link or host', () => {
+        assert.equal(shortenerService('https://bit.ly/3xYz'), 'Bitly');
+        assert.equal(shortenerService('https://t.co/abc'), 'Twitter/X');
+        assert.equal(shortenerService('lnkd.in'), 'LinkedIn');
+        assert.equal(shortenerService('  WWW.Bit.LY.  '), 'Bitly');
+    });
+
+    it('a subdomain counts, and the longer of two hosts wins', () => {
+        assert.equal(shortenerService('https://custom.bit.ly/x'), 'Bitly');
+        assert.equal(shortenerService('https://maps.app.goo.gl/x'), 'Google Maps');
+        assert.equal(shortenerService('https://a.maps.app.goo.gl/x'), 'Google Maps');
+        assert.equal(shortenerService('https://goo.gl/x'), 'Google');
+    });
+
+    it('anything else is null', () => {
+        assert.equal(shortenerService('https://example.com/bit.ly'), null);
+        assert.equal(shortenerService('https://notbit.ly/x'), null);
+        assert.equal(shortenerService('mailto:a@bit.ly'), null);
+        assert.equal(shortenerService(''), null);
+        assert.equal(shortenerService('https://exa mple.com/'), null);
+        assert.equal(shortenerService(/** @type {string} */ (/** @type {unknown} */ (42))), null);
+    });
+
+    it('the table is the Swift’s 69 hosts, lowercased', () => {
+        assert.equal(Object.keys(SHORTENER_HOSTS).length, 69);
+        assert.deepEqual(Object.keys(SHORTENER_HOSTS), Object.keys(SHORTENER_HOSTS).map((h) => h.toLowerCase()));
     });
 });
 
