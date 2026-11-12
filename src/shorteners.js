@@ -19,7 +19,7 @@ import {URLComponents} from './url/components.js';
  * (`maps.app.goo.gl` is Google Maps, not Google).
  *
  * @param {string} urlOrHost - A link (`https://bit.ly/abc`) or a bare host
- *   (`bit.ly`, `www.bit.ly`); case and a trailing dot don't matter.
+ *   (`bit.ly`, `www.bit.ly`, `bit.ly/abc`); case and a trailing dot don't matter.
  * @returns {string|null} The service's name, or null.
  * @example
  * shortenerService('https://bit.ly/3xYz');       // 'Bitly'
@@ -29,7 +29,8 @@ import {URLComponents} from './url/components.js';
 export function shortenerService(urlOrHost) {
     if (typeof urlOrHost !== 'string') return null;
     const text = urlOrHost.trim();
-    const host = normaliseHost(text.includes('://') ? URLComponents.parse(text)?.host ?? null : text);
+    // A bare host may come with a port or a path: "bit.ly/3xYz", "bit.ly:443".
+    const host = normaliseHost(text.includes('://') ? URLComponents.parse(text)?.host ?? null : text.replace(/[:/?#].*$/, ''));
     if (host === null) return null;
     if (Object.hasOwn(SHORTENER_HOSTS, host)) return SHORTENER_HOSTS[host];
     const owner = Object.keys(SHORTENER_HOSTS)

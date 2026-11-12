@@ -22,6 +22,7 @@
 
 import {FRAGMENT_SHARE_SUFFIXES, GLOBAL_KEPT_ON_PATHS, GLOBAL_PARAMETERS, HOST_RULES, NEVER_STRIP_HOSTS, REDIRECT_RULES} from './data/rules.js';
 import {AFFILIATE_PARAMETERS, AFFILIATE_REDIRECTS} from './data/affiliate.js';
+import {SITE_KEPT_ON_PATHS, SITE_SPARED_HOSTS} from './data/corrections.js';
 import {removingPercentEncoding, URLComponents} from './url/components.js';
 
 /** @import {ParameterPattern, RedirectEncoding, RedirectSource} from './data/rules.js' */
@@ -98,7 +99,8 @@ const HTTP_SCHEME = /^https?:\/\//i;
  * `javascript:`, plain text).
  *
  * "Nothing to take out" includes changes that are only Foundation writing
- * the same URL differently (`|` as `%7C`): the user's link is left as it was.
+ * the same URL differently (`|` as `%7C`, a bare trailing `?` dropped): the
+ * user's link is left as it was.
  *
  * @param {string} url - The link.
  * @param {CleanOptions} [options] - What to leave alone. Default: nothing.
@@ -106,17 +108,18 @@ const HTTP_SCHEME = /^https?:\/\//i;
  * @example
  * cleanLink('https://example.com/?utm_source=x'); // 'https://example.com/'
  * cleanLink('https://example.com/?id=1');         // null
+ * cleanLink('https://example.com/path?');         // null
  */
 export function cleanLink(url, options = {}) {
     if (typeof url !== 'string') return null;
     const trimmed = url.replace(TRIM, '');
     const parts = WHITESPACE.test(trimmed) ? null : URLComponents.parse(trimmed);
     if (!parts || !/^https?$/i.test(parts.scheme ?? '') || !parts.host) return null;
-    const cleaned = withoutTracking(trimmed, options);
-    // The same link only re-written by Foundation (`|` as `%7C`, "host:/" as
-    // "host/") isn't worth swapping in for the user's.
-    parts.rebuilt = true;
-    return cleaned === trimmed || cleaned === parts.string ? null : cleaned;
+    const report = cleanReport(trimmed, options);
+    // The same link only written differently (`|` as `%7C`, "host:/" as
+    // "host/", a bare "?" dropped) isn't worth swapping in for the user's.
+    const changed = report.removed.length > 0 || report.unwrapped.length > 0 || report.pathChanges.length > 0 || report.fragmentRemoved;
+    return changed && report.cleaned !== trimmed ? report.cleaned : null;
 }
 
 /**
@@ -172,7 +175,7 @@ export function cleanReport(input, options = {}) {
     // An archived page, a signed link that didn't unwrap: its query is the
     // content. Unwrapped, never cleaned.
     if (host !== null && matchesAny(host, NEVER_STRIP_HOSTS)) return report(input, components.string, {unwrapped});
-    const rules = host === null ? [] : HOST_RULES.filter((rule) => matchesAny(host, rule.hosts) && !matchesAny(host, rule.excluding ?? []));
+    const rules = host === null ? [] : HOST_RULES.filter((rule) => matchesAny(host, rule.hosts) && !matchesAny(host, rule.excluding ?? []) && !isSpared(host, rule.label));
     const path = components.path;
 
     // 2. Query. Work on the percent-encoded items so kept parameters come
@@ -189,7 +192,7 @@ export function cleanReport(input, options = {}) {
                 removed.push({name, category: global, scope: 'global'});
                 return false;
             }
-            const rule = rules.find((r) => matchesParameter(name, r.parameters));
+            const rule = rules.find((r) => matchesParameter(name, r.parameters) && !isKeptOn(path, r.label, name));
             if (rule) {
                 removed.push({name, category: rule.category, scope: rule.label});
                 return false;
@@ -283,6 +286,34 @@ function globalCategory(name, path) {
     return GLOBAL_FLAT.find(([pattern]) => matchesParameter(name, [pattern]))?.[1] ?? null;
 }
 
+/**
+ * Whether a site's rule leaves a host alone though it matches it
+ * (`SITE_SPARED_HOSTS`: AWS under Amazon).
+ *
+ * @param {string} host - Normalised.
+ * @param {string} label - The site's rule.
+ * @returns {boolean}
+ */
+function isSpared(host, label) {
+    return (SITE_SPARED_HOSTS[label] ?? []).some((spared) => host === spared || host.endsWith(`.${spared}`));
+}
+
+/**
+ * Whether a page reads a name its site's rule removes elsewhere
+ * (`SITE_KEPT_ON_PATHS`: `sp` on Bing Maps).
+ *
+ * @param {string} path - Decoded.
+ * @param {string} label - The site's rule.
+ * @param {string} name - Lowercased.
+ * @returns {boolean}
+ */
+function isKeptOn(path, label, name) {
+    const fragments = SITE_KEPT_ON_PATHS[label]?.[name];
+    if (!fragments) return false;
+    const lower = path.toLowerCase();
+    return fragments.some((fragment) => lower.includes(fragment));
+}
+
 // MARK: - HostMatcher
 
 /**
@@ -345,7 +376,7 @@ function unwrap(components, keepAffiliate) {
     for (const rule of REDIRECT_RULES) {
         if (!matchesAny(host, rule.hosts)) continue;
         if (keepAffiliate && AFFILIATE_REDIRECTS.has(rule.label)) continue;
-        if (rule.pathPrefix && !path.startsWith(rule.pathPrefix)) continue;
+        if (rule.pathPrefix && !isUnder(path, rule.pathPrefix)) continue;
         const raw = extract(rule.source, components);
         const decoded = raw === null ? null : decode(raw, rule.encoding ?? 'percent');
         const target = decoded === null ? null : URLComponents.parse(decoded);
@@ -354,6 +385,21 @@ function unwrap(components, keepAffiliate) {
         return {target, label: rule.label};
     }
     return null;
+}
+
+/**
+ * Whether a path is a redirect page's: at its prefix, or below it. A prefix
+ * that ends a segment (`/url`, `/l.php`) is followed by nothing or a `/`, so
+ * Google's `/url` isn't `/url-help`; one that ends inside a segment (`/c/`,
+ * CJ's `/click-`) is followed by anything.
+ *
+ * @param {string} path - Decoded.
+ * @param {string} prefix - A rule's `pathPrefix`.
+ * @returns {boolean}
+ */
+function isUnder(path, prefix) {
+    if (!path.startsWith(prefix)) return false;
+    return /[/-]$/.test(prefix) || path.length === prefix.length || path[prefix.length] === '/';
 }
 
 /**
@@ -466,7 +512,8 @@ function decode(raw, encoding) {
             return HTTP_SCHEME.test(raw) ? raw : removingPercentEncoding(raw);
         case 'schemeless': {
             const stripped = raw.startsWith('/') ? raw.slice(1) : raw;
-            return stripped ? `https://${stripped}` : null;
+            // A destination starts with a host: "/amp/s/example.com/a", not Google's own "/amp/cache/overview".
+            return /^[^/?#]+\.[^/?#.]+(?:[/?#:]|$)/.test(stripped) ? `https://${stripped}` : null;
         }
         case 'schemeOptional': {
             const url = decode(raw, 'percent');
@@ -595,7 +642,7 @@ function base64Utf8(b64) {
  * @returns {PathClean|null}
  */
 function cleanPath(path, host) {
-    if (matchesAny(host, [{kind: 'brand', value: 'amazon'}, {kind: 'exact', value: 'a.co'}])) return amazonPath(path);
+    if (matchesAny(host, [{kind: 'brand', value: 'amazon'}, {kind: 'exact', value: 'a.co'}])) return isSpared(host, 'Amazon') ? null : amazonPath(path);
     if (matchesAny(host, [{kind: 'brand', value: 'ebay'}])) return ebayPath(path);
     return null;
 }
@@ -696,7 +743,8 @@ function isTrackingFragment(fragment) {
     const f = fragment.toLowerCase();
     if (!f) return false;
     if (f === '_=_') return true; // Facebook OAuth
-    if (f.startsWith('xtor=') || f.startsWith('utm_') || f.startsWith('?utm_')) return true;
+    // "#utm_source=x" is tracking; "#utm_tutorial" is a heading.
+    if (f.startsWith('xtor=') || /^\??utm_[^=]*=/.test(f)) return true;
     if (f.startsWith('echobox=') || f.startsWith('sthash.')) return true;
     if (f.startsWith('.')) { // AddThis: .abc.twitter
         const parts = f.split('.').filter(Boolean);

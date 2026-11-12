@@ -5,6 +5,19 @@ All notable changes to `@arraypress/clean-link` are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] — Unreleased
+
+### Fixed
+
+- A redirect page's path is matched as a path, not as leading letters: `developers.google.com/amp/cache/overview` became `https://cache/overview`, and `support.google.com/url-help?url=…` and `google.com/urlx?q=…` were unwrapped as Google's `/url`. A schemeless destination (`/amp/s/example.com/a`) must start with a host.
+- Names a site's rule removes stay on the page that reads them (`src/data/corrections.js`): `sp` on Bing Maps (the pins), `eid` on Facebook's `/event.php`, `courseClaim` on LinkedIn Learning.
+- Amazon's rule and its `/dp/ASIN` path cleaning leave AWS alone (`aws.amazon.com`, the console): `tag`, `ref` and `th` there are the page's own.
+- `#utm_tutorial` is a heading: a fragment is tracking when it sets a `utm_` name.
+- `cleanLink` returns `null` when nothing was taken out and only the writing changed (`https://example.com/path?`).
+- `shortenerService` reads a bare host with a path or a port (`bit.ly/3xYz`, `bit.ly:443`).
+
+These are JavaScript only (swift-url-kit 0.2.0 still does each); the golden files are unchanged and still match.
+
 ## [1.1.0] — 2026-11-10
 
 ### Added

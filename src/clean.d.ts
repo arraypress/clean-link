@@ -80,7 +80,8 @@ export type CleanOptions = {
  * `javascript:`, plain text).
  *
  * "Nothing to take out" includes changes that are only Foundation writing
- * the same URL differently (`|` as `%7C`): the user's link is left as it was.
+ * the same URL differently (`|` as `%7C`, a bare trailing `?` dropped): the
+ * user's link is left as it was.
  *
  * @param {string} url - The link.
  * @param {CleanOptions} [options] - What to leave alone. Default: nothing.
@@ -88,6 +89,7 @@ export type CleanOptions = {
  * @example
  * cleanLink('https://example.com/?utm_source=x'); // 'https://example.com/'
  * cleanLink('https://example.com/?id=1');         // null
+ * cleanLink('https://example.com/path?');         // null
  */
 export declare function cleanLink(url: string, options?: CleanOptions): string | null;
 /**

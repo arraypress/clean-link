@@ -46,7 +46,7 @@ The link with its tracking taken out, as the Swift's `String.withoutTracking` re
 
 ### `cleanLink(url: string, options?: CleanOptions): string | null`
 
-For inserting or sharing: the cleaned link, or `null` when there was nothing to take out or it isn't an http(s) link. "Nothing to take out" includes changes that are only the URL written differently (`|` as `%7C`), so the user's own link is kept.
+For inserting or sharing: the cleaned link, or `null` when there was nothing to take out or it isn't an http(s) link. "Nothing to take out" includes changes that are only the URL written differently (`|` as `%7C`, a bare `?` dropped), so the user's own link is kept.
 
 ### `cleanReport(url: string, options?: CleanOptions): CleanReport`
 
@@ -78,6 +78,18 @@ The tables behind those two, frozen: host → service, and affiliate programme �
 ## How it reads URLs
 
 Not with WHATWG `URL`, on purpose: that one lowercases hosts, adds a "/" path, drops default ports and re-encodes queries, so a cleaner on top of it would disagree with the Swift on most links. `src/url/components.js` reads RFC 3986 the way Foundation's `URLComponents` does, byte for byte.
+
+## Where it is more careful than the Swift
+
+A few real links broke under swift-url-kit 0.2.0's rules; this port leaves them alone (`src/data/corrections.js` and two checks in `src/clean.js`), and each is worth taking back to the Swift:
+
+- A redirect page's path is that page or below it: Google's `/url` isn't `/url-help`, and its `/amp/…` unwraps only when a host follows (`developers.google.com/amp/cache/overview` was turned into `https://cache/overview`).
+- `sp` stays on Bing Maps (its pins), `eid` on Facebook's `/event.php`, `courseClaim` on LinkedIn Learning.
+- AWS (`aws.amazon.com`, the console) isn't Amazon's shop: its `tag`, `ref` and `th` stay and its paths aren't product paths.
+- A fragment is tracking when it sets a `utm_` name (`#utm_source=x`), not when it is a heading called `#utm_tutorial`.
+- `cleanLink` returns `null` unless something was taken out: a bare trailing `?` dropped is the same link.
+
+None of these inputs are in the golden files, which still match line for line.
 
 ## Golden file
 

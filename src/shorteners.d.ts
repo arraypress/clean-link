@@ -14,7 +14,7 @@
  * (`maps.app.goo.gl` is Google Maps, not Google).
  *
  * @param {string} urlOrHost - A link (`https://bit.ly/abc`) or a bare host
- *   (`bit.ly`, `www.bit.ly`); case and a trailing dot don't matter.
+ *   (`bit.ly`, `www.bit.ly`, `bit.ly/abc`); case and a trailing dot don't matter.
  * @returns {string|null} The service's name, or null.
  * @example
  * shortenerService('https://bit.ly/3xYz');       // 'Bitly'

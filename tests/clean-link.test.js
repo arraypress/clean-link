@@ -487,6 +487,56 @@ describe('cleanLink', () => {
     });
 });
 
+// Where the port is more careful than swift-url-kit 0.2.0 (`data/corrections.js`, and the
+// redirect and fragment checks in `clean.js`): real links the Swift's rules break.
+describe('more careful than the Swift', () => {
+    /** @type {[string, string][]} */
+    const kept = [
+        // A redirect page's path is the page, not a path that starts with its letters.
+        ['https://developers.google.com/amp/cache/overview', 'Google’s own /amp/ pages'],
+        ['https://www.google.com/amp/', 'an AMP link with no destination'],
+        ['https://support.google.com/url-help?url=https://example.com/', '/url-help is not /url'],
+        ['https://www.google.com/urlx?q=https://example.com/', '/urlx is not /url'],
+        ['https://www.linkedin.com/redir/redirect-policy?url=https://example.com/', '/redir/redirect-policy'],
+        // A name its site's rule removes elsewhere, on the page that reads it.
+        ['https://www.bing.com/maps?cp=47.6~-122.3&lvl=12&sp=point.47.6_-122.3_Space%20Needle', 'Bing Maps’ pins'],
+        ['https://www.facebook.com/event.php?eid=123456', 'Facebook’s old event pages'],
+        ['https://www.linkedin.com/learning/some-course?courseClaim=AQF1&u=1', 'a shared LinkedIn Learning course'],
+        // AWS is under Amazon's name, not its shop.
+        ['https://console.aws.amazon.com/resource-groups/tag-editor?region=us-east-1&tag=team', 'the AWS console'],
+        ['https://aws.amazon.com/marketplace/search/results?searchTerms=x&ref=nav&th=1', 'AWS Marketplace'],
+        ['https://docs.aws.amazon.com/dp/B08N5WRWNW/ref=x', 'an AWS path'],
+        // A heading, not tracking.
+        ['https://example.com/docs#utm_tutorial', 'a heading named utm_…'],
+    ];
+    for (const [url, what] of kept) {
+        it(`leaves ${what} alone`, () => {
+            assert.equal(withoutTracking(url), url);
+            assert.equal(cleanLink(url), null);
+        });
+    }
+
+    it('still cleans the same sites everywhere else', () => {
+        assert.equal(withoutTracking('https://www.bing.com/search?q=cats&form=QBLH&sp=-1'), 'https://www.bing.com/search?q=cats');
+        assert.equal(withoutTracking('https://www.facebook.com/photo.php?fbid=1&eid=2'), 'https://www.facebook.com/photo.php?fbid=1');
+        assert.equal(withoutTracking('https://www.linkedin.com/jobs/view/1?courseClaim=x&trk=y'), 'https://www.linkedin.com/jobs/view/1');
+        assert.equal(withoutTracking('https://www.amazon.com/Some-Title/dp/B08N5WRWNW/ref=sr_1_1?tag=x-20'), 'https://www.amazon.com/dp/B08N5WRWNW');
+        assert.equal(withoutTracking('https://www.google.com/amp/s/example.com/a?x=1'), 'https://example.com/a?x=1');
+        assert.equal(withoutTracking('https://www.google.com/url?q=https://example.com/a&sa=D'), 'https://example.com/a');
+        assert.equal(withoutTracking('https://www.anrdoezrs.net/click-123-456?url=https%3A%2F%2Fexample.com%2F'), 'https://example.com/');
+        assert.equal(withoutTracking('https://example.com/#utm_source=x'), 'https://example.com/');
+        assert.equal(withoutTracking('https://example.com/#?utm_medium=x'), 'https://example.com/');
+    });
+
+    it('cleanLink keeps a link whose only change is how it is written', () => {
+        assert.equal(cleanLink('https://example.com/path?'), null);
+        assert.equal(cleanLink('https://example.com/path?#frag'), null);
+        assert.equal(cleanLink('https://example.com:/a?q=a|b'), null);
+        // Something taken out: the cleaned link, however else it is rewritten.
+        assert.equal(cleanLink('https://example.com:/a?q=a|b&utm_source=x'), 'https://example.com/a?q=a%7Cb');
+    });
+});
+
 describe('cleanReport', () => {
     it('names each parameter removed, its kind and the rule that removed it, in order', () => {
         const report = cleanReport('https://www.amazon.co.uk/Some-Thing/dp/B08N5WRWNW/ref=sr_1_3?utm_source=x&th=1&keep=1');
@@ -607,6 +657,13 @@ describe('shortenerService', () => {
         assert.equal(shortenerService('https://maps.app.goo.gl/x'), 'Google Maps');
         assert.equal(shortenerService('https://a.maps.app.goo.gl/x'), 'Google Maps');
         assert.equal(shortenerService('https://goo.gl/x'), 'Google');
+    });
+
+    it('a bare host may come with a path or a port', () => {
+        assert.equal(shortenerService('bit.ly/3xYz'), 'Bitly');
+        assert.equal(shortenerService('bit.ly:443'), 'Bitly');
+        assert.equal(shortenerService('youtu.be/abc?t=5'), 'YouTube');
+        assert.equal(shortenerService('example.com/bit.ly'), null);
     });
 
     it('anything else is null', () => {
