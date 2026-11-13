@@ -644,6 +644,41 @@ describe('keepAffiliate', () => {
     });
 });
 
+describe('keep', () => {
+    const link = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ&si=AbCd&utm_source=share&feature=shared&fbclid=1';
+
+    it('leaves the named parameters in, byte for byte and in place; the rest still goes', () => {
+        assert.equal(withoutTracking(link), 'https://www.youtube.com/watch?v=dQw4w9WgXcQ');
+        assert.equal(withoutTracking(link, {keep: ['si']}), 'https://www.youtube.com/watch?v=dQw4w9WgXcQ&si=AbCd');
+        assert.equal(cleanLink(link, {keep: ['utm_source', 'fbclid']}), 'https://www.youtube.com/watch?v=dQw4w9WgXcQ&utm_source=share&fbclid=1');
+        assert.equal(cleanLink(link, {keep: ['si', 'utm_source', 'feature', 'fbclid']}), null);
+    });
+
+    it('takes names as a report gives them: decoded, any case, a site’s rule or a global one', () => {
+        const report = cleanReport('https://example.com/a?%55TM_Source=x&gclid=1&id=2');
+        assert.deepEqual(report.removed.map((parameter) => parameter.name), ['utm_source', 'gclid']);
+        assert.equal(withoutTracking('https://example.com/a?%55TM_Source=x&gclid=1&id=2', {keep: [report.removed[0].name]}), 'https://example.com/a?%55TM_Source=x&id=2');
+        assert.equal(withoutTracking('https://example.com/a?utm_source=x', {keep: ['UTM_Source']}), 'https://example.com/a?utm_source=x');
+        assert.deepEqual(cleanReport(link, {keep: ['si', 'feature']}).removed.map((parameter) => parameter.name), ['utm_source', 'fbclid']);
+    });
+
+    it('keeps every parameter of that name, and only in the query', () => {
+        assert.equal(withoutTracking('https://a.com/?utm_source=1&x=2&utm_source=3&utm_medium=4', {keep: ['utm_source']}), 'https://a.com/?utm_source=1&x=2&utm_source=3');
+        // Redirects, the path and the fragment are cleaned as usual; the destination's own parameters are kept by name.
+        const wrapped = `https://www.google.com/url?q=${encodeURIComponent('https://www.amazon.co.uk/Some-Thing/dp/B08N5WRWNW/ref=sr_1_3?tag=x-21&th=1#xtor=1')}&sa=D`;
+        assert.equal(withoutTracking(wrapped, {keep: ['th', 'sa', 'ref']}), 'https://www.amazon.co.uk/dp/B08N5WRWNW?th=1');
+    });
+
+    it('works on text that isn’t a URL, and with keepAffiliate', () => {
+        assert.equal(withoutTracking('see example.com?utm_source=x&fbclid=1', {keep: ['fbclid']}), 'see example.com?fbclid=1');
+        assert.equal(withoutTracking('https://www.amazon.com/dp/B08N5WRWNW?tag=creator-20&utm_source=x&th=1', {keep: ['th'], keepAffiliate: true}), 'https://www.amazon.com/dp/B08N5WRWNW?tag=creator-20&th=1');
+    });
+
+    it('an empty list changes nothing', () => {
+        for (const {input} of readGolden().slice(0, 60)) assert.equal(withoutTracking(input, {keep: []}), withoutTracking(input), input);
+    });
+});
+
 describe('shortenerService', () => {
     it('names the service behind a short link or host', () => {
         assert.equal(shortenerService('https://bit.ly/3xYz'), 'Bitly');

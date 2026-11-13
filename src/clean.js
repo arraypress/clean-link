@@ -80,6 +80,10 @@ import {removingPercentEncoding, URLComponents} from './url/components.js';
  *   Awin's `awc`…) and the affiliate networks' own redirect pages (Rakuten,
  *   eBay's rover), so a creator's link still pays them. The tracking around
  *   them still goes.
+ * @property {readonly string[]} [keep] Names of query parameters to leave in
+ *   whatever the rules say, as a report names them (decoded; any case): for a
+ *   person who looked at what a clean would remove and wants one of them
+ *   kept. Redirects, the path and the fragment are cleaned as usual.
  * @property {boolean} [keepSigned] Leave a signed link's query, path and
  *   fragment exactly as they are (`report.signed` says which links those
  *   are); redirect pages in front of it are still unwrapped. For cleaning
@@ -171,12 +175,13 @@ export function withoutTracking(input, options = {}) {
 export function cleanReport(input, options = {}) {
     const keepAffiliate = options.keepAffiliate === true;
     const keepSigned = options.keepSigned === true;
+    const keep = new Set((options.keep ?? []).map((name) => name.toLowerCase()));
     const trimmed = input.replace(TRIM, '');
     if (!trimmed) return report(input, input);
     // A URL can't contain whitespace; Foundation would encode it anyway and
     // rewrite text that was never a URL. Those get the by-hand fallback.
     let components = WHITESPACE.test(trimmed) ? null : URLComponents.parse(trimmed);
-    if (!components) return fallback(input, trimmed, keepAffiliate);
+    if (!components) return fallback(input, trimmed, keepAffiliate, keep);
 
     // 1. Redirects, outermost first.
     /** @type {string[]} */
@@ -207,7 +212,7 @@ export function cleanReport(input, options = {}) {
     if (items) {
         const kept = items.filter((item) => {
             const name = (removingPercentEncoding(item.name) ?? item.name).toLowerCase();
-            if (keepAffiliate && AFFILIATE_NAMES.has(name)) return true;
+            if (keep.has(name) || (keepAffiliate && AFFILIATE_NAMES.has(name))) return true;
             const global = globalCategory(name, path);
             if (global) {
                 removed.push({name, category: global, scope: 'global'});
@@ -326,9 +331,10 @@ function signedScheme(components, host) {
  * @param {string} original - As given.
  * @param {string} s - Trimmed.
  * @param {boolean} keepAffiliate - Keep affiliate names.
+ * @param {ReadonlySet<string>} keep - Names to keep, lowercased.
  * @returns {CleanReport} What changed.
  */
-function fallback(original, s, keepAffiliate) {
+function fallback(original, s, keepAffiliate, keep) {
     const q = s.indexOf('?');
     if (q < 0) return report(original, original);
     const base = s.slice(0, q);
@@ -345,7 +351,7 @@ function fallback(original, s, keepAffiliate) {
         // Swift's `split(separator: "=", maxSplits: 1).first` skips empty
         // pieces, so "=utm_source" is named utm_source.
         const name = (pair.split('=').find((piece) => piece !== '') ?? pair).toLowerCase();
-        if (keepAffiliate && AFFILIATE_NAMES.has(name)) return true;
+        if (keep.has(name) || (keepAffiliate && AFFILIATE_NAMES.has(name))) return true;
         const global = globalCategory(name, base);
         if (global) removed.push({name, category: global, scope: 'global'});
         return !global;

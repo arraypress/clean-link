@@ -72,6 +72,7 @@ The Swift's `URLStripper.report`: the cleaned link and everything taken out, for
 | Option | |
 |---|---|
 | `keepAffiliate` | Keep what credits a referrer for a sale, so a creator's link still pays them: the names in `AFFILIATE_PARAMETERS` (Amazon's `tag`, eBay Partner Network's `campid`…, Awin's `awc`, Impact's `irclickid`, …) and the affiliate networks' own redirect pages (Awin, CJ, Impact, ShareASale, Partnerize, Skimlinks, Viglink, Admitad, Tradedoubler, Rakuten's linksynergy, eBay's rover), left wrapped. The tracking around them still goes. Off by default. JavaScript only: the Swift has no such option, so it isn't in the golden files. |
+| `keep` | Names of query parameters to leave in whatever the rules say (`{ keep: ['si'] }`), as a report names them (decoded; any case): for a person who looked at what a clean would remove and wants one kept. Redirects, the path and the fragment are cleaned as usual. JavaScript only. |
 | `keepSigned` | Leave a signed link (one whose report says `signed`) exactly as written: query, path and fragment. Redirect pages in front of it are still unwrapped. For cleaning nobody asked for (on copy, in an address bar). Off by default. JavaScript only. |
 
 ### Signed links

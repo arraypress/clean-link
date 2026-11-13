@@ -82,6 +82,13 @@ export type CleanOptions = {
      */
     keepAffiliate?: boolean;
     /**
+     * Names of query parameters to leave in
+     * whatever the rules say, as a report names them (decoded; any case): for a
+     * person who looked at what a clean would remove and wants one of them
+     * kept. Redirects, the path and the fragment are cleaned as usual.
+     */
+    keep?: readonly string[];
+    /**
      * Leave a signed link's query, path and
      * fragment exactly as they are (`report.signed` says which links those
      * are); redirect pages in front of it are still unwrapped. For cleaning
