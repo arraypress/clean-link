@@ -29,7 +29,12 @@ cleanLink('mailto:a@example.com?utm_source=x')    // null: not an http(s) link
 cleanReport('https://www.google.com/url?q=https%3A%2F%2Fexample.com%2Fa%3Futm_source%3Dx')
 // { original: '…', cleaned: 'https://example.com/a', unwrapped: ['Google'],
 //   removed: [{ name: 'utm_source', category: 'analytics', scope: 'global' }],
-//   pathChanges: [], fragmentRemoved: false }
+//   pathChanges: [], fragmentRemoved: false, signed: null }
+
+cleanReport('https://bucket.s3.amazonaws.com/a.pdf?utm_source=x&X-Amz-Algorithm=AWS4-HMAC-SHA256&…&X-Amz-Signature=…').signed
+// 'AWS Signature V4': the signature covers utm_source too; without it the link may not open
+cleanLink('https://bucket.s3.amazonaws.com/a.pdf?utm_source=x&X-Amz-Algorithm=AWS4-HMAC-SHA256&…&X-Amz-Signature=…', { keepSigned: true })
+// null: left alone
 
 withoutTracking('https://www.amazon.com/dp/B08N5WRWNW?tag=creator-20&utm_source=x', { keepAffiliate: true })
 // 'https://www.amazon.com/dp/B08N5WRWNW?tag=creator-20'
@@ -60,12 +65,30 @@ The Swift's `URLStripper.report`: the cleaned link and everything taken out, for
 | `unwrapped` | The redirect pages peeled, outermost first: `['Google', 'Outlook Safe Links']`. |
 | `pathChanges` | Path changes in words: `'removed /ref=sr_1_3'`, `'canonicalised to /dp/B08N5WRWNW'`. |
 | `fragmentRemoved` | Whether a tracking `#fragment` was dropped. |
+| `signed` | The scheme the link (after unwrapping) is signed with, when its signature covers the whole query; else `null`. See [Signed links](#signed-links). JavaScript only. |
 
 ### `CleanOptions`
 
 | Option | |
 |---|---|
 | `keepAffiliate` | Keep what credits a referrer for a sale, so a creator's link still pays them: the names in `AFFILIATE_PARAMETERS` (Amazon's `tag`, eBay Partner Network's `campid`…, Awin's `awc`, Impact's `irclickid`, …) and the affiliate networks' own redirect pages (Awin, CJ, Impact, ShareASale, Partnerize, Skimlinks, Viglink, Admitad, Tradedoubler, Rakuten's linksynergy, eBay's rover), left wrapped. The tracking around them still goes. Off by default. JavaScript only: the Swift has no such option, so it isn't in the golden files. |
+| `keepSigned` | Leave a signed link (one whose report says `signed`) exactly as written: query, path and fragment. Redirect pages in front of it are still unwrapped. For cleaning nobody asked for (on copy, in an address bar). Off by default. JavaScript only. |
+
+### Signed links
+
+Some links carry a signature their server works out again from **every** query parameter it is sent. If `utm_source` was in the link when it was signed, taking it out stops the link opening; if it was added afterwards, the link is already broken and taking it out mends it. The link alone can't say which, so by default the clean goes ahead and `cleanReport(…).signed` names the scheme, for a caller to say so ("if it doesn't open, use the original"); with `keepSigned` the link is left alone.
+
+| `signed` | Recognised by |
+|---|---|
+| `'AWS Signature V4'` | `X-Amz-Signature` with `X-Amz-Algorithm` (S3 presigned URLs) |
+| `'Google Cloud Storage'` | `X-Goog-Signature` with `X-Goog-Algorithm` |
+| `'OAuth 1.0'` | `oauth_signature` with `oauth_signature_method` |
+| `'Shopify'` | `hmac` or `signature` of 64 hex digits, with `shop` and `timestamp` (OAuth callbacks, app proxies) |
+| `'Laravel'` | `signature` of 64 hex digits; `expires`, when there is one, a number (signed routes) |
+| `'imgix'` | `s` of 32 hex digits on `*.imgix.net` |
+| `'Google Maps'` | `signature` on `maps.googleapis.com` |
+
+Names alone never count: `?state=CA&code=SAVE10&expires=never` is a shop's search, and an OAuth 2 `code` or a reset `token` is looked up, not signed over. Azure SAS (`sig`), CloudFront (`Signature`, `Key-Pair-Id`) and AWS Signature V2 sign named fields only, so other parameters come and go freely; they aren't reported. The tests sign links as each service documents it and check they verify before and after (`tests/support/signing.js`).
 
 ### `shortenerService(urlOrHost: string): string | null`
 
@@ -88,6 +111,7 @@ A few real links broke under swift-url-kit 0.2.0's rules; this port leaves them 
 - AWS (`aws.amazon.com`, the console) isn't Amazon's shop: its `tag`, `ref` and `th` stay and its paths aren't product paths.
 - A fragment is tracking when it sets a `utm_` name (`#utm_source=x`), not when it is a heading called `#utm_tutorial`.
 - `cleanLink` returns `null` unless something was taken out: a bare trailing `?` dropped is the same link.
+- Signed links are reported, and left alone on request (`signed`, `keepSigned`, above).
 
 None of these inputs are in the golden files, which still match line for line.
 

@@ -63,7 +63,15 @@ export type CleanReport = {
      * Whether a tracking `#fragment` was dropped.
      */
     fragmentRemoved: boolean;
+    /**
+     * The signature scheme the link (after
+     * unwrapping) is signed with, when that signature covers its whole query, so
+     * that taking a parameter out can stop it opening; else null. JavaScript
+     * only: the Swift's report has no such field.
+     */
+    signed: SignedScheme | null;
 };
+export type SignedScheme = 'AWS Signature V4' | 'Google Cloud Storage' | 'OAuth 1.0' | 'Shopify' | 'Laravel' | 'imgix' | 'Google Maps';
 export type CleanOptions = {
     /**
      * Keep what credits a referrer for a sale:
@@ -73,6 +81,14 @@ export type CleanOptions = {
      * them still goes.
      */
     keepAffiliate?: boolean;
+    /**
+     * Leave a signed link's query, path and
+     * fragment exactly as they are (`report.signed` says which links those
+     * are); redirect pages in front of it are still unwrapped. For cleaning
+     * nobody asked for (on copy, in the address bar), where a link that stops
+     * opening is worse than one that keeps its tracking.
+     */
+    keepSigned?: boolean;
 };
 /**
  * The link without its tracking, for inserting or sharing; null when there
@@ -117,7 +133,7 @@ export declare function withoutTracking(input: string, options?: CleanOptions): 
  * cleanReport('https://www.google.com/url?q=https://example.com/a%3Futm_source%3Dx');
  * // {original: …, cleaned: 'https://example.com/a', unwrapped: ['Google'],
  * //  removed: [{name: 'utm_source', category: 'analytics', scope: 'global'}],
- * //  pathChanges: [], fragmentRemoved: false}
+ * //  pathChanges: [], fragmentRemoved: false, signed: null}
  */
 export declare function cleanReport(input: string, options?: CleanOptions): CleanReport;
 /**

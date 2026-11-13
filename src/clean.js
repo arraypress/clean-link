@@ -57,6 +57,17 @@ import {removingPercentEncoding, URLComponents} from './url/components.js';
  * @property {string[]} pathChanges What changed in the path, in words
  *   (`'removed /ref=sr_1_3'`, `'canonicalised to /dp/B08N5WRWNW'`).
  * @property {boolean} fragmentRemoved Whether a tracking `#fragment` was dropped.
+ * @property {SignedScheme|null} signed The signature scheme the link (after
+ *   unwrapping) is signed with, when that signature covers its whole query, so
+ *   that taking a parameter out can stop it opening; else null. JavaScript
+ *   only: the Swift's report has no such field.
+ */
+
+/**
+ * A way of signing a link whose signature covers every query parameter
+ * (see {@link signedScheme}).
+ *
+ * @typedef {'AWS Signature V4' | 'Google Cloud Storage' | 'OAuth 1.0' | 'Shopify' | 'Laravel' | 'imgix' | 'Google Maps'} SignedScheme
  */
 
 /**
@@ -69,6 +80,11 @@ import {removingPercentEncoding, URLComponents} from './url/components.js';
  *   Awin's `awc`…) and the affiliate networks' own redirect pages (Rakuten,
  *   eBay's rover), so a creator's link still pays them. The tracking around
  *   them still goes.
+ * @property {boolean} [keepSigned] Leave a signed link's query, path and
+ *   fragment exactly as they are (`report.signed` says which links those
+ *   are); redirect pages in front of it are still unwrapped. For cleaning
+ *   nobody asked for (on copy, in the address bar), where a link that stops
+ *   opening is worse than one that keeps its tracking.
  */
 
 /** How many nested redirects to peel: a Gmail link to a Safe Link to a page is three. */
@@ -150,10 +166,11 @@ export function withoutTracking(input, options = {}) {
  * cleanReport('https://www.google.com/url?q=https://example.com/a%3Futm_source%3Dx');
  * // {original: …, cleaned: 'https://example.com/a', unwrapped: ['Google'],
  * //  removed: [{name: 'utm_source', category: 'analytics', scope: 'global'}],
- * //  pathChanges: [], fragmentRemoved: false}
+ * //  pathChanges: [], fragmentRemoved: false, signed: null}
  */
 export function cleanReport(input, options = {}) {
     const keepAffiliate = options.keepAffiliate === true;
+    const keepSigned = options.keepSigned === true;
     const trimmed = input.replace(TRIM, '');
     if (!trimmed) return report(input, input);
     // A URL can't contain whitespace; Foundation would encode it anyway and
@@ -172,9 +189,13 @@ export function cleanReport(input, options = {}) {
     }
 
     const host = normaliseHost(components.host);
+    const signed = signedScheme(components, host);
+    // Asked to leave signed links alone: as given, or the destination as its
+    // redirect page wrote it.
+    if (signed && keepSigned) return report(input, unwrapped.length ? components.string : trimmed, {unwrapped, signed});
     // An archived page, a signed link that didn't unwrap: its query is the
     // content. Unwrapped, never cleaned.
-    if (host !== null && matchesAny(host, NEVER_STRIP_HOSTS)) return report(input, components.string, {unwrapped});
+    if (host !== null && matchesAny(host, NEVER_STRIP_HOSTS)) return report(input, components.string, {unwrapped, signed});
     const rules = host === null ? [] : HOST_RULES.filter((rule) => matchesAny(host, rule.hosts) && !matchesAny(host, rule.excluding ?? []) && !isSpared(host, rule.label));
     const path = components.path;
 
@@ -218,7 +239,7 @@ export function cleanReport(input, options = {}) {
     const fragmentRemoved = fragment !== null && isTrackingFragment(fragment);
     if (fragmentRemoved) components.fragment = null;
 
-    return report(input, components.string, {removed, unwrapped, pathChanges, fragmentRemoved});
+    return report(input, components.string, {removed, unwrapped, pathChanges, fragmentRemoved, signed});
 }
 
 /**
@@ -230,7 +251,70 @@ export function cleanReport(input, options = {}) {
  * @returns {CleanReport} The report.
  */
 function report(original, cleaned, changes = {}) {
-    return {original, cleaned, removed: [], unwrapped: [], pathChanges: [], fragmentRemoved: false, ...changes};
+    return {original, cleaned, removed: [], unwrapped: [], pathChanges: [], fragmentRemoved: false, signed: null, ...changes};
+}
+
+// MARK: - Signed links
+
+/**
+ * The scheme a link is signed with, when the signature covers the whole
+ * query: the server works the signature out again from every parameter it
+ * is sent, so a tracking parameter that was there when the link was signed
+ * can't be taken out (and one added afterwards has already broken it).
+ *
+ * Each is recognised by what only that scheme writes, never by a common
+ * name alone: `?state=CA&code=SAVE10&expires=never` is a shop's search.
+ *
+ * - AWS Signature V4 (an S3 presigned URL): `X-Amz-Signature` with
+ *   `X-Amz-Algorithm`. The canonical request holds every query parameter
+ *   but the signature.
+ * - Google Cloud Storage V4 signed URLs: `X-Goog-Signature` with
+ *   `X-Goog-Algorithm`; the same canonical request.
+ * - OAuth 1.0 (RFC 5849 §3.4.1): `oauth_signature` with
+ *   `oauth_signature_method`; the base string holds every parameter.
+ * - Shopify (OAuth callbacks and app proxies): `hmac` or `signature`, 64 hex
+ *   digits, with `shop` and `timestamp`; an HMAC-SHA256 of all the others.
+ * - Laravel signed routes: `signature`, 64 hex digits (and `expires`, a
+ *   number, when there is one); an HMAC-SHA256 of the URL as written.
+ * - imgix: `s`, 32 hex digits, on `*.imgix.net`; an MD5 of the path and query.
+ * - Google Maps Platform: `signature` on `maps.googleapis.com`; an HMAC of
+ *   the path and query.
+ *
+ * Not these, which sign named fields only and ignore other parameters:
+ * Azure's SAS (`sig`), CloudFront (`Signature`, `Key-Pair-Id`), AWS
+ * Signature V2 (`AWSAccessKeyId`, `Signature`).
+ *
+ * @param {URLComponents} components - The link, unwrapped.
+ * @param {string|null} host - Its host, normalised.
+ * @returns {SignedScheme|null}
+ */
+function signedScheme(components, host) {
+    const items = components.percentEncodedQueryItems;
+    if (!items) return null;
+    /** @type {Map<string, string>} */
+    const values = new Map();
+    for (const item of items) {
+        const name = (removingPercentEncoding(item.name) ?? item.name).toLowerCase();
+        if (!values.has(name)) values.set(name, item.value ?? '');
+    }
+    /** @param {string} name */
+    const has = (name) => (values.get(name) ?? '') !== '';
+    /**
+     * @param {string} name
+     * @param {number} digits
+     */
+    const isHex = (name, digits) => {
+        const value = values.get(name) ?? '';
+        return value.length === digits && /^[0-9a-f]+$/i.test(value);
+    };
+    if (has('x-amz-signature') && has('x-amz-algorithm')) return 'AWS Signature V4';
+    if (has('x-goog-signature') && has('x-goog-algorithm')) return 'Google Cloud Storage';
+    if (has('oauth_signature') && has('oauth_signature_method')) return 'OAuth 1.0';
+    if ((isHex('hmac', 64) || isHex('signature', 64)) && has('shop') && has('timestamp')) return 'Shopify';
+    if (isHex('signature', 64) && (!values.has('expires') || /^[0-9]+$/.test(values.get('expires') ?? ''))) return 'Laravel';
+    if (host !== null && matchesAny(host, [{kind: 'suffix', value: 'imgix.net'}]) && isHex('s', 32)) return 'imgix';
+    if (host === 'maps.googleapis.com' && has('signature')) return 'Google Maps';
+    return null;
 }
 
 // MARK: - Fallback

@@ -63,7 +63,7 @@ export function mismatches(lines) {
  * Read a reports file the harness wrote (`{about, reports}`).
  *
  * @param {string | URL} [file] - Default {@link REPORTS_FIXTURE}.
- * @returns {CleanReport[]} The Swift's reports, in input order.
+ * @returns {Omit<CleanReport, 'signed'>[]} The Swift's reports, in input order.
  */
 export function readReports(file = REPORTS_FIXTURE) {
   return JSON.parse(readFileSync(file, 'utf8')).reports;
@@ -72,12 +72,14 @@ export function readReports(file = REPORTS_FIXTURE) {
 /**
  * Every report the port gives differently from the Swift's, field by field.
  *
- * @param {readonly CleanReport[]} reports - From {@link readReports}.
- * @returns {{input: string, swift: CleanReport, js: CleanReport}[]} Empty when every report matches.
+ * @param {readonly Omit<CleanReport, 'signed'>[]} reports - From {@link readReports}.
+ * @returns {{input: string, swift: Omit<CleanReport, 'signed'>, js: CleanReport}[]} Empty when every report matches.
  */
 export function reportMismatches(reports) {
   return reports.flatMap((swift) => {
     const js = cleanReport(swift.original);
-    return isDeepStrictEqual({ ...js }, { ...swift }) ? [] : [{ input: swift.original, swift, js }];
+    // `signed` is the port's own (the Swift's report has no such field).
+    const shared = Object.fromEntries(Object.entries(js).filter(([field]) => field !== 'signed'));
+    return isDeepStrictEqual(shared, { ...swift }) ? [] : [{ input: swift.original, swift, js }];
   });
 }

@@ -567,7 +567,7 @@ describe('cleanReport', () => {
 
     it('text that isn’t a URL: the global rules, reported; nothing to do is an empty report', () => {
         assert.deepEqual(cleanReport('see example.com?utm_source=x&a=1').removed, [{name: 'utm_source', category: 'analytics', scope: 'global'}]);
-        assert.deepEqual(cleanReport('  '), {original: '  ', cleaned: '  ', removed: [], unwrapped: [], pathChanges: [], fragmentRemoved: false});
+        assert.deepEqual(cleanReport('  '), {original: '  ', cleaned: '  ', removed: [], unwrapped: [], pathChanges: [], fragmentRemoved: false, signed: null});
     });
 
     it('cleaned is always what withoutTracking returns', () => {

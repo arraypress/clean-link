@@ -26,5 +26,6 @@ export { SHORTENER_HOSTS } from './data/shorteners.js';
  * @typedef {import('./clean.js').CleanOptions} CleanOptions
  * @typedef {import('./clean.js').CleanReport} CleanReport
  * @typedef {import('./clean.js').RemovedParameter} RemovedParameter
+ * @typedef {import('./clean.js').SignedScheme} SignedScheme
  * @typedef {import('./clean.js').TrackingCategory} TrackingCategory
  */

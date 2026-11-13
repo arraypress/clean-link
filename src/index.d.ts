@@ -21,6 +21,7 @@ export { SHORTENER_HOSTS } from './data/shorteners.js';
 export type CleanOptions = import('./clean.js').CleanOptions;
 export type CleanReport = import('./clean.js').CleanReport;
 export type RemovedParameter = import('./clean.js').RemovedParameter;
+export type SignedScheme = import('./clean.js').SignedScheme;
 export type TrackingCategory = import('./clean.js').TrackingCategory;
 /**
  * The public types, for a caller's JSDoc.
@@ -28,5 +29,6 @@ export type TrackingCategory = import('./clean.js').TrackingCategory;
  * @typedef {import('./clean.js').CleanOptions} CleanOptions
  * @typedef {import('./clean.js').CleanReport} CleanReport
  * @typedef {import('./clean.js').RemovedParameter} RemovedParameter
+ * @typedef {import('./clean.js').SignedScheme} SignedScheme
  * @typedef {import('./clean.js').TrackingCategory} TrackingCategory
  */
